@@ -12,6 +12,7 @@ export default class Pais extends Model {
       designacao: this.attr(''),
       nacionalidade: this.attr(''),
       codigo:this.attr(''),
+
       // Relationshiops
       provincias: this.hasMany(Provincia,'pais_id')
     }
