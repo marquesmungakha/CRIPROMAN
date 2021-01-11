@@ -1,0 +1,7 @@
+import org.informservice.criproman.tipoPeca.TipoPeca
+
+model {
+	TipoPeca tipoPeca
+}
+
+json g.render(tipoPeca, [resolveTemplate: false])

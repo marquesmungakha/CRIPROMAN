@@ -1,0 +1,8 @@
+package login
+
+response.status 401
+
+json {
+    message "Forbiden test for login"
+    error 401
+}

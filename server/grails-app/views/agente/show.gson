@@ -1,0 +1,7 @@
+import org.informservice.criproman.agente.Agente
+
+model {
+	Agente agente
+}
+
+json tmpl.agente(agente)

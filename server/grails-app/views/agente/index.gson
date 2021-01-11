@@ -1,0 +1,8 @@
+import org.informservice.criproman.agente.Agente
+
+model {
+	Iterable<Agente> agenteList
+}
+
+json tmpl.agente(agenteList ?: [])
+
