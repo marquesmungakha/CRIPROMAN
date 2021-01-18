@@ -2,17 +2,17 @@ package org.informservice.criproman.objectosDetido
 
 import grails.gorm.services.Service
 
-@Service(ObjectosDetido)
+@Service(ObjectoDetido)
 interface ObjectosDetidoService {
 
-    ObjectosDetido get(Serializable id)
+    ObjectoDetido get(Serializable id)
 
-    List<ObjectosDetido> list(Map args)
+    List<ObjectoDetido> list(Map args)
 
     Long count()
 
-    ObjectosDetido delete(Serializable id)
+    ObjectoDetido delete(Serializable id)
 
-    ObjectosDetido save(ObjectosDetido objectosDetido)
+    ObjectoDetido save(ObjectoDetido objectosDetido)
 
 }

@@ -1,0 +1,149 @@
+<template>
+    <div class="q-pa-sm q-gutter-sm">
+       <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 600px; max-width: 60vw;">
+        <q-card-section>
+            <div class="text-h6">Adicionar  MARCA!</div>
+        </q-card-section>
+            <q-card-section>
+            <li v-for="item in listErrors" :key="item">
+            {{ item }}
+            </li>
+            </q-card-section>
+        <q-separator />
+        <q-card-section style="max-height: 50vh" class="scroll">
+                <q-form @submit.prevent="createMarca" class="q-gutter-md">
+                    <q-list>
+                        <q-item>
+                            <q-item-section>
+                                <q-input :value="codigo"
+                                @input="$emit('update:codigo', $event)"
+                                ref="codigo"
+                                label="Codigo *"
+                                lazy-rules
+                                :rules="[ val => val && val.length > 0 || 'Introduza o codigo da MARCA']" />
+                            </q-item-section>
+                        </q-item>
+                        <q-item>
+                            <q-item-section>
+                                <q-input :value="designacao"
+                                @input="$emit('update:designacao', $event)"
+                                ref="designacao"
+                                label="Designacao *"
+                                lazy-rules
+                                :rules="[ val => val && val.length > 0 || 'Introduza a Designação']" />
+                            </q-item-section>
+                        </q-item>
+                        <q-item>
+                            <q-item-section>
+                            <q-select
+                              filled
+                              :value="tipoMeio"
+                              use-input
+                              fill-input
+                              hide-selected
+                              label="Tipo de Meio *"
+                              input-debounce="0"
+                              :options="options"
+                              option-label="designacao"
+                              option-value="id"
+                              @filter="filterFn"
+                              @input="$emit('update:tipoMeio', $event)"
+                              abort="abortFilterFn"
+                              hint="Autocompleta o Texto">
+                              <template v-slot:no-option>
+                                <q-item>
+                                  <q-item-section class="text-grey">
+                                    No results
+                                  </q-item-section>
+                                </q-item>
+                              </template>
+                            </q-select>
+                            </q-item-section>
+                        </q-item>
+                    </q-list>
+                </q-form>
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right">
+            <q-btn type="submit" :loading="submitting" @click.stop="createMarca" color="teal" label="Gravar" />
+            <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
+        </q-card-actions>
+        </q-card>
+    </q-dialog>
+   </div>
+</template>
+<script>
+
+export default {
+
+  data () {
+    return {
+      options: []
+    }
+  },
+  computed: {
+  },
+  methods: {
+    filterFn (val, update, abort) {
+      const stringOptions = this.tipoMeios
+      if (val === '') {
+        update(() => {
+          this.options = stringOptions.map(tipoMeio => tipoMeio)
+        })
+      } else if (stringOptions.length === 0) {
+        update(() => {
+          this.options = []
+        })
+      } else {
+        update(() => {
+          this.options = stringOptions
+            .map(tipoMeio => tipoMeio)
+            .filter(tipoMeio => {
+              return tipoMeio &&
+                   tipoMeio.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+            })
+        })
+      }
+    },
+    abortFilterFn () {
+      // console.log('delayed filter aborted')
+    },
+    setModel (val) {
+      this.tipoMeio = val
+    }
+  },
+  props: {
+    show_dialog: {
+      type: Boolean
+    },
+    listErrors: {
+      type: Array
+    },
+    codigo: {
+      type: String
+    },
+    designacao: {
+      type: String
+    },
+    tipoMeio: {
+      type: Object
+    },
+    tipoMeios: {
+      type: Array
+    },
+    submitting: {
+      type: Boolean
+    },
+    close: {
+      type: Function
+    },
+    createMarca: {
+      type: Function
+    },
+    removeMarca: {
+      type: Function
+    }
+  }
+}
+</script>

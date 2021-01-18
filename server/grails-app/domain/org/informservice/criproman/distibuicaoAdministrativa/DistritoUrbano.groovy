@@ -14,7 +14,7 @@ class DistritoUrbano implements Auditable {
 
     static mapping = {
         version false
-        bairros cascade: 'delete-orphan'
+//        bairros cascade: 'delete-orphan'
     }
 
     static belongsTo = [cidade: Cidade]

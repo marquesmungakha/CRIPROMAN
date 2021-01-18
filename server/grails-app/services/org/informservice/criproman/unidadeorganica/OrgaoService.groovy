@@ -1,4 +1,4 @@
-package org.informservice.criproman.unidadeorganica
+package org.informservice.criproman.orgao
 
 import grails.gorm.services.Service
 

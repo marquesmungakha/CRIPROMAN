@@ -22,7 +22,6 @@ class Provincia implements Auditable {
 
     static mapping = {
         version false
-        distritos cascade: 'delete-orphan'
     }
 
     String toString() {

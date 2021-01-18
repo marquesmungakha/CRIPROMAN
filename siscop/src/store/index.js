@@ -4,8 +4,64 @@ import axios from 'axios'
 import VuexORM from '@vuex-orm/core'
 import VuexORMAxios from '@vuex-orm/plugin-axios'
 import Pais from './models/pais/pais'
-import Provincia from "src/store/models/provincia/provincia";
-import Login from "src/store/models/login/login";
+import Provincia from "./models/provincia/provincia"
+import Login from "./models/login/login"
+import Acarreacao from "./models/acarreacao/acarreacao"
+import Acusado from "./models/acusado/acusado" 
+import Agente from "./models/agente/agente"
+import Alocacao from "./models/alocacao/alocacao"
+import Apreensao from "./models/apreensao/apreensao"
+import Arguido from "./models/arguido/arguido"
+import AutoEntrada from "./models/autoEntrada/autoEntrada"
+import BemSubtraido from "./models/bemSubtraido/bemSubtraido"
+import Cargo from "./models/cargo/cargo"
+import ClasseJudicial from "./models/jurisdicao/jurisdicao"
+import CorpoDelito from "./models/corpoDelito/corpoDelito"
+import Crime from "./models/crime/crime"
+import Custodiado from "./models/custodiado/custodiado"
+import Declaracao from "./models/declaracao/declaracao"
+import Declarante from "./models/declarante/declarante"
+import Denuncia from "./models/denuncia/denuncia"
+import Denunciante from "./models/denunciante/denunciante"
+import Despacho from "./models/despacho/despacho"
+import Detencao from "./models/detencao/detencao"
+import Detido from "./models/detido/detido"
+import Bairro from "./models/bairro/bairro"
+import Cidade from "./models/cidade/cidade"
+import Distrito from "./models/distrito/distrito"
+import Localidade from "./models/localidade/localidade"
+import PostoAdministrativo from "./models/postoAdministrativo/postoAdministrativo"
+import FormaProcesso from "./models/formaProcesso/formaProcesso"
+import Funcao from "./models/funcao/funcao"
+import ImpressaoDigital from "./models/impressaoDigital/impressaoDigital"
+import Inspector from "./models/inspector/inspector"
+import Magistrado from "./models/magistrado/magistrado"
+import Marca from "./models/marca/marca"
+import MeioUtilizado from "./models/meiosUtilizado/meiosUtilizado"
+import Modelo from "./models/modelo/modelo"
+import ModoAtuacao from "./models/modoAtuacao/modoAtuacao"
+import MotivoDetencao from "./models/motivoDetencao/motivoDetencao"
+import ObjectoApreendido from "./models/objectoApreendido/objectoApreendido"
+import ObjectoDetido from "./models/objectoDetido/objectoDetido"
+import Ofendido from "./models/ofendido/ofendido"
+import Orgao from "./models/orgao/orgao"
+import ParecerProcesso from "./models/parecerProcesso/parecerProcesso"
+import Pergunta from "./models/pergunta/pergunta"
+import Possuidor from "./models/possuidor/possuidor"
+import ProcessoInstrucaoPreparatoria from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoria"
+import ProcessoInvestigacao from "./models/processoInvestigacao/processoInvestigacao"
+import Profissao from "./models/profissao/profissao"
+import ResponsavelOrgao from "./models/responsavelOrgao/responsavelOrgao"
+import SituacaoPrisional from "./models/situacaoPrisional/situacaoPrisional"
+import Testemunha from "./models/testemunha/testemunha"
+import TipoAuto from "./models/tipoAuto/tipoAuto"
+import TipoDedo from "./models/tipoDedo/tipoDedo"
+import TipoDocumentoIdentificacao from "./models/tipoDocumentoIdentificacao/tipoDocumentoIdentificacao"
+import TipoMeio from "./models/tipoMeio/tipoMeio"
+import TipoOrgao from "./models/tipoOrgao/tipoOrgao"
+import TipoParecer from "./models/tipoParecer/tipoParecer"
+import Vitima from "./models/vitima/vitima"
+
 
 Vue.use(Vuex)
 
@@ -94,7 +150,62 @@ const database = new VuexORM.Database()
 
 database.register(Login)
 database.register(Pais)
+database.register(Acarreacao)
 database.register(Provincia)
+database.register(Acusado)
+database.register(Agente)
+database.register(Alocacao)
+database.register(Apreensao)
+database.register(Arguido)
+database.register(AutoEntrada)
+database.register(BemSubtraido)
+database.register(Cargo)
+database.register(ClasseJudicial)
+database.register(CorpoDelito)
+database.register(Crime)
+database.register(Custodiado)
+database.register(Declaracao)
+database.register(Declarante)
+database.register(Denuncia)
+database.register(Denunciante)
+database.register(Despacho)
+database.register(Detencao)
+database.register(Detido)
+database.register(Bairro)
+database.register(Cidade)
+database.register(Distrito)
+database.register(Localidade)
+database.register(PostoAdministrativo)
+database.register(FormaProcesso)
+database.register(Funcao)
+database.register(ImpressaoDigital)
+database.register(Inspector)
+database.register(Magistrado)
+database.register(Marca)
+database.register(MeioUtilizado)
+database.register(Modelo)
+database.register(ModoAtuacao)
+database.register(MotivoDetencao)
+database.register(ObjectoApreendido)
+database.register(ObjectoDetido)
+database.register(Ofendido)
+database.register(Orgao)
+database.register(ParecerProcesso)
+database.register(Pergunta)
+database.register(Possuidor)
+database.register(ProcessoInstrucaoPreparatoria)
+database.register(ProcessoInvestigacao)
+database.register(Profissao)
+database.register(ResponsavelOrgao)
+database.register(SituacaoPrisional)
+database.register(Testemunha)
+database.register(TipoAuto)
+database.register(TipoDedo)
+database.register(TipoDocumentoIdentificacao)
+database.register(TipoMeio)
+database.register(TipoOrgao)
+database.register(TipoParecer)
+database.register(Vitima)
 
 export default new Vuex.Store({
   plugins: [VuexORM.install(database)]

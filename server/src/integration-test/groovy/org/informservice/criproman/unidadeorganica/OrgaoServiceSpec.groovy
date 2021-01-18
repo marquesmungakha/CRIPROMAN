@@ -3,6 +3,8 @@ package org.informservice.criproman.unidadeorganica
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
 import org.grails.datastore.mapping.core.Datastore
+import org.informservice.criproman.orgao.Orgao
+import org.informservice.criproman.orgao.OrgaoService
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 

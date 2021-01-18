@@ -8,7 +8,7 @@ import org.informservice.criproman.autoEntrada.AutoEntrada
 import org.informservice.criproman.formaProcesso.FormaProcesso
 import org.informservice.criproman.inspector.Inspector
 import org.informservice.criproman.magistrado.Magistrado
-import org.informservice.criproman.unidadeorganica.Orgao
+import org.informservice.criproman.orgao.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/processoInvestigacao')

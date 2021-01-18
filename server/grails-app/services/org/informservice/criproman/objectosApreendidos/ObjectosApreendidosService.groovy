@@ -2,17 +2,17 @@ package org.informservice.criproman.objectosApreendidos
 
 import grails.gorm.services.Service
 
-@Service(ObjectosApreendido)
+@Service(ObjectoApreendido)
 interface ObjectosApreendidosService {
 
-    ObjectosApreendido get(Serializable id)
+    ObjectoApreendido get(Serializable id)
 
-    List<ObjectosApreendido> list(Map args)
+    List<ObjectoApreendido> list(Map args)
 
     Long count()
 
-    ObjectosApreendido delete(Serializable id)
+    ObjectoApreendido delete(Serializable id)
 
-    ObjectosApreendido save(ObjectosApreendido objectosApreendidos)
+    ObjectoApreendido save(ObjectoApreendido objectosApreendidos)
 
 }

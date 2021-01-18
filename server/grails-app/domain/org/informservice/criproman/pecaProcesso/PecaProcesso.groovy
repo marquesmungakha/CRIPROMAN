@@ -1,8 +1,7 @@
 package org.informservice.criproman.pecaProcesso
 
-import grails.plugin.springsecurity.annotation.Secured
+
 import grails.plugins.orm.auditable.Auditable
-import grails.rest.Resource
 import org.informservice.criproman.acusado.Acusado
 import org.informservice.criproman.arguido.Arguido
 import org.informservice.criproman.bemSubtraido.BemSubtraido
@@ -12,7 +11,7 @@ import org.informservice.criproman.denunciante.Denunciante
 import org.informservice.criproman.detido.Detido
 import org.informservice.criproman.inspector.Inspector
 import org.informservice.criproman.meioUtilizado.MeioUtilizado
-import org.informservice.criproman.objectosApreendidos.ObjectosApreendido
+import org.informservice.criproman.objectosApreendidos.ObjectoApreendido
 import org.informservice.criproman.ofendido.Ofendido
 import org.informservice.criproman.possuidor.Possuidor
 import org.informservice.criproman.suspeito.Suspeito
@@ -38,11 +37,11 @@ class PecaProcesso implements Auditable {
                       suspeitos          : Suspeito,
                       meiosUtilizados    : MeioUtilizado,
                       bensSubtraidos     : BemSubtraido,
-                      objectosApreendidos: ObjectosApreendido,
+                      objectosApreendidos: ObjectoApreendido,
                       testeminhas        : Testemunha,
                       vitimas            : Vitima,
                       possuidores        : Possuidor,
-                      objectosApreendidos: ObjectosApreendido,
+                      objectosApreendidos: ObjectoApreendido,
                       acusados           : Acusado,
                       detidos            : Detido,
                       custodiados        : Custodiado,

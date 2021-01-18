@@ -14,10 +14,10 @@ class Distrito implements Auditable {
 
     static mapping = {
         version false
-        cidades cascade: 'delete-orphan'
-        localidades cascade: 'delete-orphan'
-        postos cascade: 'delete-orphan'
-        bairros cascade: 'delete-orphan'
+//        cidades cascade: 'delete-orphan'
+//        localidades cascade: 'delete-orphan'
+//        postos cascade: 'delete-orphan'
+//        bairros cascade: 'delete-orphan'
     }
 
 

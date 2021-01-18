@@ -7,7 +7,7 @@ import org.informservice.criproman.crimes.Crime
 import org.informservice.criproman.pecaProcesso.PecaProcesso
 import org.informservice.criproman.processoInvestigacao.ProcessoInvestigacao
 import org.informservice.criproman.tipoauto.TipoAuto
-import org.informservice.criproman.unidadeorganica.Orgao
+import org.informservice.criproman.orgao.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/autoEntrada')

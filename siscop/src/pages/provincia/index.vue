@@ -116,10 +116,11 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return this.listAllProvincia()
+    return this.getAllProvincia()
   },
   mounted() {
-    this.listAllProvincia()
+    this.getAllPais()
+    this.getAllProvincia()
   },
   components: {
     'create-edit-form': require('components/provincia/createEditForm.vue').default
@@ -154,7 +155,9 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      // this.provincia.pais.id = this.pais.id
+      this.provincia.pais = this.pais
+      this.provincia.pais_id = this.pais.id
+      console.log(this.provincia)
       if (this.editedIndex > -1) {
         Provincia.api().patch("/provincia/"+this.provincia.id,this.provincia).then(resp => {
           this.$q.notify({
@@ -215,6 +218,7 @@ export default {
       }
     },
     close () {
+      this.getAllProvincia()
       this.show_dialog = false
       this.provincia = {}
       this.props = this.provincia
@@ -249,7 +253,7 @@ export default {
       this.pais = Pais.query().find(provincia.pais.id)
       this.show_dialog = true
     },
-    listAllProvincia(){
+    getAllProvincia(){
       Provincia.api().get('/provincia', {
         persistOptions: {
           insert: ['pais']
@@ -271,10 +275,8 @@ export default {
         }
       })
     },
-    getPais (id) {
-      const localPais = Pais.query().find(id)
-      if (localPais.length === 0) {
-        return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localPais[0] }
+    getAllPais () {
+        return Pais.api().get("/pais")
     },
     filterFn (val, update, abort) {
       const stringOptions = Pais.query().all()

@@ -10,7 +10,7 @@ import org.informservice.criproman.denunciante.Denunciante
 import org.informservice.criproman.formaProcesso.FormaProcesso
 import org.informservice.criproman.magistrado.Magistrado
 import org.informservice.criproman.processoInvestigacao.ProcessoInvestigacao
-import org.informservice.criproman.unidadeorganica.Orgao
+import org.informservice.criproman.orgao.Orgao
 import org.informservice.criproman.vitima.Vitima
 
 @Secured('ROLE_ADMIN')

@@ -12,7 +12,6 @@ import org.informservice.criproman.situacaoPrisional.SituacaoPrisional
 @Resource(uri='/api/suspeito')
 class Suspeito extends Individuo {
 
-    Profissao profissao
     SituacaoPrisional situacaoPrisional
     Date dataSituacaoPrisional
 

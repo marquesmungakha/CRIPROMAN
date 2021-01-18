@@ -1,53 +1,64 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card class="my-card" flat bordered>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+        <div class="row">
+          <div class="col-12">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label lines="1" caption>{{ $t('codigo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ provincia.codigo }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('codigo') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ provincia.codigo }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ provincia.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('pais') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ provincia.pais.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-              </div>
-            </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaProvincia(provincia)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeProvincia(provincia)" no-caps/>
-                </q-card-actions>
-            </q-card>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label lines="1" caption>{{ $t('designacao') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ provincia.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label lines="1" caption>{{ $t('pais') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ provincia.pais.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+          </div>
+        </div>
+      </q-card-section>
 
- <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="(listErrors)"
-                    :codigo.sync="localProvincia.codigo"
-                    :designacao.sync="localProvincia.designacao"
-                    :pais.sync="pais"
-                    :paises="allPaises"
-                    :submitting="submitting"
-                    :close="close"
-                    :createProvincia="createProvincia"
-                    :removeProvincia="removeProvincia"/>
+      <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/provincia' " no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
+          <q-card-actions align="right">
+            <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaProvincia(provincia)" no-caps/>
+            <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeProvincia(provincia)" no-caps/>
+          </q-card-actions>
+        </div>
+      </div>
+
+    </q-card>
+
+    <create-edit-form :show_dialog="show_dialog"
+                      :listErrors="(listErrors)"
+                      :codigo.sync="localProvincia.codigo"
+                      :designacao.sync="localProvincia.designacao"
+                      :pais.sync="pais"
+                      :paises="allPaises"
+                      :submitting="submitting"
+                      :close="close"
+                      :createProvincia="createProvincia"
+                      :removeProvincia="removeProvincia"/>
   </q-page>
 </template>
 
@@ -57,7 +68,7 @@ import Provincia from "src/store/models/provincia/provincia";
 
 export default {
   name: 'Provincia',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -79,7 +90,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -95,21 +106,21 @@ export default {
     // Example:
     return Provincia.query().with('pais').find(currentRoute.params.id)  // store.dispatch('provincia/getProvincia', currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     provincia: {
-      get () {
+      get() {
         return Provincia.query().with('pais').find(this.$route.params.id)
       },
-      set (provincia) {
+      set(provincia) {
         this.$emit('update:provincia', '')
         Provincia.update(provincia)
       }
     },
-    allPaises () {
+    allPaises() {
       return Pais.query().all()
     }
   },
@@ -117,7 +128,7 @@ export default {
     'create-edit-form': require('components/provincia/createEditForm.vue').default
   },
   methods: {
-    removeProvincia (provincia) {
+    removeProvincia(provincia) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -135,11 +146,11 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + provincia.designacao + ' ]'
         })
-        Provincia.api().delete("/provincia/"+provincia.id)
+        Provincia.api().delete("/provincia/" + provincia.id)
         this.$router.go(-1)
       })
     },
-    createProvincia () {
+    createProvincia() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
@@ -147,7 +158,7 @@ export default {
       }, 300)
       this.provincia = this.localProvincia
       this.localProvincia.pais.id = this.pais.id
-      Provincia.api().patch("/provincia/"+this.provincia.id,this.localProvincia).then(resp => {
+      Provincia.api().patch("/provincia/" + this.provincia.id, this.localProvincia).then(resp => {
         console.log('update ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -176,14 +187,14 @@ export default {
         }
       })
     },
-    editaProvincia (provincia) {
+    editaProvincia(provincia) {
       this.editedIndex = 0
       this.provincia = Object.assign({}, provincia)
       this.localProvincia = Object.assign({}, provincia)
       this.pais = Pais.query().find(provincia.pais.id)
       this.show_dialog = true
     },
-    close () {
+    close() {
       this.show_dialog = false
       this.props = this.provincia
       setTimeout(() => {
@@ -191,7 +202,7 @@ export default {
       }, 300)
     }
   },
-  filterFn (val, update, abort) {
+  filterFn(val, update, abort) {
     const stringOptions = Pais.query().all()
     if (val === '') {
       update(() => {
@@ -207,15 +218,15 @@ export default {
           .map(pais => pais)
           .filter(pais => {
             return pais &&
-                   pais.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+              pais.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
           })
       })
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.provincia.pais = val
   },
   i18n: {

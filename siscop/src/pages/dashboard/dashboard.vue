@@ -1,0 +1,68 @@
+ <template>
+  <q-page class="flex flex-center q-mt-md qmr-sr">
+    <div class="row q-col-gutter-md q-px-md q-py-md">
+      <div class="col-md-6 col-sm-12 col-xs-12">
+         <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+        <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+          <apex-heatmap></apex-heatmap>
+      </div>
+    </div>
+  </q-page>
+</template>
+
+<script>
+import ApexHeatmap from 'components/ApexHeatmap'
+export default {
+  name: 'PageIndex',
+  components: {
+    ApexHeatmap
+  },
+  data () {
+    return {
+      colors: [
+        'linear-gradient( 135deg, #ABDCFF 10%, #0396FF 100%)',
+        'linear-gradient( 135deg, #2AFADF 10%, #4C83FF 100%)',
+        'linear-gradient( 135deg, #FFD3A5 10%, #FD6585 100%)',
+        'linear-gradient( 135deg, #EE9AE5 10%, #5961F9 100%)'
+      ]
+    }
+  }
+}
+</script>

@@ -7,7 +7,7 @@ import org.informservice.criproman.inspector.Inspector
 import org.informservice.criproman.magistrado.Magistrado
 import org.informservice.criproman.processoInvestigacao.ProcessoInvestigacao
 import org.informservice.criproman.tipoParecer.TipoParecer
-import org.informservice.criproman.unidadeorganica.Orgao
+import org.informservice.criproman.orgao.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/despacho')

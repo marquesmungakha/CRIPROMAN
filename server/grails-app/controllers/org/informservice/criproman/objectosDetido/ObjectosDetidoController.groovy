@@ -6,7 +6,6 @@ import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
@@ -30,7 +29,7 @@ class ObjectosDetidoController {
     }
 
     @Transactional
-    def save(ObjectosDetido objectosDetido) {
+    def save(ObjectoDetido objectosDetido) {
         if (objectosDetido == null) {
             render status: NOT_FOUND
             return
@@ -52,7 +51,7 @@ class ObjectosDetidoController {
     }
 
     @Transactional
-    def update(ObjectosDetido objectosDetido) {
+    def update(ObjectoDetido objectosDetido) {
         if (objectosDetido == null) {
             render status: NOT_FOUND
             return

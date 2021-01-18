@@ -17,7 +17,6 @@ class ClasseJudicial implements Auditable {
 
     static mapping = {
         version false
-        uuid generator: 'uuid'
     }
 
 
