@@ -26,6 +26,6 @@ class Cidade implements Auditable {
     static belongsTo = [provincia: Provincia]
 
     String toString() {
-        return "${designacao}"
+        return designacao
     }
 }

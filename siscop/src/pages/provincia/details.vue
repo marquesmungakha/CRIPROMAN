@@ -197,6 +197,7 @@ export default {
     close() {
       this.show_dialog = false
       this.props = this.provincia
+      this.listErrors = []
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)

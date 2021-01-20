@@ -25,17 +25,26 @@
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getProvinciaLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ distrito.provincia.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
                 </q-card-section>
+                  <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/distrito' " no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
                 <q-card-actions align="right">
                     <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaDistrito(distrito)" no-caps />
                     <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeDistrito(distrito)" no-caps/>
                 </q-card-actions>
+                 </div>
+      </div>
             </q-card>
  <create-edit-form :show_dialog="show_dialog"
                     :listErrors="listErrors"
@@ -51,7 +60,8 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Distrito from 'src/store/models/distrito/distrito'
+import Provincia from 'src/store/models/provincia/provincia'
 
 export default {
   name: 'Provincia',
@@ -87,40 +97,31 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('distrito/getDistrito', currentRoute.params.id)
+    return Distrito.query().with('provincia').find(currentRoute.params.id)
   },
   created () {
   },
   mounted () {
-    // this.$store.dispatch('distrito/getProvincia', this.$route.params.id)
-    this.$store.dispatch('provincia/getAllProvincia')
-    // this.$store.dispatch('provincia/getProvincia', this.distrito.provincia.id)
   },
   computed: {
     distrito: {
       get () {
-        return this.$store.getters['distrito/distrito']
+        return Distrito.query().with('provincia').find(this.$route.params.id)
       },
       set (distrito) {
-        this.SET_UPDATE_DISTRITO({ distrito })
         this.$emit('update:distrito', '')
-        this.$store.commit('distrito/SET_UPDATE_DISTRITO', distrito)
+        Distrito.update(distrito)
+        // this.$store.commit('distrito/SET_UPDATE_DISTRITO', distrito)
       }
     },
     allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    getProvinciaLocal () {
-      const localProvincia = this.allProvincias.filter(provincia => provincia.id === this.distrito.provincia.id)
-      if (localProvincia.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincia[0] }
+      return Provincia.query().all()
     }
   },
   components: {
     'create-edit-form': require('components/distrito/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('distrito', ['getAllDistrito', 'getDistrito', 'addNewDistrito', 'updateDistrito', 'deleteDistrito']),
-    ...mapMutations('distrito', ['SET_UPDATE_DISTRITO']),
     removeDistrito (distrito) {
       this.$q.dialog({
         title: 'Confirmação',
@@ -139,7 +140,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + distrito.designacao + ' ]'
         })
-        this.deleteDistrito(distrito)
+       Distrito.api().delete("/distrito/"+distrito.id)
         this.$router.go(-1)
       })
     },
@@ -151,7 +152,7 @@ export default {
       }, 300)
       this.localDistrito.provincia.id = this.provincia.id
       this.distrito = this.localDistrito
-      this.updateDistrito(this.localDistrito).then(resp => {
+      Distrito.api().patch("/distrito/"+this.localDistrito.id, this.localDistrito).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -162,7 +163,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.distrito.designacao + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localDistrito.designacao + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -188,11 +189,9 @@ export default {
       this.show_dialog = true
     },
     close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('distrito/getDistrito', this.$route.params.id)
-      }
       this.show_dialog = false
       this.props = this.distrito
+       this.listErrors = []
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)

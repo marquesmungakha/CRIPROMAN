@@ -25,24 +25,33 @@
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getProvinciaLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ cidade.provincia.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                  <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getDistritoLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ cidade.distrito.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
                 </q-card-section>
+                 <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/cidade' " no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
                 <q-card-actions align="right">
                     <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaCidade(cidade)" no-caps />
                     <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeCidade(cidade)" no-caps/>
                 </q-card-actions>
+        </div>
+                 </div>
             </q-card>
   <create-edit-form :show_dialog="show_dialog"
                     :listErrors="listErrors"
@@ -60,7 +69,10 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Cidade from 'src/store/models/cidade/cidade'
+import Provincia from 'src/store/models/provincia/provincia'
+import Distrito from 'src/store/models/distrito/distrito'
+import Pais from 'src/store/models/pais/pais'
 
 export default {
   name: 'Provincia',
@@ -101,51 +113,36 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('cidade/getCidade', currentRoute.params.id)
+    return Cidade.query().with('provincia').with('distrito').find(currentRoute.params.id)
   },
   created () {
   },
   mounted () {
-    // this.$store.dispatch('cidade/getProvincia', this.$route.params.id)
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
-    // this.$store.dispatch('provincia/getProvincia', this.cidade.provincia.id)
   },
   computed: {
     cidade: {
       get () {
-        return this.$store.getters['cidade/cidade']
+        return Cidade.query().with('provincia').with('distrito').find(this.$route.params.id)
       },
       set (cidade) {
-        this.SET_UPDATE_CIDADE({ cidade })
         this.$emit('update:cidade', '')
-        this.$store.commit('cidade/SET_UPDATE_CIDADE', cidade)
+        Cidade.update(cidade)
       }
     },
-    allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
+     allProvincias () {
+      return Provincia.query().with('pais').all()
     },
     allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    getProvinciaLocal () {
-      const localProvincia = this.allProvincias.filter(provincia => provincia.id === this.cidade.provincia.id)
-      if (localProvincia.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincia[0] }
-    },
-    getDistritoLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.cidade.distrito.id)
-      if (localDistrito.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localDistrito[0] }
+    allDistritos () {
+      return Distrito.query().all()
     }
   },
   components: {
     'create-edit-form': require('components/cidade/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('cidade', ['getAllCidade', 'getCidade', 'addNewCidade', 'updateCidade', 'deleteCidade']),
-    ...mapMutations('cidade', ['SET_UPDATE_CIDADE']),
     removeCidade (cidade) {
       this.$q.dialog({
         title: 'Confirmação',
@@ -164,7 +161,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + cidade.designacao + ' ]'
         })
-        this.deleteCidade(cidade)
+        Cidade.api().delete("/cidade/"+cidade.id)
         this.$router.go(-1)
       })
     },
@@ -174,9 +171,12 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.localCidade.provincia.id = this.provincia.id
-      this.localCidade.distrito.id = this.distrito.id
-      this.updateCidade(this.localCidade).then(resp => {
+       this.localCidade.provincia = this.provincia
+      this.localCidade.provincia =  this.provincia
+      this.localCidade.distrito = this.distrito
+      this.localCidade.provincia_id = this.provincia.id
+      this.localCidade.distrito_id = this.distrito.id
+     Cidade.api().patch("/cidade/"+this.localCidade.id,this.localCidade).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -207,18 +207,15 @@ export default {
     },
     editaCidade (cidade) {
       this.editedIndex = 0
-      this.cidade = Object.assign({}, cidade)
       this.localCidade = Object.assign({}, cidade)
-      this.provincia = this.allProvincias.filter(provincia => provincia.id === cidade.provincia.id)[0]
-      this.distrito = this.allDistritos.filter(distrito => distrito.id === cidade.distrito.id)[0]
+      this.provincia = Provincia.query().find(cidade.provincia.id)
+      this.distrito = Distrito.query().find(cidade.distrito.id)
       this.show_dialog = true
     },
     close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('cidade/getCidade', this.$route.params.id)
-      }
-      this.$store.dispatch('distrito/getAllDistrito')
-      this.$store.dispatch('cidade/getAllCidade')
+       this.getAllPais()
+      this.getAllProvincia()
+      this.getAllDistrito()
       this.show_dialog = false
       this.props = this.cidade
       setTimeout(() => {

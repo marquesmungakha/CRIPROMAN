@@ -5,11 +5,16 @@
         <q-card-section>
             <div class="text-h6">Adicionar  Localidade!</div>
         </q-card-section>
-            <q-card-section>
-            <li v-for="item in listErrors" :key="item">
-            {{ item }}
-            </li>
-            </q-card-section>
+                <q-card-section>
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+            <ul class="list-group alert alert-danger">
+              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                  v-for="item in listErrors" :key="item">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </q-card-section>
         <q-separator />
         <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form @submit.prevent="createLocalidade" class="q-gutter-md">

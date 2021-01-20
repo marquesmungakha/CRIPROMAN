@@ -24,7 +24,6 @@ class Localidade implements Auditable {
 
     static mapping = {
         version false
-//        bairros cascade: 'delete-orphan'
     }
 
     String toString() {

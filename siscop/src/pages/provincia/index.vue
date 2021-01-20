@@ -221,6 +221,7 @@ export default {
       this.getAllProvincia()
       this.show_dialog = false
       this.provincia = {}
+      this.listErrors = []
       this.props = this.provincia
       setTimeout(() => {
         this.editedIndex = -1
@@ -254,7 +255,7 @@ export default {
       this.show_dialog = true
     },
     getAllProvincia(){
-      Provincia.api().get('/provincia', {
+      Provincia.api().get('/provincia?offset=0&max=1000000', {
         persistOptions: {
           insert: ['pais']
         }
@@ -276,7 +277,7 @@ export default {
       })
     },
     getAllPais () {
-        return Pais.api().get("/pais")
+        return Pais.api().get("/pais?offset=0&max=1000000")
     },
     filterFn (val, update, abort) {
       const stringOptions = Pais.query().all()

@@ -3,7 +3,6 @@ package criproman
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SecurityFilterPosition
 import grails.plugin.springsecurity.SpringSecurityUtils
-import org.informservice.criproman.distibuicaoAdministrativa.Pais
 import org.informservice.criproman.seguranca.SecRole
 import org.informservice.criproman.seguranca.SecUser
 import org.informservice.criproman.seguranca.SecUserSecRole
@@ -13,24 +12,13 @@ class BootStrap {
     def springSecurityService
 
     def init = {
-
         addTestUsers()
-
-        def pais = new Pais()
-        pais.codigo = '01'
-        pais.designacao = 'Mocambique'
-        pais.nacionalidade = 'Mocambicana'
-        pais.save()
-
-        println pais
-
     }
 
     @Transactional
     void addTestUsers(){
 
-        SpringSecurityUtils.clientRegisterFilter("corsFilterTest",
-                SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order - 1)
+        SpringSecurityUtils.clientRegisterFilter("corsFilterTest",SecurityFilterPosition.SECURITY_CONTEXT_FILTER.order - 1)
 
         def adminRole = new SecRole('ROLE_ADMIN').save()
         def userRole = new SecRole('ROLE_USER').save()

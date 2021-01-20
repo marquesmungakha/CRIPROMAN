@@ -23,7 +23,6 @@ class Pais implements Auditable {
 
     static mapping = {
         version false
-//        provincia cascade: 'delete-orphan'
     }
 
     String toString() {

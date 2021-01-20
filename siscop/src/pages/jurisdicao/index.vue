@@ -46,8 +46,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import { exportFile, QSpinnerBall } from 'quasar'
+import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -89,25 +89,35 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('jurisdicao/getAllJurisdicao', currentRoute.params.id)
+    return this.getAllJurisdicao()
   },
   mounted () {
+    this.getAllJurisdicao()
   },
   components: {
     'create-edit-form': require('components/jurisdicao/createEditForm.vue').default
   },
-  created () {
+   created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
   metaInfo: {
   },
   computed: {
-    ...mapGetters('jurisdicao', ['allJurisdicao']),
     allJurisdicoes () {
-      return this.$store.state.jurisdicao.jurisdicoes
+      return ClasseJudicial.query().all()
     }
   },
   methods: {
-    ...mapActions('jurisdicao', ['getAllJurisdicao', 'addNewJurisdicao', 'updateJurisdicao', 'deleteJurisdicao']),
     createJurisdicao () {
       this.listErrors = []
       this.submitting = true
@@ -115,7 +125,7 @@ export default {
         this.submitting = false
       }, 300)
       if (this.editedIndex > -1) {
-        this.updateJurisdicao(this.jurisdicao).then(resp => {
+         ClasseJudicial.api().patch("/classeJudicial/"+this.jurisdicao.id,this.jurisdicao).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -144,7 +154,7 @@ export default {
           }
         })
       } else {
-        this.addNewJurisdicao(this.jurisdicao).then(resp => {
+        ClasseJudicial.api().post("/classeJudicial/",this.jurisdicao).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -158,23 +168,23 @@ export default {
           })
           this.close()
         }).catch(error => {
-          console.log(error)
-          // if (error.request.status !== 0) {
-          //   const arrayErrors = JSON.parse(error.request.response)
-          //   if (arrayErrors.total == null) {
-          //     this.listErrors.push(arrayErrors.message)
-          //   } else {
-          //     arrayErrors._embedded.errors.forEach(element => {
-          //       this.listErrors.push(element.message)
-          //     })
-          //   }
-          //   console.log(this.listErrors)
-          // }
+          console.log('Erro no code ' + error)
+          if (error.request.status !== 0) {
+            const arrayErrors = JSON.parse(error.request.response)
+            if (arrayErrors.total == null) {
+              this.listErrors.push(arrayErrors.message)
+            } else {
+              arrayErrors._embedded.errors.forEach(element => {
+                this.listErrors.push(element.message)
+              })
+            }
+            console.log(this.listErrors)
+          }
         })
       }
     },
     close () {
-      this.$store.dispatch('jurisdicao/getAllJurisdicao')
+      this.getAllJurisdicao()
       this.show_dialog = false
       this.jurisdicao = {}
       this.props = this.jurisdicao
@@ -201,13 +211,16 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + jurisdicao.designacao + ' ]'
         })
-        this.deleteJurisdicao(jurisdicao)
+       ClasseJudicial.api().delete("/classeJudicial/"+jurisdicao.id)
       })
     },
     editaJurisdicao (jurisdicao) {
-      this.editedIndex = this.$store.state.jurisdicao.jurisdicoes.indexOf(jurisdicao)
+      this.editedIndex = 0
       this.jurisdicao = Object.assign({}, jurisdicao)
       this.show_dialog = true
+    },
+     getAllJurisdicao(){
+      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
     },
     exportTable () {
       // naive encoding to csv format

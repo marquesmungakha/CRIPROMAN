@@ -30,15 +30,15 @@
               </q-popup-edit>
             </q-td>
             <q-td key="provincia" :props="props">
-              <div class="text-pre-wrap">{{  getProvincia (props.row.provincia.id ).designacao }}</div>
-              <q-popup-edit v-model="props.row.provincia.id">
-                <q-input v-model="props.row.provincia.id" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{ props.row.provincia.designacao }}</div>
+              <q-popup-edit v-model="props.row.provincia.designacao">
+                <q-input v-model="props.row.provincia.designacao" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="distrito" :props="props">
-              <div class="text-pre-wrap">{{  getDistrito (props.row.distrito.id ).designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito.id">
-                <q-input v-model="props.row.distrito.id" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
+              <q-popup-edit v-model="props.row.distrito.designacao">
+                <q-input v-model="props.row.distrito.designacao" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="actions" :props="props">
@@ -69,8 +69,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import { exportFile, QSpinnerBall } from 'quasar'
+import Cidade from 'src/store/models/cidade/cidade'
+import Provincia from 'src/store/models/provincia/provincia'
+import Distrito from 'src/store/models/distrito/distrito'
+import Pais from 'src/store/models/pais/pais'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -106,8 +109,8 @@ export default {
       columns: [
         { name: 'codigo', required: true, label: 'Código', align: 'left', field: row => row.codigo, format: val => `${val}`, sortable: true },
         { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'provincia', align: 'left', label: 'Próvincia', field: row => row.provincia.id, format: val => `${val}`, sortable: true },
-        { name: 'distrito', align: 'left', label: 'Distrito', field: row => row.distrito.id, format: val => `${val}`, sortable: true },
+        { name: 'provincia', align: 'left', label: 'Próvincia', field: row => row.provincia, format: val => `${val}`, sortable: true },
+        { name: 'distrito', align: 'left', label: 'Distrito', field: row => row.distrito, format: val => `${val}`, sortable: true },
         { name: 'actions', label: 'Movimento', field: 'actions' }
       ],
       data: []
@@ -125,43 +128,65 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('cidade/getAllCidade')
+    return this.getAllCidade()
   },
   mounted () {
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
+   this.getAllPais()
+   this.getAllCidade()
+   this.getAllProvincia()
+   this.getAllDistrito()
   },
   components: {
     'create-edit-form': require('components/cidade/createEditForm.vue').default
+  },
+  created() {
+  //  this.getAllPais()
+  //  this.getAllCidade()
+  //  this.getAllProvincia()
+  //  this.getAllDistrito()
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
   metaInfo: {
   },
   computed: {
     allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
+      return Provincia.query().with('pais').all()
     },
     allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
     allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
+      return Distrito.query().all()
     },
     allCidades () {
-      return this.$store.getters['cidade/allCidade']
+      return Cidade.query().with('provincia').with('distrito').all()
     }
   },
   methods: {
-    ...mapActions('cidade', ['getAllCidade', 'addNewCidade', 'updateCidade', 'deleteCidade']),
     createCidade () {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.cidade.provincia.id = this.provincia.id
-      this.cidade.distrito.id = this.distrito.id
+      this.cidade.provincia = this.provincia
+      this.distrito.provincia =  this.provincia
+      this.cidade.distrito = this.distrito
+      this.cidade.provincia_id = this.provincia.id
+      this.cidade.distrito_id = this.distrito.id
+      console.log(this.cidade)
       if (this.editedIndex > -1) {
-        this.updateCidade(this.cidade).then(resp => {
+      Cidade.api().patch("/cidade/"+this.cidade.id,this.cidade).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -189,7 +214,7 @@ export default {
           }
         })
       } else {
-        this.addNewCidade(this.cidade).then(resp => {
+       Cidade.api().post("/cidade/",this.cidade).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -220,13 +245,15 @@ export default {
       }
     },
     close () {
-      this.$store.dispatch('provincia/getAllProvincia')
-      this.$store.dispatch('distrito/getAllDistrito')
-      this.$store.dispatch('cidade/getAllCidade')
+      this.getAllCidade()
+      this.getAllPais()
+      this.getAllProvincia()
+      this.getAllDistrito()
       this.show_dialog = false
       this.cidade = {}
       this.provincia = {}
       this.distrito = {}
+      this.listErrors = []
       this.props = this.cidade
       setTimeout(() => {
         this.editedIndex = -1
@@ -250,23 +277,46 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + cidade.designacao + ' ]'
         })
-        this.deleteCidade(cidade)
+       Cidade.api().delete("/cidade/"+cidade.id)
       })
     },
     editaCidade (cidade) {
-      this.editedIndex = this.allCidades.indexOf(cidade)
+      this.editedIndex = 0
       this.cidade = Object.assign({}, cidade)
-      this.provincia = this.allProvincias.filter(provincia => provincia.id === cidade.provincia.id)[0]
-      this.distrito = this.allDistritos.filter(distrito => distrito.id === cidade.distrito.id)[0]
+      this.provincia = Provincia.query().find(cidade.provincia.id)
+      this.distrito = Distrito.query().find(cidade.distrito.id)
       this.show_dialog = true
     },
-    getProvincia (id) {
-      const localProvincias = this.allProvincias.filter(provincia => provincia.id === id)
-      if (localProvincias.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincias[0] }
+     getAllCidade(){
+      Cidade.api().get('/cidade?offset=0&max=1000000').then(resp => {
+        console.log(resp)
+      }).catch(error => {
+        console.log(error)
+        if (error.request.response != null) {
+          const arrayErrors = JSON.parse(error.request.response)
+          if (arrayErrors.total == null) {
+            this.listErrors.push(arrayErrors.message)
+          } else {
+            arrayErrors._embedded.errors.forEach(element => {
+              this.listErrors.push(element.message)
+            })
+          }
+          console.log(this.listErrors)
+        }
+      })
     },
-    getDistrito (id) {
-      const localDistritos = this.allDistritos.filter(distrito => distrito.id === id)
-      if (localDistritos.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localDistritos[0] }
+    getAllPais () {
+      Pais.api().get('/pais?offset=0&max=1000000')
+    },
+    getAllProvincia () {
+      return Provincia.api().get('/provincia?offset=0&max=1000000', { 
+        persistOptions: {
+          insert: ['pais']
+        }
+    })
+    },
+    getAllDistrito () {
+     Distrito.api().get('/distrito?offset=0&max=1000000')
     },
     filterFn (val, update, abort) {
       const stringOptions = this.allProvincias

@@ -25,31 +25,40 @@
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getProvinciaLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ localidade.distrito.provincia.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getDistritoLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ localidade.distrito.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('postoAdministrativo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getPostoAdministrativoLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ localidade.postoAdministrativo.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
                 </q-card-section>
+                <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/localidade' " no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
                 <q-card-actions align="right">
                     <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaLocalidade(localidade)" no-caps />
                     <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeLocalidade(localidade)" no-caps/>
                 </q-card-actions>
+        </div>
+                </div>
             </q-card>
  <create-edit-form :show_dialog="show_dialog"
                     :listErrors="listErrors"
@@ -69,7 +78,11 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Provincia from 'src/store/models/provincia/provincia'
+import Distrito from 'src/store/models/distrito/distrito'
+import Pais from 'src/store/models/pais/pais'
+import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdministrativo'
+import Localidade from 'src/store/models/localidade/localidade'
 
 export default {
   name: 'Distrito',
@@ -114,61 +127,42 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('localidade/getLocalidade', currentRoute.params.id)
+    return Localidade.query().with('distrito').with('postoAdministrativo').find(currentRoute.params.id)
   },
   created () {
   },
   mounted () {
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
-    this.$store.dispatch('postoAdministrativo/getAllPostoAdministrativo')
   },
   computed: {
     localidade: {
       get () {
-        return this.$store.getters['localidade/localidade']
+        return Localidade.query().with('distrito.provincia').with('postoAdministrativo').find(this.$route.params.id)
       },
       set (localidade) {
-        this.SET_UPDATE_LOCALIDADE({ localidade })
         this.$emit('update:localidade', '')
-        this.$store.commit('localidade/SET_UPDATE_LOCALIDADE', localidade)
+         Localidade.update(localidade)
       }
     },
-    allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
-    },
-    allPostoAdministrativos () {
-      return this.$store.getters['postoAdministrativo/allPostoAdministrativo']
+   allProvincias () {
+      return Provincia.query().with('pais').all()
     },
     allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
+    },
+    allDistritos () {
+      return Distrito.query().with('provincia').all()
+    },
+    allPostoAdministrativos () {
+      return PostoAdministrativo.query().with('distrito.provincia').all()
     },
     allPostoAdministrativosFromDistrito () {
-      return this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.distrito.id === this.distrito.id)
-    },
-    getDistritoLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.localidade.distrito.id)
-      if (localDistrito.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localDistrito[0] }
-    },
-    getProvinciaLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.localidade.distrito.id)[0]
-      const localProvincia = this.allProvincias.filter(provincia => provincia.id === localDistrito.provincia.id)
-      if (localProvincia.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincia[0] }
-    },
-    getPostoAdministrativoLocal () {
-      const localPostoAdministrativo = this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.id === this.localidade.postoAdministrativo.id)
-      if (localPostoAdministrativo.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localPostoAdministrativo[0] }
+      return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
     }
   },
   components: {
     'create-edit-form': require('components/localidade/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('localidade', ['getAllLocalidade', 'getLocalidade', 'addNewLocalidade', 'updateLocalidade', 'deleteLocalidade']),
-    ...mapMutations('localidade', ['SET_UPDATE_LOCALIDADE']),
     removeLocalidade (localidade) {
       this.$q.dialog({
         title: 'Confirmação',
@@ -187,7 +181,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + localidade.designacao + ' ]'
         })
-        this.deleteLocalidade(localidade)
+       Localidade.api().delete("/localidade/"+localidade.id)
         this.$router.go(-1)
       })
     },
@@ -197,9 +191,11 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.localLocalidade.distrito.id = this.distrito.id
-      this.localLocalidade.postoAdministrativo.id = this.postoAdministrativo.id
-      this.updateLocalidade(this.localLocalidade).then(resp => {
+      this.localLocalidade.distrito = this.distrito
+      this.localLocalidade.postoAdministrativo = this.postoAdministrativo
+      this.localLocalidade.postoAdministrativo_id = this.postoAdministrativo.id
+      this.localLocalidade.distrito_id = this.distrito.id
+      Localidade.api().patch("/localidade/"+this.localLocalidade.id,this.localLocalidade).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -210,7 +206,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.localidade.designacao + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localLocalidade.designacao + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -231,19 +227,12 @@ export default {
     editaLocalidade (localidade) {
       this.editedIndex = 0
       this.localidade = Object.assign({}, localidade)
-      this.localLocalidade = Object.assign({}, localidade)
-      this.postoAdministrativo = this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.id === this.localidade.postoAdministrativo.id)[0]
-      this.distrito = this.allDistritos.filter(distrito => distrito.id === this.localidade.distrito.id)[0]
-      this.provincia = this.allProvincias.filter(provincia => provincia.id === this.distrito.provincia.id)[0]
+      this.postoAdministrativo = PostoAdministrativo.query().find(localidade.postoAdministrativo_id)
+      this.distrito = Distrito.query().find(localidade.distrito.id)
+      this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
     close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('localidade/getLocalidade', this.$route.params.id)
-      }
-      this.$store.dispatch('provincia/getAllProvincia')
-      this.$store.dispatch('distrito/getAllDistrito')
-      this.$store.dispatch('postoAdministrativo/getAllPostoAdministrativo')
       this.show_dialog = false
       this.props = this.localidade
       setTimeout(() => {

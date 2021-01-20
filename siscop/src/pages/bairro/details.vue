@@ -19,38 +19,47 @@
                <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getProvinciaLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ bairro.distrito.provincia.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getDistritoLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ bairro.distrito.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('postoAdministrativo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getPostoAdministrativoLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ bairro.postoAdministrativo.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('localidade') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getLocalidadeLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ bairro.localidade.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
                 </q-card-section>
+                  <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/bairro' " no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
                 <q-card-actions align="right">
                     <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaBairro(bairro)" no-caps />
                     <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeBairro(bairro)" no-caps/>
                 </q-card-actions>
+        </div>
+                  </div>
             </q-card>
  <create-edit-form :show_dialog="show_dialog"
                     :listErrors="listErrors"
@@ -71,7 +80,12 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Provincia from 'src/store/models/provincia/provincia'
+import Distrito from 'src/store/models/distrito/distrito'
+import Pais from 'src/store/models/pais/pais'
+import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdministrativo'
+import Localidade from 'src/store/models/localidade/localidade'
+import Bairro from 'src/store/models/bairro/bairro'
 
 export default {
   name: 'Distrito',
@@ -120,72 +134,48 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('bairro/getBairro', currentRoute.params.id)
+    return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').find(currentRoute.params.id)
   },
   created () {
   },
   mounted () {
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
-    this.$store.dispatch('postoAdministrativo/getAllPostoAdministrativo')
-    this.$store.dispatch('localidade/getAllLocalidade')
   },
   computed: {
     bairro: {
       get () {
-        return this.$store.getters['bairro/bairro']
+        return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').find(this.$route.params.id)
       },
       set (bairro) {
-        this.SET_UPDATE_BAIRRO({ bairro })
         this.$emit('update:bairro', '')
-        this.$store.commit('bairro/SET_UPDATE_BAIRRO', bairro)
+       Bairro.update(bairro)
       }
     },
     allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
-    },
-    allPostoAdministrativos () {
-      return this.$store.getters['postoAdministrativo/allPostoAdministrativo']
-    },
-    allLocalidades () {
-      return this.$store.getters['localidade/allLocalidade']
+      return Provincia.query().with('pais').all()
     },
     allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
+    },
+    allDistritos () {
+      return Distrito.query().with('provincia').all()
+    },
+    allPostoAdministrativos () {
+      return PostoAdministrativo.query().with('distrito.provincia').all()
     },
     allPostoAdministrativosFromDistrito () {
-      return this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.distrito.id === this.distrito.id)
+      return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
+    },
+    allLocalidades () {
+      return Localidade.query().with('distrito.provincia').with('postoAdministrativo').all()
     },
     allLocalidadeFromDistritoOrPostoAdministrativo () {
-      if (this.postoAdministrativo != null) { return this.allLocalidades.filter(localidade => localidade.postoAdministrativo.id === this.postoAdministrativo.id) } else { return this.allLocalidades.filter(localidade => localidade.distrito.id === this.distrito.id) }
-    },
-    getDistritoLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.bairro.distrito.id)
-      if (localDistrito.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localDistrito[0] }
-    },
-    getProvinciaLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.bairro.distrito.id)
-      const localProvincia = this.allProvincias.filter(provincia => provincia.id === localDistrito[0].provincia.id)
-      if (localProvincia.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincia[0] }
-    },
-    getPostoAdministrativoLocal () {
-      const localPostoAdministrativo = this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.id === this.bairro.postoAdministrativo.id)
-      if (localPostoAdministrativo.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localPostoAdministrativo[0] }
-    },
-    getLocalidadeLocal () {
-      const localLocalidade = this.allLocalidades.filter(localidade => localidade.id === this.bairro.localidade.id)
-      if (localLocalidade.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localLocalidade[0] }
+      if (this.postoAdministrativo != null) { return Localidade.query().with('postoAdministrativo').where('postoAdministrativo_id', this.postoAdministrativo.id).get() } else { return Localidade.query().with('distrito').where('distrito_id', this.distrito.id).get() }
     }
   },
   components: {
     'create-edit-form': require('components/bairro/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('bairro', ['getAllBairro', 'getBairro', 'addNewBairro', 'updateBairro', 'deleteBairro']),
-    ...mapMutations('bairro', ['SET_UPDATE_BAIRRO']),
     removeBairro (bairro) {
       this.$q.dialog({
         title: 'Confirmação',
@@ -204,7 +194,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + bairro.designacao + ' ]'
         })
-        this.deleteBairro(bairro)
+        Bairro.api().delete("/bairro/"+bairro.id)
         this.$router.go(-1)
       })
     },
@@ -214,10 +204,13 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.localBairro.distrito.id = this.distrito.id
-      this.localBairro.postoAdministrativo.id = this.postoAdministrativo.id
-      this.localBairro.localidade.id = this.localidade.id
-      this.updateBairro(this.localBairro).then(resp => {
+      this.localBairro.distrito = this.distrito
+      this.localBairro.postoAdministrativo = this.postoAdministrativo
+      this.localBairro.localidade = this.localidade
+      this.localBairro.distrito_id = this.distrito.id
+      this.localBairro.postoAdministrativo_id = this.postoAdministrativo.id
+      this.localBairro.localidade_id = this.localidade.id
+     Bairro.api().patch("/bairro/"+this.localBairro.id,this.localBairro).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -248,21 +241,14 @@ export default {
     },
     editaBairro (bairro) {
       this.editedIndex = 0
-      this.bairro = Object.assign({}, bairro)
       this.localBairro = Object.assign({}, bairro)
-      this.localidade = this.allLocalidades.filter(localidade => localidade.id === bairro.localidade.id)[0]
-      this.postoAdministrativo = this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.id === bairro.postoAdministrativo.id)[0]
-      this.distrito = this.allDistritos.filter(distrito => distrito.id === bairro.distrito.id)[0]
-      this.provincia = this.allProvincias.filter(provincia => provincia.id === this.distrito.provincia.id)[0]
+      this.localidade = Localidade.query().find(this.localBairro.localidade_id)
+      this.postoAdministrativo = PostoAdministrativo.query().find(this.localBairro.postoAdministrativo_id)
+      this.distrito = Distrito.query().find(this.localBairro.distrito_id)
+      this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
     close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('bairro/getBairro', this.$route.params.id)
-      }
-      this.$store.dispatch('localidade/getAllLocalidade')
-      this.$store.dispatch('distrito/getAllDistrito')
-      this.$store.dispatch('postoAdministrativo/getAllPostoAdministrativo')
       this.show_dialog = false
       this.props = this.bairro
       setTimeout(() => {
@@ -280,7 +266,7 @@ export default {
     messages: {
       pt: {
         title: 'Detalhes do Bairro',
-        basicInformation: 'Informacção do Bairro',
+        basicInformation: 'Informação do Bairro',
         designacao: 'Designação',
         provincia: 'Província',
         distrito: 'Distrito',
@@ -291,7 +277,7 @@ export default {
       },
       en: {
         title: 'Detalhes do Bairro',
-        basicInformation: 'Informacção do Bairro',
+        basicInformation: 'Informação do Bairro',
         designacao: 'Designação',
         provincia: 'Província',
         distrito: 'Distrito',

@@ -114,10 +114,11 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return this.getAllDistrito()
+    return this.allDistritos()
   },
   mounted () {
     this.getAllProvincia()
+    this.getAllDistrito()
   },
   components: {
     'create-edit-form': require('components/distrito/createEditForm.vue').default
@@ -218,6 +219,7 @@ export default {
       this.show_dialog = false
       this.distrito = {}
       this.props = this.distrito
+       this.listErrors = []
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)
@@ -252,7 +254,7 @@ export default {
       this.show_dialog = true
     },
     getAllDistrito () {
-      Distrito.api().get('/distrito').then(resp => {
+      Distrito.api().get('/distrito?offset=0&max=1000000').then(resp => {
         console.log(resp)
       }).catch(error => {
         console.log(error)
@@ -270,7 +272,7 @@ export default {
       })
     },
     getAllProvincia () {
-      return Provincia.api().get('/provincia')
+      return Provincia.api().get('/provincia?offset=0&max=1000000')
     },
     filterFn (val, update, abort) {
       const stringOptions = this.allProvincias

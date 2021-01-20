@@ -24,27 +24,27 @@
               </q-popup-edit>
             </q-td>
              <q-td key="provincia" :props="props">
-              <div class="text-pre-wrap">{{  getProvincia ( getDistrito (props.row.distrito.id ) ).designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito.id">
-                <q-input v-model="props.row.distrito.id" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{  props.row.distrito.provincia.designacao }}</div>
+              <q-popup-edit v-model="props.row.distrito.provincia.designacao">
+                <q-input v-model="props.row.distrito.provincia.designacao" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="distrito" :props="props">
-              <div class="text-pre-wrap">{{  getDistrito (props.row.distrito.id ).designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito.id">
-                <q-input v-model="props.row.distrito.id" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
+              <q-popup-edit v-model="props.row.distrito.designacao">
+                <q-input v-model="props.row.distrito.designacao" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="postoAdministrativo" :props="props">
-              <div class="text-pre-wrap">{{  getPostoAdministrativo (props.row.postoAdministrativo ).designacao }}</div>
-              <q-popup-edit v-model="props.row.postoAdministrativo">
-                <q-input v-model="props.row.postoAdministrativo" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{ props.row.postoAdministrativo.designacao }}</div>
+              <q-popup-edit v-model="props.row.postoAdministrativo.designacao">
+                <q-input v-model="props.row.postoAdministrativo.designacao" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="localidade" :props="props">
-              <div class="text-pre-wrap">{{  getLocalidade (props.row.localidade ).designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito">
-                <q-input v-model="props.row.distrito" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{ props.row.localidade.designacao }}</div>
+              <q-popup-edit v-model="props.row.localidade.designacao">
+                <q-input v-model="props.row.localidade.designacao" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="actions" :props="props">
@@ -78,8 +78,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import { exportFile, QSpinnerBall } from 'quasar'
+import Provincia from 'src/store/models/provincia/provincia'
+import Distrito from 'src/store/models/distrito/distrito'
+import Pais from 'src/store/models/pais/pais'
+import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdministrativo'
+import Localidade from 'src/store/models/localidade/localidade'
+import Bairro from 'src/store/models/bairro/bairro'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -145,58 +150,75 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('bairro/getAllBairro')
+    return this.getAllBairro()
   },
   mounted () {
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
-    this.$store.dispatch('postoAdministrativo/getAllPostoAdministrativo')
-    this.$store.dispatch('localidade/getAllLocalidade')
+   this.getAllPais()
+   this.getAllPostoAdministrativo()
+   this.getAllProvincia()
+   this.getAllDistrito()
+   this.getAllLocalidade()
+   this.getAllBairro()
   },
   components: {
     'create-edit-form': require('components/bairro/createEditForm.vue').default
   },
+   created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
+  },
   metaInfo: {
   },
   computed: {
-    allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
-    },
-    allPostoAdministrativos () {
-      return this.$store.getters['postoAdministrativo/allPostoAdministrativo']
-    },
-    allLocalidades () {
-      return this.$store.getters['localidade/allLocalidade']
+  allProvincias () {
+      return Provincia.query().with('pais').all()
     },
     allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
+    },
+    allDistritos () {
+      return Distrito.query().with('provincia').all()
+    },
+    allPostoAdministrativos () {
+      return PostoAdministrativo.query().with('distrito.provincia').all()
     },
     allPostoAdministrativosFromDistrito () {
-      return this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.distrito.id === this.distrito.id)
+      return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
+    },
+    allLocalidades () {
+      return Localidade.query().with('distrito.provincia').with('postoAdministrativo').all()
     },
     allLocalidadeFromDistritoOrPostoAdministrativo () {
-      if (this.postoAdministrativo != null) { return this.allLocalidades.filter(localidade => localidade.postoAdministrativo.id === this.postoAdministrativo.id) } else { return this.allLocalidades.filter(localidade => localidade.distrito.id === this.distrito.id) }
+      if (this.postoAdministrativo != null) { return Localidade.query().with('postoAdministrativo').where('postoAdministrativo_id', this.postoAdministrativo.id).get() } else { return Localidade.query().with('distrito').where('distrito_id', this.distrito.id).get() }
     },
     allBairros () {
-      return this.$store.getters['bairro/allBairro']
+      return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').all()
     }
   },
   methods: {
-    ...mapActions('bairro', ['getAllBairro', 'addNewBairro', 'updateBairro', 'deleteBairro']),
     createBairro () {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.bairro.distrito.id = this.distrito.id
-      this.bairro.postoAdministrativo.id = this.postoAdministrativo.id
-      this.bairro.localidade.id = this.localidade.id
+      this.bairro.distrito = this.distrito
+      this.bairro.postoAdministrativo = this.postoAdministrativo
+      this.bairro.localidade = this.localidade
+      this.bairro.distrito_id = this.distrito.id
+      this.bairro.postoAdministrativo_id = this.postoAdministrativo.id
+      this.bairro.localidade_id = this.localidade.id
       if (this.editedIndex > -1) {
-        this.updateBairro(this.bairro).then(resp => {
+      Bairro.api().patch("/bairro/"+this.bairro.id,this.bairro).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -224,8 +246,7 @@ export default {
           }
         })
       } else {
-        this.addNewBairro(this.bairro).then(resp => {
-          console.log(resp)
+       Bairro.api().post("/bairro/",this.bairro).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -255,12 +276,18 @@ export default {
       }
     },
     close () {
-      this.$store.dispatch('bairro/getAllBairro')
-      this.$store.dispatch('localidade/getAllLocalidade')
-      this.$store.dispatch('distrito/getAllDistrito')
-      this.$store.dispatch('postoAdministrativo/getAllPostoAdministrativo')
+      this.getAllBairro()
+      this.getAllLocalidade()
+      this.getAllPostoAdministrativo()
+      this.getAllPais()
+      this.getAllProvincia()
+      this.getAllDistrito()
       this.show_dialog = false
       this.bairro = {}
+      this.localidade = {}
+      this.distrito = {}
+      this.provincia = {}
+      this.postoAdministrativo = {}
       this.props = this.bairro
       setTimeout(() => {
         this.editedIndex = -1
@@ -284,33 +311,39 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + bairro.designacao + ' ]'
         })
-        this.deleteBairro(bairro)
+        Bairro.api().delete("/bairro/"+bairro.id)
       })
     },
     editaBairro (bairro) {
-      this.editedIndex = this.allBairros.indexOf(bairro)
+      this.editedIndex = 0
       this.bairro = Object.assign({}, bairro)
-      this.localidade = this.getLocalidade(bairro.localidade.id)
-      this.postoAdministrativo = this.getPostoAdministrativo(bairro.postoAdministrativo.id)
-      this.distrito = this.getDistrito(bairro.distrito.id)
-      this.provincia = this.getProvincia(this.distrito)
+      this.localidade = Localidade.query().find(bairro.localidade_id)
+      this.postoAdministrativo = PostoAdministrativo.query().find(bairro.postoAdministrativo_id)
+      this.distrito = Distrito.query().find(bairro.distrito_id)
+      this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    getProvincia (distrito) {
-      const lacalProvinncias = this.allProvincias.filter(provincia => provincia.id === distrito.provincia.id)
-      if (lacalProvinncias.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return lacalProvinncias[0] }
+    getAllBairro(){
+      Bairro.api().get('/bairro?offset=0&max=1000000')
     },
-    getDistrito (id) {
-      const lacalDistritos = this.allDistritos.filter(distrito => distrito.id === id)
-      if (lacalDistritos.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return lacalDistritos[0] }
+    getAllLocalidade(){
+      Localidade.api().get('/localidade?offset=0&max=1000000')
     },
-    getPostoAdministrativo (id) {
-      const lacalPostoAdministrativo = this.allPostoAdministrativos.filter(postoAdministrativo => postoAdministrativo.id === id)
-      if (lacalPostoAdministrativo.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return lacalPostoAdministrativo[0] }
+    getAllPais () {
+      Pais.api().get('/pais?offset=0&max=1000000')
     },
-    getLocalidade (id) {
-      const lacalLocalidade = this.allLocalidades.filter(localidade => localidade.id === id)
-      if (lacalLocalidade.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return lacalLocalidade[0] }
+    getAllProvincia () {
+      return Provincia.api().get('/provincia?offset=0&max=1000000', { 
+        persistOptions: {
+          insert: ['pais']
+        }
+    })
+    },
+    getAllDistrito () {
+     Distrito.api().get('/distrito?offset=0&max=1000000')
+    },
+    getAllPostoAdministrativo () {
+       PostoAdministrativo.api().get('/postoAdministrativo?offset=0&max=1000000')
     },
     abortFilterFn () {
       // console.log('delayed filter aborted')

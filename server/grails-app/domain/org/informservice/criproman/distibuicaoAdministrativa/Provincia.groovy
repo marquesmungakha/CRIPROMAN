@@ -13,7 +13,7 @@ class Provincia implements Auditable {
 
     static constraints = {
         codigo(maxSize: 20)
-        designacao(blank: false, maxSize: 200, unique: true)
+        designacao(blank: false, maxSize: 100, unique: true)
     }
 
     static belongsTo = [pais: Pais]

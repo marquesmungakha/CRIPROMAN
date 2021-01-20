@@ -132,10 +132,10 @@ export default {
     // Example:
     // return store.dispatch('pais/getAllPais', currentRoute.params.id)
 
-    return this.listAllPais()
+    return this.getAllPais()
   },
   mounted() {
-    this.listAllPais()
+    this.getAllPais()
   },
   components: {
     'create-edit-form': require('components/pais/createEditForm.vue').default
@@ -257,8 +257,8 @@ export default {
       this.pais = Object.assign({}, pais)
       this.show_dialog = true
     },
-    listAllPais() {
-      Pais.api().get('/pais').then(resp => {
+    getAllPais() {
+      Pais.api().get('/pais?offset=0&max=1000000').then(resp => {
         console.log(resp)
       }).catch(error => {
         console.log(error)

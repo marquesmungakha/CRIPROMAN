@@ -23,8 +23,6 @@ class PostoAdministrativo implements Auditable {
 
     static mapping = {
         version false
-//        localidades cascade: 'delete-orphan'
-//        bairros cascade: 'delete-orphan'
     }
 
     String toString() {

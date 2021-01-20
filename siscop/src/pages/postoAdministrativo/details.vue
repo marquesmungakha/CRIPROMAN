@@ -25,24 +25,33 @@
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getProvinciaLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ postoAdministrativo.distrito.provincia.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getDistritoLocal.designacao }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ postoAdministrativo.distrito.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
                 </q-card-section>
+                  <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/postoAdministrativo' " no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
                 <q-card-actions align="right">
                     <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaPostoAdministrativo(postoAdministrativo)" no-caps />
                     <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removePostoAdministrativo(postoAdministrativo)" no-caps/>
                 </q-card-actions>
+        </div>
+                  </div>
             </q-card>
 <create-edit-form :show_dialog="show_dialog"
                     :listErrors="listErrors"
@@ -60,7 +69,10 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdministrativo'
+import Provincia from 'src/store/models/provincia/provincia'
+import Distrito from 'src/store/models/distrito/distrito'
+import Pais from 'src/store/models/pais/pais'
 
 export default {
   name: 'Distrito',
@@ -100,50 +112,36 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('postoAdministrativo/getPostoAdministrativo', currentRoute.params.id)
+    return PostoAdministrativo.query().with('distrito.provincia').find(currentRoute.params.id)
   },
   created () {
   },
   mounted () {
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
   },
   computed: {
     postoAdministrativo: {
       get () {
-        return this.$store.getters['postoAdministrativo/postoAdministrativo']
+        return PostoAdministrativo.query().with('distrito.provincia').find(this.$route.params.id)
       },
       set (postoAdministrativo) {
-        this.SET_UPDATE_POSTOADMINISTRATIVO({ postoAdministrativo })
         this.$emit('update:postoAdministrativo', '')
-        this.$store.commit('postoAdministrativo/SET_UPDATE_POSTOADMINISTRATIVO', postoAdministrativo)
+        PostoAdministrativo.update(postoAdministrativo)
       }
     },
     allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
+      return Provincia.query().with('pais').all()
     },
     allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    getDistritoLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.postoAdministrativo.distrito.id)
-      if (localDistrito.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localDistrito[0] }
-    },
-    getProvinciaLocal () {
-      const localDistrito = this.allDistritos.filter(distrito => distrito.id === this.postoAdministrativo.distrito.id)[0]
-      const localProvincia = this.allProvincias.filter(provincia => provincia.id === localDistrito.provincia.id)
-      if (localProvincia.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincia[0] }
+    allDistritos () {
+      return Distrito.query().all()
     }
   },
   components: {
     'create-edit-form': require('components/postoAdministrativo/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('postoAdministrativo', ['getAllPostoAdministrativo', 'getPostoAdministrativo', 'addNewPostoAdministrativo', 'updatePostoAdministrativo', 'deletePostoAdministrativo']),
-    ...mapMutations('postoAdministrativo', ['SET_UPDATE_POSTOADMINISTRATIVO']),
     removePostoAdministrativo (postoAdministrativo) {
       this.$q.dialog({
         title: 'Confirmação',
@@ -162,7 +160,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + postoAdministrativo.designacao + ' ]'
         })
-        this.deletePostoAdministrativo(postoAdministrativo)
+         PostoAdministrativo.api().delete("/postoAdministrativo/"+postoAdministrativo.id)
         this.$router.go(-1)
       })
     },
@@ -172,8 +170,11 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.localPostoAdministrativo.distrito.id = this.distrito.id
-      this.updatePostoAdministrativo(this.localPostoAdministrativo).then(resp => {
+      this.localPostoAdministrativo.provincia =  this.provincia
+      this.localPostoAdministrativo.distrito = this.distrito
+      this.localPostoAdministrativo.provincia_id = this.provincia.id
+      this.localPostoAdministrativo.distrito_id = this.distrito.id
+      PostoAdministrativo.api().patch("/postoAdministrativo/"+this.localPostoAdministrativo.id,this.localPostoAdministrativo).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -184,7 +185,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.postoAdministrativo.designacao + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localPostoAdministrativo.designacao + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -206,16 +207,11 @@ export default {
       this.editedIndex = 0
       this.postoAdministrativo = Object.assign({}, postoAdministrativo)
       this.localPostoAdministrativo = Object.assign({}, postoAdministrativo)
-      this.distrito = this.allDistritos.filter(distrito => distrito.id === postoAdministrativo.distrito.id)[0]
-      this.provincia = this.allProvincias.filter(provincia => provincia.id === this.distrito.provincia.id)[0]
+      this.distrito = Distrito.query().find(postoAdministrativo.distrito.id)
+      this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
     close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('postoAdministrativo/getPostoAdministrativo', this.$route.params.id)
-      }
-      this.$store.dispatch('provincia/getAllProvincia')
-      this.$store.dispatch('distrito/getAllDistrito')
       this.show_dialog = false
       this.props = this.postoAdministrativo
       setTimeout(() => {
