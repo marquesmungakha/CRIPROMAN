@@ -1,48 +1,57 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ tipoMeio.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaTipoMeio(tipoMeio)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeTipoMeio(tipoMeio)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/tipoMeio' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaTipoMeio(tipoMeio)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removeTipoMeio(tipoMeio)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localTipoMeio.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createTipoMeio="createTipoMeio"
-                    :removeTipoMeio="removeTipoMeio"/>
+    <create-edit-form :close="close"
+                      :createTipoMeio="createTipoMeio"
+                      :designacao.sync="localTipoMeio.designacao"
+                      :listErrors="listErrors"
+                      :removeTipoMeio="removeTipoMeio"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import TipoMeio from 'src/store/models/tipoMeio/tipoMeio'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -54,21 +63,20 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('tipoMeio/getTipoMeio', currentRoute.params.id)
+    return TipoMeio.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     tipoMeio: {
-      get () {
-        return this.$store.getters['tipoMeio/tipoMeio']
+      get() {
+        return TipoMeio.query().find(this.$route.params.id)
       },
-      set (tipoMeio) {
-        this.SET_UPDATE_TIPOMEIO({ tipoMeio })
+      set(tipoMeio) {
         this.$emit('update:tipoMeio', '')
-        this.$store.commit('tipoMeio/SET_UPDATE_TIPOMEIO', tipoMeio)
+        TipoMeio.update(tipoMeio)
       }
 
     }
@@ -77,9 +85,7 @@ export default {
     'create-edit-form': require('components/tipoMeio/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('tipoMeio', ['getAllTipoMeio', 'getTipoMeio', 'addNewTipoMeio', 'updateTipoMeio', 'deleteTipoMeio']),
-    ...mapMutations('tipoMeio', ['SET_UPDATE_TIPOMEIO']),
-    removeTipoMeio (tipoMeio) {
+    removeTipoMeio(tipoMeio) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -97,18 +103,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + tipoMeio.designacao + ' ]'
         })
-        this.deleteTipoMeio(tipoMeio)
+        TipoMeio.api().delete("/tipoMeio/" + tipoMeio.id)
         this.$router.go(-1)
       })
     },
-    createTipoMeio () {
+    createTipoMeio() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.tipoMeio = this.localTipoMeio
-      this.updateTipoMeio(this.localTipoMeio).then(resp => {
+      TipoMeio.api().patch("/tipoMeio/" + this.localTipoMeio.id, this.localTipoMeio).then(resp => {
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -137,15 +143,12 @@ export default {
         }
       })
     },
-    editaTipoMeio (tipoMeio) {
+    editaTipoMeio(tipoMeio) {
       this.localTipoMeio = Object.assign({}, tipoMeio)
       this.tipoMeio = Object.assign({}, tipoMeio)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('tipoMeio/getTipoMeio', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.tipoMeio = {}
       this.props = this.tipoMeio
@@ -154,7 +157,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

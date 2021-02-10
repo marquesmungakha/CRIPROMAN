@@ -4,14 +4,15 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.distibuicaoAdministrativa.Pais
+import org.informservice.criproman.distibuicaoAdministrativa.Provincia
 
 // import grails.plugins.orm.auditable.Auditable
 
-import org.informservice.criproman.distibuicaoAdministrativa.Provincia
 import org.informservice.criproman.profissao.Profissao
 import org.informservice.criproman.tipoDocumentoIdentificacao.TipoDocumentoIdentificacao
 
 @Secured('ROLE_ADMIN')
+@Resource(uri='/api/individuo')
 class Individuo implements Auditable {
 
     String nome
@@ -31,6 +32,7 @@ class Individuo implements Auditable {
     Date documentoValidade
     Profissao profissao
     String ocupacao
+    byte[] fotografia
     String uuid = UUID.randomUUID().toString()
 
     static mapping = {
@@ -41,7 +43,6 @@ class Individuo implements Auditable {
         uuid nullable: true
         provincia(nullable: false, blank: false)
         numDocumentoIndentificacao(nullable: false, blank: false)
-        tipoDocumento(inList: ["Bilhete de Identidade", "Passaporte", "Carta de Condução", "Cartão de Eleitor", "Cédula Pessoal"])
         documentoValidade(nullable: true, blank: true, validator: { documentoValidade, urc ->
             return ((documentoValidade > new Date()))
         })
@@ -61,6 +62,7 @@ class Individuo implements Auditable {
             return ((datanascimento <= new Date()))
         })
         localNascimento(nullable: true)
+        fotografia(nullable: true)
     }
 
     String toString() {

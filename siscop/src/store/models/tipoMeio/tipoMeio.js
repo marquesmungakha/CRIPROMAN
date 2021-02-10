@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import Marca from "../marca/marca";
 
 export default class TipoMeio extends Model {
@@ -11,7 +11,7 @@ export default class TipoMeio extends Model {
       id: this.attr(null),
       designacao: this.attr(''),
       // Relationships
-      marcas: this.hasMany(Marca,"tipoMeio_id")
+      marcas: this.hasMany(Marca, "tipoMeio_id")
     }
   }
 

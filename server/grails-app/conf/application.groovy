@@ -1,19 +1,3 @@
-//grails.plugin.springsecurity.filterChain.chainMap = [
-//        //Stateless chain
-////        [
-////                pattern: '/**',
-////                filters: 'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'
-////        ],
-//        [
-//                pattern: '/api/**',
-//                filters: 'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter'
-//        ],
-//
-//
-//        //Traditional, stateful chain
-//        [pattern: '/**', filters: 'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']
-//]
-
 // Added by the Spring Security Core plugin:
 grails.plugin.springsecurity.password.algorithm = 'bcrypt'
 
@@ -66,12 +50,11 @@ grails.plugin.springsecurity.password.algorithm = 'bcrypt'
 // Added by the Audit-Logging plugin:
 grails.plugin.auditLog.auditDomainClassName = 'org.informservice.criproman.seguranca.Auditoria'
 
-
-//grails.plugin.springsecurity.rest.token.storage.useJwt=true
-//grails.plugin.springsecurity.rest.token.storage.jwt.useSignedJwt=true
-//grails.plugin.springsecurity.rest.token.storage.jwt.useEncryptedJwt = true
+grails.plugin.springsecurity.rest.token.storage.useJwt=true
+grails.plugin.springsecurity.rest.token.storage.jwt.useSignedJwt=true
+grails.plugin.springsecurity.rest.token.storage.jwt.useEncryptedJwt = true
 grails.plugin.springsecurity.rest.token.storage.jwt.secret = 'edK2l1P0D4770W56B6Rckf1TErImPWcu'
-grails.plugin.springsecurity.rest.token.storage.jwt.expiration = 3600
+//grails.plugin.springsecurity.rest.token.storage.jwt.expiration = 3600
 //grails.plugin.springsecurity.rest.token.storage.useGorm = true
 grails.plugin.springsecurity.rest.token.storage.gorm.tokenDomainClassName = 'org.informservice.criproman.seguranca.AuthenticationToken'
 
@@ -81,7 +64,7 @@ grails.plugin.springsecurity.rest.token.validation.headerName = 'X-Auth-Token'
 
 grails.plugin.springsecurity.logout.postOnly = false
 
-//grails.plugin.springsecurity.rest.token.rendering.usernamePropertyName='id'
+grails.plugin.springsecurity.rest.token.rendering.usernamePropertyName='id'
 
 /*
 //gorm

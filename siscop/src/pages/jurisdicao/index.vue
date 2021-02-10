@@ -1,55 +1,57 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Famílias Delitivas" :data="allJurisdicoes" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allJurisdicoes" :filter="filter" binary-state-sort row-key="name"
+             title="Famílias Delitivas">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/jurisdicao/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click.stop="editaJurisdicao(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click.stop="removeJurisdicao(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="jurisdicao.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createJurisdicao="createJurisdicao"
-                    :removeJurisdicao="removeJurisdicao"/>
+        <q-tr :props="props">
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/jurisdicao/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaJurisdicao(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click.stop="removeJurisdicao(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :createJurisdicao="createJurisdicao"
+                      :designacao.sync="jurisdicao.designacao"
+                      :listErrors="listErrors"
+                      :removeJurisdicao="removeJurisdicao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { exportFile, QSpinnerBall } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
 import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -58,7 +60,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Jurisdicao',
-  data () {
+  data() {
     return {
       listErrors: [],
       jurisdicao_details_dialog: false,
@@ -71,13 +73,20 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'designacao', align: 'left', label: 'Designacao', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designacao',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -91,13 +100,13 @@ export default {
     // Example:
     return this.getAllJurisdicao()
   },
-  mounted () {
+  mounted() {
     this.getAllJurisdicao()
   },
   components: {
     'create-edit-form': require('components/jurisdicao/createEditForm.vue').default
   },
-   created() {
+  created() {
     this.$q.loading.show({
       message: "Carregando ...",
       spinnerColor: "grey-4",
@@ -110,22 +119,21 @@ export default {
     }, 600)
 
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allJurisdicoes () {
+    allJurisdicoes() {
       return ClasseJudicial.query().all()
     }
   },
   methods: {
-    createJurisdicao () {
+    createJurisdicao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       if (this.editedIndex > -1) {
-         ClasseJudicial.api().patch("/classeJudicial/"+this.jurisdicao.id,this.jurisdicao).then(resp => {
+        ClasseJudicial.api().patch("/classeJudicial/" + this.jurisdicao.id, this.jurisdicao).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -154,7 +162,7 @@ export default {
           }
         })
       } else {
-        ClasseJudicial.api().post("/classeJudicial/",this.jurisdicao).then(resp => {
+        ClasseJudicial.api().post("/classeJudicial/", this.jurisdicao).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -183,7 +191,7 @@ export default {
         })
       }
     },
-    close () {
+    close() {
       this.getAllJurisdicao()
       this.show_dialog = false
       this.jurisdicao = {}
@@ -193,7 +201,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeJurisdicao (jurisdicao) {
+    removeJurisdicao(jurisdicao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -211,18 +219,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + jurisdicao.designacao + ' ]'
         })
-       ClasseJudicial.api().delete("/classeJudicial/"+jurisdicao.id)
+        ClasseJudicial.api().delete("/classeJudicial/" + jurisdicao.id)
       })
     },
-    editaJurisdicao (jurisdicao) {
+    editaJurisdicao(jurisdicao) {
       this.editedIndex = 0
       this.jurisdicao = Object.assign({}, jurisdicao)
       this.show_dialog = true
     },
-     getAllJurisdicao(){
+    getAllJurisdicao() {
       ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

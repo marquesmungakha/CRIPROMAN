@@ -1,5 +1,4 @@
-
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import Orgao from "src/store/models/orgao/orgao";
 import Cargo from "src/store/models/cargo/cargo";
 
@@ -20,9 +19,9 @@ export default class ResponsavelOrgao extends Model {
       cargo_id: this.attr(''),
 
       // Relationshiops
-      orgao: this.belongsTo(Orgao,'orgao_id'),
-      cargo: this.belongsTo(Cargo,'cargo_id')
-     
+      orgao: this.belongsTo(Orgao, 'orgao_id'),
+      cargo: this.belongsTo(Cargo, 'cargo_id')
+
     }
   }
 

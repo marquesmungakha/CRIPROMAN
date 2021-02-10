@@ -1,5 +1,7 @@
 <template>
     <q-list>
+    <div class="row">
+        <div class="col col-md-8">
         <q-item>
             <q-item-section>
                 <q-input :value="nome"
@@ -45,6 +47,27 @@
           </q-input>
             </q-item-section>
         </q-item>
+         </div>
+        <div class="col-6 col-md-4">
+          <div class="text-overline text-center">
+            <q-avatar size="205px" rounded>
+              <img :src="image">
+            </q-avatar>
+            </div>
+              <q-item>
+                <q-item-section>
+                  <q-input type="file" filled  :value="fotografia" @change="onFileChange" stack-label label="Fotografia" @input="$emit('update:fotografia', $event)" >
+                    <template v-slot:prepend>
+                      <q-icon name="attach_file" @click.stop />
+                    </template>
+                    <template v-slot:append>
+                      <q-icon name="close" @click.stop="fotografia = null" class="cursor-pointer" />
+                    </template>
+                  </q-input>
+                </q-item-section>
+          </q-item>
+        </div>
+      </div>
         <q-item>
             <q-item-section>
             <q-select
@@ -277,6 +300,7 @@ export default {
     'apelido',
     'telemovel1',
     'localNascimento',
+    'fotografia',
     'morada',
     'pais',
     'paises',
@@ -289,6 +313,9 @@ export default {
     'close',
     'submitting',
     'createInspector',
-    'removeInspector']
+    'removeInspector',
+    'onFileChange',
+    'image'
+    ]
 }
 </script>

@@ -1,69 +1,70 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Crime" :data="allCrimes" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allCrimes" :filter="filter" binary-state-sort row-key="name" title="Crime">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="codigo" :props="props">
-              {{ props.row.codigo }}
-              <q-popup-edit v-model="props.row.codigo">
-                <q-input v-model="props.row.codigo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="classeJudicial" :props="props">
-              <div class="text-pre-wrap">{{  getJurisdicao (props.row.classeJudicial.id ).designacao }}</div>
-              <q-popup-edit v-model="props.row.classeJudicial.id">
-                <q-input v-model="props.row.classeJudicial.id" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/crime/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaCrime(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeCrime(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="crime.designacao"
-                    :classeJudicial.sync="classeJudicial"
-                    :jurisdicoes="allJurisdicoes"
-                    :submitting="submitting"
-                    :close="close"
-                    :createCrime="createCrime"
-                    :removeCrime="removeCrime"/>
+        <q-tr :props="props">
+          <q-td key="codigo" :props="props">
+            {{ props.row.codigo }}
+            <q-popup-edit v-model="props.row.codigo">
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="classeJudicial" :props="props">
+            <div class="text-pre-wrap">{{ props.row.classeJudicial.designacao }}</div>
+            <q-popup-edit v-model="props.row.classeJudicial.designacao">
+              <q-input v-model="props.row.classeJudicial.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/crime/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaCrime(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeCrime(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :classeJudicial.sync="classeJudicial"
+                      :close="close"
+                      :createCrime="createCrime"
+                      :designacao.sync="crime.designacao"
+                      :jurisdicoes="allJurisdicoes"
+                      :listErrors="listErrors"
+                      :removeCrime="removeCrime"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
+import Crime from 'src/store/models/crime/crime'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -72,7 +73,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Crime',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -90,15 +91,29 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'classeJudicial', align: 'left', label: 'Família Delitiva', field: row => row.classeJudicial.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'classeJudicial',
+          align: 'left',
+          label: 'Família Delitiva',
+          field: row => row.classeJudicial.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -109,35 +124,48 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('crime/getAllCrime')
+    return this.getAllCrime()
   },
-  mounted () {
-    this.$store.dispatch('jurisdicao/getAllJurisdicao')
+  mounted() {
+    this.getAllCrime()
+    this.getAllJurisdicao()
   },
   components: {
     'create-edit-form': require('components/crime/createEditForm.vue').default
   },
-  metaInfo: {
+  created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
+  metaInfo: {},
   computed: {
-    allJurisdicoes () {
-      return this.$store.getters['jurisdicao/allJurisdicao']
+    allJurisdicoes() {
+      return ClasseJudicial.query().all()
     },
-    allCrimes () {
-      return this.$store.getters['crime/allCrime']
+    allCrimes() {
+      return Crime.query().with('classeJudicial').all()
     }
   },
   methods: {
-    ...mapActions('crime', ['getAllCrime', 'addNewCrime', 'updateCrime', 'deleteCrime']),
-    createCrime () {
+    createCrime() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.crime.classeJudicial.id = this.classeJudicial.id
+      this.crime.classeJudicial_id = this.classeJudicial.id
+      this.crime.classeJudicial = this.classeJudicial
       if (this.editedIndex > -1) {
-        this.updateCrime(this.crime).then(resp => {
+        Crime.api().patch("/crime/" + this.crime.id, this.crime).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -165,7 +193,7 @@ export default {
           }
         })
       } else {
-        this.addNewCrime(this.crime).then(resp => {
+        Crime.api().post("/crime/", this.crime).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -195,16 +223,16 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('crime/getAllCrime')
+    close() {
       this.show_dialog = false
       this.crime = {}
+      this.classeJudicial = {}
       this.props = this.crime
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)
     },
-    removeCrime (crime) {
+    removeCrime(crime) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -222,19 +250,22 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + crime.designacao + ' ]'
         })
-        this.deleteCrime(crime)
+        Crime.api().delete("/crime/" + crime.id)
       })
     },
-    editaCrime (crime) {
-      this.editedIndex = this.allCrimes.indexOf(crime)
+    editaCrime(crime) {
+      this.editedIndex = 0
       this.crime = Object.assign({}, crime)
-      this.classeJudicial = this.allJurisdicoes.filter(classeJudicial => classeJudicial.id === crime.classeJudicial.id)[0]
+      this.classeJudicial = ClasseJudicial.find(crime.classeJudicial_id)
       this.show_dialog = true
     },
-    getJurisdicao (id) {
-      if (this.allJurisdicoes.filter(classeJudicial => classeJudicial.id === id).length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return this.allJurisdicoes.filter(classeJudicial => classeJudicial.id === id)[0] }
+    getAllCrime() {
+      Crime.api().get('/crime?offset=0&max=1000000')
     },
-    filterFn (val, update, abort) {
+    getAllJurisdicao() {
+      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+    },
+    filterFn(val, update, abort) {
       const stringOptions = this.allJurisdicoes
       if (val === '') {
         update(() => {
@@ -250,18 +281,18 @@ export default {
             .map(classeJudicial => classeJudicial)
             .filter(classeJudicial => {
               return classeJudicial &&
-                   classeJudicial.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+                classeJudicial.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
             })
         })
       }
     },
-    abortFilterFn () {
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    setModel (val) {
+    setModel(val) {
       this.crime.classeJudicial = val
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

@@ -1,119 +1,163 @@
 <template>
   <q-page>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col">
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ denuncia.numero }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                </div>
-                 <div class="col">
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('dataAbertura') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ denuncia.dataAbertura }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                </div>
-              </div>
-                  <q-separator/>
-                 <div class="row">
-                 <div class="col">
-                    <q-item class="full-width">
-                      <q-item-section>
-                        <q-item-label lines="1" caption >{{ $t('descricao') }}</q-item-label>
-                        <q-item-label class="text-grey-9">{{ denuncia.descricao }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                 </div>
-                  <div class="col">
-                    <q-item class="full-width">
-                      <q-item-section>
-                        <q-item-label lines="1" caption >{{ $t('procedimentoCriminal') }}</q-item-label>
-                        <q-item-label class="text-grey-9">{{ denuncia.procedimentoCriminal }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </div>
-                 </div>
-                <q-separator/>
-                <div class="row">
-                 <div class="col">
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('inspector') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getInspector.numero }} - {{ getInspector.nome }} {{ getInspector.apelido }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                 </div>
-                </div>
-                <q-separator/>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaDenuncia(denuncia)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeDenuncia(denuncia)" no-caps/>
-                </q-card-actions>
-            </q-card>
-            <q-card>
-              <q-tabs
-                v-model="tab"
-                class="bg-teal text-white shadow-2"
-                active-color="white"
-                indicator-color="white"
-                align="center"
-                narrow-indicator >
-                <q-tab name="denunciantes" label="Denunciante" />
-                <q-tab name="testeminhas" label="Testemunha" />
-              </q-tabs>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <q-card bordered class="my-card" flat>
+        <q-card-section class="bg-secondary text-white">
+          <div class="text-h6">{{ $t('basicInformation') }}</div>
+        </q-card-section>
+        <q-separator/>
+        <q-card-section class="bg-white text-grey">
+          <div class="row">
+            <div class="col">
+              <q-item class="full-width">
+                <q-item-section>
+                  <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
+                  <q-item-label class="text-grey-9">{{ denuncia.numero }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+            <div class="col">
+              <q-item class="full-width">
+                <q-item-section>
+                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label class="text-grey-9">{{ denuncia.dataAbertura }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+          </div>
+          <q-separator/>
+          <div class="row">
+            <div class="col">
+              <q-item class="full-width">
+                <q-item-section>
+                  <q-item-label caption lines="1">{{ $t('descricao') }}</q-item-label>
+                  <q-item-label class="text-grey-9">{{ denuncia.descricao }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+            <div class="col">
+              <q-item class="full-width">
+                <q-item-section>
+                  <q-item-label caption lines="1">{{ $t('procedimentoCriminal') }}</q-item-label>
+                  <q-item-label class="text-grey-9">{{ denuncia.procedimentoCriminal }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+          </div>
+          <q-separator/>
+          <div class="row">
+            <div class="col">
+              <q-item class="full-width">
+                <q-item-section>
+                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label class="text-grey-9">{{ denuncia.inspector.numero }} - {{ denuncia.inspector.nome }}
+                    {{ denuncia.inspector.apelido }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+             <div class="col">
+             <q-item class="full-width">
+             <q-item-section>
+                  <q-item-label caption lines="1">{{ $t('Documento Anexo') }}</q-item-label>
+                  <q-item-label class="text-grey-9">
+                    <div class="file-upload">
+                        <input type="file" @change="onFileChange" accept=".pdf"/> 
+                         <q-btn flat color="primary" label="ANEXAR" no-caps :disabled="!this.selectedFile" @click.stop="onUploadFile(denuncia)"/>
+                         <q-btn flat color="primary" label="VER DOCUMENTO" no-caps :disabled="!denuncia.anexo" @click.stop="forceFileDownload(denuncia,'Anexo.pdf')"/>
+                        <div v-if="progress" class="progess-bar">
+                              <div
+                                class="progress-bar progress-bar-info progress-bar-striped"
+                                role="progressbar"
+                                :aria-valuenow="progress"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                                :style="{ width: progress + '%' }">
+                                {{ progress }}
+                              </div>
+                            </div>
+                    </div>
+                  </q-item-label>
+              </q-item-section>
+              </q-item>
+            </div>
+          </div>
+          <q-separator/>
+        </q-card-section>
+          <div class="row">
+          <div class="col">
+            <q-card-actions align="left">
+              <q-btn v-go-back=" '/processoInvestigacao/'+ denuncia.processo.id " class="glossy" color="primary" label="Voltar" no-caps/>
+            </q-card-actions>
+          </div>
+          <div class="col">
+        <q-card-actions align="right">
+          <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaDenuncia(denuncia)"/>
+          <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeDenuncia(denuncia)"/>
+        </q-card-actions>
+          </div>
+          </div>
+      </q-card>
+      <q-card>
+        <q-tabs
+          v-model="tab1"
+          active-color="white"
+          align="center"
+          class="bg-teal text-white shadow-2"
+          indicator-color="white"
+          narrow-indicator>
+          <q-tab label="Denunciante" name="denunciantes"/>
+          <q-tab label="Suspeito" name="suspeitos"/>
+          <q-tab label="Testemunha" name="testeminhas"/>
+        </q-tabs>
 
-              <q-separator />
+        <q-separator/>
 
-              <q-tab-panels v-model="tab" animated>
-                <q-tab-panel name="denunciantes">
-                  <list-denunciante :autoEntrada.sync="denuncia"/>
-                </q-tab-panel>
-                <q-tab-panel name="testeminhas">
-                 <list-testemunhas :autoEntrada.sync="denuncia"/>
-                </q-tab-panel>
-              </q-tab-panels>
-          </q-card>
+        <q-tab-panels v-model="tab1" animated>
+          <q-tab-panel name="denunciantes">
+            <list-denunciante :pecaProcesso.sync="pecaProcesso"/>
+          </q-tab-panel>
+           <q-tab-panel name="suspeitos">
+            <list-suspeitos :pecaProcesso.sync="pecaProcesso"/>
+          </q-tab-panel>
+          <q-tab-panel name="testeminhas">
+            <list-testemunhas :pecaProcesso.sync="pecaProcesso"/>
+          </q-tab-panel>
+        </q-tab-panels>
+      </q-card>
 
     </div>
- <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="localDenuncia.numero"
-                    :dataAbertura.sync="localDenuncia.dataAbertura"
-                    :descricao.sync="localDenuncia.descricao"
-                    :procedimentoCriminal.sync="localDenuncia.procedimentoCriminal"
-                    :inspector.sync="inspector"
-                    :anexo.sync="localDenuncia.anexo"
-                    :inspectors.sync="allInspectors"
-                    :submitting="submitting"
-                    :close="close"
-                    :createDenuncia="createDenuncia"
-                    :removeDenuncia="removeDenuncia"/>
+    <create-edit-form :anexo.sync="localDenuncia.anexo"
+                      :close="close"
+                      :createDenuncia="createDenuncia"
+                      :dataAbertura.sync="localDenuncia.dataAbertura"
+                      :descricao.sync="localDenuncia.descricao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :listErrors="listErrors"
+                      :numero.sync="localDenuncia.numero"
+                      :procedimentoCriminal.sync="localDenuncia.procedimentoCriminal"
+                      :removeDenuncia="removeDenuncia"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Inspector from 'src/store/models/inspector/inspector'
+import PecaProcesso from 'src/store/models/pecaProcesso/pecaProcesso'
+import Denuncia from 'src/store/models/denuncia/denuncia'
 
 export default {
   name: 'Distrito',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
       submitting: false,
       show_dialog: false,
+      selectedFile: "",
+      progress: 0,
       tab: 'denunciantes',
       tab1: 'comments',
       tab2: 'comments',
@@ -137,7 +181,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -148,46 +192,40 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('denuncia/getDenuncia', currentRoute.params.id)
+    return Denuncia.query().with('processo').with('inspector').find(currentRoute.params.id)
   },
-  props: ['processo'],
-  created () {
+  created() {
   },
-  mounted () {
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  mounted() {
+   this.getPecaProcesso()
   },
   computed: {
     denuncia: {
-      get () {
-        return this.$store.getters['denuncia/denuncia']
+      get() {
+        return Denuncia.query().with('processo').with('inspector').find(this.$route.params.id)
       },
-      set (denuncia) {
-        this.SET_UPDATE_DENUNCIA({ denuncia })
+      set(denuncia) {
         this.$emit('update:denuncia', '')
-        this.$store.commit('denuncia/SET_UPDATE_DENUNCIA', denuncia)
+       Denuncia.update(denuncia)
       }
     },
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+   pecaProcesso: {
+      get() {
+        return PecaProcesso.query().find(this.$route.params.id)
+      }
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
-    },
-    getInspector () {
-      const localInspector = this.allInspectors.filter(inspector => this.denuncia.inspector.id === inspector.id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    allInspectors() {
+      return Inspector.query().all()
     }
   },
   components: {
     'create-edit-form': require('components/denuncia/createEditForm.vue').default,
     'list-denunciante': require('pages/denunciante/index.vue').default,
+    'list-suspeitos': require('pages/suspeito/index.vue').default,
     'list-testemunhas': require('pages/testemunha/index.vue').default
   },
   methods: {
-    ...mapActions('denuncia', ['getAllDenuncia', 'getDenuncia', 'addNewDenuncia', 'updateDenuncia', 'deleteDenuncia']),
-    ...mapMutations('denuncia', ['SET_UPDATE_DENUNCIA']),
-    removeDenuncia (denuncia) {
+    removeDenuncia(denuncia) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -205,18 +243,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + denuncia.designacao + ' ]'
         })
-        this.deleteDenuncia(denuncia)
+        Denuncia.api().delete("/denuncia/" + this.denuncia.id)
         this.$router.go(-1)
       })
     },
-    createDenuncia () {
-      this.listErrors = []
+    createDenuncia() {
+      this.listErrors = {}
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.localDenuncia.inspector = this.inspector
-      this.updateDenuncia(this.localDenuncia).then(resp => {
+      Denuncia.api().patch("/denuncia/" + this.localDenuncia.id, this.localDenuncia).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -245,30 +283,60 @@ export default {
         }
       })
     },
-    editaDenuncia (denuncia) {
+    onFileChange(e) {
+        const selectedFile = e.target.files[0]; // accessing file      
+        this.selectedFile = selectedFile;
+    },
+    onUploadFile(denuncia) {
+        const formData = new FormData();
+        formData.append("anexo", this.selectedFile);  // appending file
+      // sending file to the backend
+        AutoEntrada.api().patch("/denuncia/" + denuncia.id, formData, {
+          onUploadProgress: ProgressEvent => { 
+            let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
+            this.progress = progress;
+            } 
+        })
+          .then(res => {
+            console.log(res);
+            this.selectedFile = null
+          })
+          .catch(err => {
+            console.log(err);
+          });
+    },
+     forceFileDownload(denuncia, title) {
+      var bytes = btoa(new Uint8Array(denuncia.anexo).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      const url = "data:application/pdf;base64, " + bytes 
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', title)
+      document.body.appendChild(link)
+      link.click()
+    },
+    editaDenuncia(denuncia) {
       this.editedIndex = 0
       this.denuncia = Object.assign({}, denuncia)
       this.localDenuncia = Object.assign({}, denuncia)
-      this.inspector = this.allInspectors.filter(inspector => denuncia.inspector.id === inspector.id)[0]
+      this.inspector = Inspector.query().find(denuncia.inspector.id) 
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('denuncia/getDenuncia', this.$route.params.id)
-      }
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
+    close() {
+      this.listErrors = {}
       this.show_dialog = false
       this.props = this.denuncia
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)
+    },
+    getPecaProcesso () {
+     PecaProcesso.api().get('/pecaProcesso/'+this.$route.params.id)
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.denuncia.distrito = val
   },
   i18n: {

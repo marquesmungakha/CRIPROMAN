@@ -1,132 +1,166 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card bordered class="my-card" flat>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+      <div class="q-pa-md q-gutter-sm">
+
+      <div class="row">
+        <div class="col col-md-8">
+        <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('numero') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.numero }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('numero') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ agente.numero }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('nome') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.nome }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('apelido') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.apelido }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                 <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('sexo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.sexo }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('idade') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.idade }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                 <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('contacto1') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.telemovel1 }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                 <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('contacto2') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.telemovel2 }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('cargo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.cargoOcupado }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('descricao_cargo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ agente.descricao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('nome') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.nome }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('apelido') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.apelido }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('sexo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.sexo }}</q-item-label>
+              </q-item-section>
+            </q-item>
+        </div>
+        <div class="col-6 col-md-4">
+            <q-item class="full-width">
+              <q-item-section>
+              <q-avatar size="205px" rounded>
+                <img :src="dataUrl">
+              </q-avatar>
+              </q-item-section>
+            </q-item>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-12">
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('idade') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.idade }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('contacto1') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.telemovel1 }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('contacto2') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.telemovel2 }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('cargo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.cargoOcupado }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('descricao_cargo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ agente.descricao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </div>
+      </div>
+      </q-card-section>
+      <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn v-go-back=" '/agente' " class="glossy" color="primary" label="Voltar" no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
+          <q-card-actions align="right">
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaAgente(agente)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeAgente(agente)"/>
+          </q-card-actions>
+        </div>
+      </div>
+    </q-card>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 1100px; max-width: 90vw;">
+          <q-card-section>
+            <div class="text-h6">Editar Agente!</div>
+          </q-card-section>
+          <q-card-section>
+            <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm"
+                 style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+              <ul class="list-group alert alert-danger">
+                <li v-for="item in listErrors"
+                    :key="item" class="list-group-item text-negative q-pl-xs text-weight-regular text-caption">
+                  {{ item }}
+                </li>
+              </ul>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaAgente(agente)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeAgente(agente)" no-caps/>
-                </q-card-actions>
-            </q-card>
-            <div class="q-pa-sm q-gutter-sm">
-                <q-dialog v-model="show_dialog" persistent>
-                  <q-card style="width: 1100px; max-width: 90vw;">
-                  <q-card-section>
-                      <div class="text-h6">Editar Agente!</div>
-                  </q-card-section>
-                      <q-card-section>
-                      <li v-for="item in listErrors" :key="item">
-                      {{ item }}
-                      </li>
-                      </q-card-section>
-                      <q-separator />
-                      <q-card-section style="max-height: 70vh" class="scroll">
-                              <q-form @submit.prevent="createAgente" class="q-gutter-md">
-                                  <quadro :nome.sync="localAgente.nome"
-                                          :sexo.sync="localAgente.sexo"
-                                          :telemovel2.sync="localAgente.telemovel2"
-                                          :apelido.sync="localAgente.apelido"
-                                          :telemovel1.sync="localAgente.telemovel1"
-                                          :fotografia.sync="localAgente.fotografia"
-                                          :idade.sync="localAgente.idade"
-                                          :numero.sync="localAgente.numero"/>
-                                  <create-edit-form :descricao.sync="localAgente.descricao"
-                                                    :cargoOcupado.sync="localAgente.cargoOcupado"/>
-                                </q-form>
-                      </q-card-section>
-                      <q-separator />
-                  <q-card-actions align="right">
-                      <q-btn type="submit" :loading="submitting" @click.stop="createAgente" color="teal" label="Gravar" />
-                      <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-                  </q-card-actions>
-                  </q-card>
-              </q-dialog>
-            </div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createAgente">
+              <quadro :apelido.sync="localAgente.apelido"
+                      :fotografia.sync="localAgente.fotografia"
+                      :idade.sync="localAgente.idade"
+                      :nome.sync="localAgente.nome"
+                      :numero.sync="localAgente.numero"
+                      :sexo.sync="localAgente.sexo"
+                      :telemovel1.sync="localAgente.telemovel1"
+                      :telemovel2.sync="localAgente.telemovel2"
+                      :onFileChange.sync="onFileChange"
+                      :image.sync="image"/>
+              <create-edit-form :cargoOcupado.sync="localAgente.cargoOcupado"
+                                :descricao.sync="localAgente.descricao"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createAgente"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Agente from 'src/store/models/agente/agente'
 
 export default {
   name: 'Agente',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
       submitting: false,
       show_dialog: false,
       splitterModel: 20,
+      image: '',
       localAgente: {
         nome: '',
         sexo: '',
@@ -135,14 +169,16 @@ export default {
         apelido: '',
         telemovel1: '',
         fotografia: '',
-        class: 'org.devinthesky.quadro.Agente',
         descricao: '',
         numero: '',
         cargoOcupado: ''
+      },
+      info:{
+        image: ''
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -156,25 +192,28 @@ export default {
     // this.$store.dispatch('tipoAgente/getTipoAgente', this.agente.tipoAgente.id)
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('agente/getAgente', currentRoute.params.id)
+    return Agente.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
+     this.getInfo()
   },
   computed: {
     agente: {
-      get () {
-        return this.$store.getters['agente/agente']
+      get() {
+        return Agente.query().find(this.$route.params.id)
       },
-      set (agente) {
-        this.SET_UPDATE_AGENTE({ agente })
+      set(agente) {
         this.$emit('update:agente', '')
-        this.$store.commit('agente/SET_UPDATE_AGENTE', agente)
+        Agente.update(agente)
       }
     },
-    allTipoAgentes () {
-      return this.$store.getters['tipoAgente/allTipoAgente']
+    dataUrl(){
+        return 'data:image/jpeg;base64,' + btoa(
+            new Uint8Array(this.agente.fotografia)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
     }
   },
   components: {
@@ -182,9 +221,7 @@ export default {
     quadro: require('components/quadro/createEditFields.vue').default
   },
   methods: {
-    ...mapActions('agente', ['getAllAgente', 'getAgente', 'addNewAgente', 'updateAgente', 'deleteAgente']),
-    ...mapMutations('agente', ['SET_UPDATE_AGENTE']),
-    removeAgente (agente) {
+    removeAgente(agente) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -202,17 +239,30 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + agente.numero + ' ]'
         })
-        this.deleteAgente(agente)
+        Agente.api().delete("/agente/" + agente.id)
         this.$router.go(-1)
       })
     },
-    createAgente () {
+    createAgente() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.updateAgente(this.localAgente).then(resp => {
+
+      let formData = new FormData();
+      formData.append("nome", this.localAgente.nome);
+      formData.append("apelido", this.localAgente.apelido);
+      formData.append("sexo", this.localAgente.sexo);
+      formData.append("idade", this.localAgente.idade);
+      formData.append("telemovel2", this.localAgente.telemovel2);
+      formData.append("telemovel1", this.localAgente.telemovel1);
+      formData.append("fotografia", this.localAgente.fotografia);
+      formData.append("descricao", this.localAgente.descricao);
+      formData.append("numero", this.localAgente.numero);
+      formData.append("cargoOcupado", this.localAgente.cargoOcupado);
+
+      Agente.api().patch("/agente/" + this.localAgente.id, formData).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -223,7 +273,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.agente.numero + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localAgente.numero + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -241,16 +291,19 @@ export default {
         }
       })
     },
-    editaAgente (agente) {
+    onFileChange(event){
+      this.agente.fotografia = event.target.files[0];
+      this.image = URL.createObjectURL(event.target.files[0]);
+    },
+    editaAgente(agente) {
       this.editedIndex = 0
       this.agente = Object.assign({}, agente)
       this.localAgente = Object.assign({}, agente)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(agente.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('agente/getAgente', this.$route.params.id)
-      }
+    close() {
+      this.image = ''
       this.show_dialog = false
       this.props = this.agente
       setTimeout(() => {

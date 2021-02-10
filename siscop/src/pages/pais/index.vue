@@ -1,18 +1,18 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-    <q-table title="Pais" :data="allPaises" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allPaises" :filter="filter" binary-state-sort row-key="name" title="Pais">
 
       <template v-slot:top-right>
-        <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
           <template v-slot:append>
             <q-icon name="search"/>
           </template>
         </q-input>
 
         <div class="q-pa-md q-gutter-sm">
-          <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-          <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-          <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
         </div>
       </template>
       <template v-slot:body="props">
@@ -20,43 +20,43 @@
           <q-td key="codigo" :props="props">
             {{ props.row.codigo }}
             <q-popup-edit v-model="props.row.codigo">
-              <q-input v-model="props.row.codigo" dense autofocus counter></q-input>
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="designacao" :props="props">
             {{ props.row.designacao }}
             <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-              <q-input v-model="props.row.designacao" dense autofocus></q-input>
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="nacionalidade" :props="props">
             <div class="text-pre-wrap">{{ props.row.nacionalidade }}</div>
             <q-popup-edit v-model="props.row.nacionalidade">
-              <q-input v-model="props.row.nacionalidade" dense autofocus></q-input>
+              <q-input v-model="props.row.nacionalidade" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/pais/${props.row.id}`">
-                <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps/>
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click.stop="editaPais(props.row)" size=sm no-caps/>
-              <q-btn round glossy icon="delete_forever" color="red" @click.stop="removePais(props.row)" size=sm
-                     no-caps/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaPais(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click.stop="removePais(props.row)"/>
             </div>
           </q-td>
         </q-tr>
       </template>
     </q-table>
-    <create-edit-form :show_dialog="show_dialog"
-                      :listErrors="listErrors"
+    <create-edit-form :close="close"
                       :codigo.sync="pais.codigo"
-                      :designacao.sync="pais.designacao"
-                      :nacionalidade.sync="pais.nacionalidade"
-                      :submitting="submitting"
-                      :close="close"
                       :createPais="createPais"
-                      :removePais="removePais"/>
+                      :designacao.sync="pais.designacao"
+                      :listErrors="listErrors"
+                      :nacionalidade.sync="pais.nacionalidade"
+                      :removePais="removePais"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 

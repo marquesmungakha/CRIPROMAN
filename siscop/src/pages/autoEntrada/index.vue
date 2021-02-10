@@ -1,102 +1,114 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Auto de Entrada" :data="allAutoEntradas" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allAutoEntradas" :filter="filter" binary-state-sort row-key="name"
+             title="Auto de Entrada">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="numero" :props="props">
-              {{ props.row.numero }}
-              <q-popup-edit v-model="props.row.numero" title="Update numero">
-                <q-input v-model="props.row.numero" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataAbertura" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
-                <q-input v-model="props.row.dataAbertura" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-             <q-td key="tipoAuto" :props="props">
-              <div class="text-pre-wrap">{{ getTipoAuto(props.row.tipoAuto.id).designacao }}</div>
-              <q-popup-edit v-model="props.row.tipoAuto">
-                <q-input v-model="props.row.tipoAuto" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="classeJudicial" :props="props">
-              <div class="text-pre-wrap">{{ getJurisdicao(props.row.classeJudicial.id).designacao }}</div>
-              <q-popup-edit v-model="props.row.classeJudicial">
-                <q-input v-model="props.row.classeJudicial" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="crime" :props="props">
-              <div class="text-pre-wrap">{{  getCrime(props.row.crime.id).designacao }}</div>
-              <q-popup-edit v-model="props.row.crime.id">
-                <q-input v-model="props.row.crime.id" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="inspector" :props="props">
-              <div class="text-pre-wrap">{{  getInspector(props.row.inspector.id).numero  }} - {{  getInspector(props.row.inspector.id).nome  }} {{  getInspector(props.row.inspector.id).apelido  }}</div>
-              <q-popup-edit v-model="props.row.inspector">
-                <q-input v-model="props.row.inspector" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/autoEntrada/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaAutoEntrada(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeAutoEntrada(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="autoEntrada.numero"
-                    :dataAbertura.sync="autoEntrada.dataAbertura"
-                    :descricao.sync="autoEntrada.descricao"
-                    :tipoAuto.sync="tipoAuto"
-                    :classeJudicial.sync="classeJudicial"
-                    :crime.sync="crime"
-                    :modusOperandi.sync="autoEntrada.modusOperandi"
-                    :horaOcorrencia.sync="autoEntrada.horaOcorrencia"
-                    :infraccao.sync="autoEntrada.infraccao"
-                    :endereco.sync="autoEntrada.endereco"
-                    :responsavelLocal.sync="autoEntrada.responsavelLocal"
-                    :contacto.sync="autoEntrada.contacto"
-                    :inspector.sync="inspector"
-                    :anexo.sync="autoEntrada.anexo"
-                    :inspectors.sync="allInspectors"
-                    :crimes.sync="allCrimesFromClasseJudicial"
-                    :classeJudicials.sync="allclasseJudicials"
-                    :tipoAutos.sync="alltipoAutos"
-                    :submitting="submitting"
-                    :close="close"
-                    :createAutoEntrada="createAutoEntrada"
-                    :removeAutoEntrada="removeAutoEntrada"/>
+        <q-tr :props="props">
+          <q-td key="numero" :props="props">
+            {{ props.row.numero }}
+            <q-popup-edit v-model="props.row.numero" title="Update numero">
+              <q-input v-model="props.row.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataAbertura" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
+              <q-input v-model="props.row.dataAbertura" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="tipoAuto" :props="props">
+            <div class="text-pre-wrap">{{ props.row.tipoAuto.designacao }}</div>
+            <q-popup-edit v-model="props.row.tipoAuto.designacao">
+              <q-input v-model="props.row.tipoAuto.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="classeJudicial" :props="props">
+            <div class="text-pre-wrap">{{ props.row.classeJudicial.designacao }}</div>
+            <q-popup-edit v-model="props.row.classeJudicial.designacao">
+              <q-input v-model="props.row.classeJudicial.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="crime" :props="props">
+            <div class="text-pre-wrap">{{ props.row.crime.designacao }}</div>
+            <q-popup-edit v-model="props.row.crime.designacao">
+              <q-input v-model="props.row.crime.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="inspector" :props="props">
+            <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+              {{ props.row.inspector.apelido }}
+            </div>
+            <q-popup-edit v-model="props.row.inspector">
+              <q-input v-model="props.row.inspector" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/autoEntrada/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaAutoEntrada(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click="removeAutoEntrada(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :anexo.sync="autoEntrada.anexo"
+                      :classeJudicial.sync="classeJudicial"
+                      :classeJudicials.sync="allclasseJudicials"
+                      :close="close"
+                      :contacto.sync="autoEntrada.contacto"
+                      :createAutoEntrada="createAutoEntrada"
+                      :crime.sync="crime"
+                      :crimes.sync="allCrimesFromClasseJudicial"
+                      :dataAbertura.sync="autoEntrada.dataAbertura"
+                      :descricao.sync="autoEntrada.descricao"
+                      :endereco.sync="autoEntrada.endereco"
+                      :horaOcorrencia.sync="autoEntrada.horaOcorrencia"
+                      :infraccao.sync="autoEntrada.infraccao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :listErrors="listErrors"
+                      :modusOperandi.sync="autoEntrada.modusOperandi"
+                      :numero.sync="autoEntrada.numero"
+                      :removeAutoEntrada="removeAutoEntrada"
+                      :responsavelLocal.sync="autoEntrada.responsavelLocal"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"
+                      :tipoAuto.sync="tipoAuto"
+                      :tipoAutos.sync="alltipoAutos"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import Inspector from 'src/store/models/inspector/inspector'
+import Crime from 'src/store/models/crime/crime'
+import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
+import TipoAuto from 'src/store/models/tipoAuto/tipoAuto'
+import Orgao from 'src/store/models/orgao/orgao'
+import AutoEntrada from 'src/store/models/autoEntrada/autoEntrada'
+import Provincia from 'src/store/models/provincia/provincia'
+import TipoOrgao from 'src/store/models/tipoOrgao/tipoOrgao'
+import Pais from 'src/store/models/pais/pais'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -105,7 +117,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'AutoEntrada',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -143,27 +155,68 @@ export default {
         designacao: ''
       },
       inspector: {
-        codigo: '',
-        designacao: ''
+        numero: ''
       },
       orgao: {
         codigo: '',
         designacao: ''
       },
       columns: [
-        { name: 'numero', align: 'left', label: 'Número do Auto', field: row => row.numero, format: val => `${val}`, sortable: true },
-        { name: 'dataAbertura', align: 'left', label: 'Data de Abertura', field: row => row.dataAbertura, format: val => `${val}`, sortable: true },
-        { name: 'tipoAuto', align: 'left', label: 'Tipo de Auto', field: row => row.tipoAuto.id, format: val => `${val}`, sortable: true },
-        { name: 'classeJudicial', align: 'left', label: 'Família Delitiva', field: row => row.classeJudicial.id, format: val => `${val}`, sortable: true },
-        { name: 'crime', align: 'left', label: 'Tipo Legal de Crime', field: row => row.crime.id, format: val => `${val}`, sortable: true },
-        { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'numero',
+          align: 'left',
+          label: 'Número do Auto',
+          field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataAbertura',
+          align: 'left',
+          label: 'Data de Abertura',
+          field: row => row.dataAbertura,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'tipoAuto',
+          align: 'left',
+          label: 'Tipo de Auto',
+          field: row => row.tipoAuto,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'classeJudicial',
+          align: 'left',
+          label: 'Família Delitiva',
+          field: row => row.classeJudicial,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'crime',
+          align: 'left',
+          label: 'Tipo Legal de Crime',
+          field: row => row.crime,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'inspector',
+          align: 'left',
+          label: 'Inspector',
+          field: row => row.inspector,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -174,60 +227,81 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('autoEntrada/getAllAutoEntrada')
+    return this.getAllAutoEntrada()
   },
-  mounted () {
-    this.$store.dispatch('tipoAuto/getAllTipoAuto')
-    this.$store.dispatch('jurisdicao/getAllJurisdicao')
-    this.$store.dispatch('crime/getAllCrime')
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  mounted() {
+    this.getAllAutoEntrada()
+    this.getAllTipoAuto()
+    this.getAllJurisdicao()
+    this.getAllCrime()
+    this.getAllInspector()
+    this.getAllOrgao()
+    this.getAllPais()
+    this.getAllProvincia()
+    this.getAllTipoOrgao()
   },
   components: {
     'create-edit-form': require('components/autoEntrada/createEditForm.vue').default
   },
-  metaInfo: {
+  created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
+  metaInfo: {},
   computed: {
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+    allInspectors() {
+      return Inspector.query().all()
     },
-    allCrimes () {
-      return this.$store.getters['crime/allCrime']
+    allCrimes() {
+      return Crime.query().all()
     },
-    allCrimesFromClasseJudicial () {
-      return this.allCrimes.filter(crime => crime.classeJudicial.id === this.classeJudicial.id)
+    allCrimesFromClasseJudicial() {
+      return Crime.query().where('classeJudicial_id', this.classeJudicial.id).get()
     },
-    allclasseJudicials () {
-      return this.$store.getters['jurisdicao/allJurisdicao']
+    allclasseJudicials() {
+      return ClasseJudicial.query().all()
     },
-    alltipoAutos () {
-      return this.$store.getters['tipoAuto/allTipoAuto']
+    alltipoAutos() {
+      return TipoAuto.query().all()
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
+    allOrgaos() {
+      return Orgao.query().all()
     },
-    allAutoEntradas () {
-      return this.$store.getters['autoEntrada/allAutoEntrada']
+    allAutoEntradas() {
+      return AutoEntrada.query().with('orgao').with('inspector').with('crime').with('classeJudicial').with('tipoAuto').get()
     }
   },
   methods: {
-    ...mapActions('autoEntrada', ['getAllAutoEntrada', 'addNewAutoEntrada', 'updateAutoEntrada', 'deleteAutoEntrada']),
-    createAutoEntrada () {
+    createAutoEntrada() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
+
       this.autoEntrada.tipoAuto = this.tipoAuto
       this.autoEntrada.classeJudicial = this.classeJudicial
+      this.crime.classeJudicial = this.classeJudicial
       this.autoEntrada.crime = this.crime
       this.autoEntrada.inspector = this.inspector
-      this.autoEntrada.orgao = this.$store.state.orgao.orgaos[0]
-      //  const image = new Blob([this.autoEntrada.anexo])
-      this.autoEntrada.anexo = null
+      this.autoEntrada.tipoAuto_id = this.tipoAuto.id
+      this.autoEntrada.classeJudicial_id = this.classeJudicial.id
+      this.autoEntrada.crime_id = this.crime.id
+      this.autoEntrada.inspector_id = this.inspector.id
+      this.autoEntrada.orgao_id = Orgao.query().first().id
+      this.autoEntrada.orgao = Orgao.query().with('provincia.pais').with('tipoOrgao').first()
+
       if (this.editedIndex > -1) {
-        this.updateAutoEntrada(this.autoEntrada).then(resp => {
+        AutoEntrada.api().patch("/autoEntrada/" + this.autoEntrada.id,  this.autoEntrada, config).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -237,7 +311,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [ ' + this.autoEntrada.designacao + ' ]'
+            message: 'A informação foi actualizada com successo!! [ ' + this.autoEntrada.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -255,7 +329,7 @@ export default {
           }
         })
       } else {
-        this.addNewAutoEntrada(this.autoEntrada).then(resp => {
+        AutoEntrada.api().post("/autoEntrada/",  this.autoEntrada).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -266,9 +340,10 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.autoEntrada.designacao + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.autoEntrada.numero + ' ]'
           })
           this.close()
+          this.$router.push({path: '/autoEntrada/' + resp.response.data.id })
         }).catch(error => {
           console.log('Erro no code ' + error)
           if (error.request.status !== 0) {
@@ -285,21 +360,25 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('autoEntrada/getAllAutoEntrada')
-      this.$store.dispatch('tipoAuto/getAllTipoAuto')
-      this.$store.dispatch('jurisdicao/getAllJurisdicao')
-      this.$store.dispatch('crime/getAllCrime')
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
-      this.show_dialog = false
-      this.autoEntrada = {}
-      this.props = this.autoEntrada
+    close() {
+    this.getAllAutoEntrada()
+    this.getAllTipoAuto()
+    this.getAllJurisdicao()
+    this.getAllCrime()
+    this.getAllInspector()
+    this.getAllOrgao()
+    this.getAllPais()
+    this.getAllProvincia()
+    this.getAllTipoOrgao()
+    this.listErrors = {}
+    this.show_dialog = false
+    this.autoEntrada = {}
+    this.props = this.autoEntrada
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)
     },
-    removeAutoEntrada (autoEntrada) {
+    removeAutoEntrada(autoEntrada) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -315,41 +394,52 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi Removida com successo! [ ' + autoEntrada.designacao + ' ]'
+          message: 'A informação foi Removida com successo! [ ' + autoEntrada.numero + ' ]'
         })
-        this.deleteAutoEntrada(autoEntrada)
+        AutoEntrada.api().delete("/autoEntrada/" + this.autoEntrada.id)
       })
     },
-    editaAutoEntrada (autoEntrada) {
-      this.editedIndex = this.allAutoEntradas.indexOf(autoEntrada)
+    editaAutoEntrada(autoEntrada) {
+      this.editedIndex = 0
       this.autoEntrada = Object.assign({}, autoEntrada)
-      this.tipoAuto = this.getTipoAuto(autoEntrada.tipoAuto.id)
-      this.classeJudicial = this.getJurisdicao(autoEntrada.classeJudicial.id)
-      this.crime = this.getCrime(autoEntrada.crime.id)
-      this.inspector = this.getInspector(autoEntrada.inspector.id)
-      this.orgao = this.$store.state.orgao.orgaos[0]
+      this.tipoAuto = TipoAuto.query().find(autoEntrada.tipoAuto_id)
+      this.classeJudicial = ClasseJudicial.query().find(autoEntrada.classeJudicial_id)
+      this.crime = Crime.query().find(autoEntrada.crime_id)
+      this.inspector = Inspector.query().find(autoEntrada.inspector_id)
+      this.orgao = Orgao.query().first()
       this.show_dialog = true
     },
-    getTipoAuto (id) {
-      const localTipoAuto = this.alltipoAutos.filter(tipoAuto => tipoAuto.id === id)
-      if (localTipoAuto.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localTipoAuto[0] }
+    getAllAutoEntrada() {
+      AutoEntrada.api().get('/autoEntrada?offset=0&max=1000000')
     },
-    getJurisdicao (id) {
-      const localJurisdicao = this.allclasseJudicials.filter(jurisdicao => jurisdicao.id === id)
-      if (localJurisdicao.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localJurisdicao[0] }
+    getAllTipoAuto() {
+      TipoAuto.api().get('/tipoAuto?offset=0&max=1000000')
     },
-    getCrime (id) {
-      const localCrime = this.allCrimes.filter(crime => crime.id === id)
-      if (localCrime.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localCrime[0] }
+    getAllJurisdicao() {
+      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
     },
-    getInspector (id) {
-      const localInspector = this.allInspectors.filter(inspector => inspector.id === id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    getAllCrime() {
+      Crime.api().get('/crime?offset=0&max=1000000')
     },
-    abortFilterFn () {
+    getAllInspector() {
+      Inspector.api().get('/inspector?offset=0&max=1000000')
+    },
+    getAllOrgao() {
+      Orgao.api().get('/orgao?offset=0&max=1000000')
+    },
+    getAllProvincia() {
+      Provincia.api().get('/provincia?offset=0&max=1000000')
+    },
+    getAllTipoOrgao() {
+      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+    },
+     getAllPais() {
+      Pais.api().get('/pais?offset=0&max=1000000')
+    },
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

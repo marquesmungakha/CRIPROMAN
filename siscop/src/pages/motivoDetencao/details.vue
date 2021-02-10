@@ -1,47 +1,57 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ motivoDetencao.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaMotivoDetencao(motivoDetencao)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeMotivoDetencao(motivoDetencao)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/motivoDetencao' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaMotivoDetencao(motivoDetencao)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps
+                       @click="removeMotivoDetencao(motivoDetencao)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localMotivoDetencao.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createMotivoDetencao="createMotivoDetencao"
-                    :removeMotivoDetencao="removeMotivoDetencao"/>
+    <create-edit-form :close="close"
+                      :createMotivoDetencao="createMotivoDetencao"
+                      :designacao.sync="localMotivoDetencao.designacao"
+                      :listErrors="listErrors"
+                      :removeMotivoDetencao="removeMotivoDetencao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import MotivoDetencao from 'src/store/models/motivoDetencao/motivoDetencao'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -53,21 +63,20 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('motivoDetencao/getMotivoDetencao', currentRoute.params.id)
+    return MotivoDetencao.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     motivoDetencao: {
-      get () {
-        return this.$store.getters['motivoDetencao/motivoDetencao']
+      get() {
+        return MotivoDetencao.query().find(this.$route.params.id)
       },
-      set (motivoDetencao) {
-        this.SET_UPDATE_MOTIVODETENCAO({ motivoDetencao })
+      set(motivoDetencao) {
         this.$emit('update:motivoDetencao', '')
-        this.$store.commit('motivoDetencao/SET_UPDATE_MOTIVODETENCAO', motivoDetencao)
+        MotivoDetencao.update(motivoDetencao)
       }
 
     }
@@ -76,9 +85,7 @@ export default {
     'create-edit-form': require('components/motivoDetencao/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('motivoDetencao', ['getAllMotivoDetencao', 'getMotivoDetencao', 'addNewMotivoDetencao', 'updateMotivoDetencao', 'deleteMotivoDetencao']),
-    ...mapMutations('motivoDetencao', ['SET_UPDATE_MOTIVODETENCAO']),
-    removeMotivoDetencao (motivoDetencao) {
+    removeMotivoDetencao(motivoDetencao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -96,18 +103,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + motivoDetencao.designacao + ' ]'
         })
-        this.deleteMotivoDetencao(motivoDetencao)
+        MotivoDetencao.api().delete("/motivoDetencao/" + motivoDetencao.id)
         this.$router.go(-1)
       })
     },
-    createMotivoDetencao () {
+    createMotivoDetencao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.motivoDetencao = this.localMotivoDetencao
-      this.updateMotivoDetencao(this.localMotivoDetencao).then(resp => {
+      MotivoDetencao.api().patch("/motivoDetencao/" + this.localMotivoDetencao.id, this.localMotivoDetencao).then(resp => {
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -136,15 +143,12 @@ export default {
         }
       })
     },
-    editaMotivoDetencao (motivoDetencao) {
+    editaMotivoDetencao(motivoDetencao) {
       this.localMotivoDetencao = Object.assign({}, motivoDetencao)
       this.motivoDetencao = Object.assign({}, motivoDetencao)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('motivoDetencao/getMotivoDetencao', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.motivoDetencao = {}
       this.props = this.motivoDetencao
@@ -153,7 +157,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

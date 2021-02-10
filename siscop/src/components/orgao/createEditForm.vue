@@ -5,7 +5,7 @@
         <q-card-section>
             <div class="text-h6">Adicionar  Orgão!</div>
         </q-card-section>
-               <q-card-section>
+        <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
             <ul class="list-group alert alert-danger">
               <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
@@ -42,7 +42,6 @@
                         <q-item>
                             <q-item-section>
                             <q-select
-                              filled
                               :value="tipoOrgao"
                               use-input
                               fill-input
@@ -68,7 +67,11 @@
                         </q-item>
                         <q-item>
                             <q-item-section>
-                                 <q-select :value="provincia"
+                                 <q-select 
+                                 :value="provincia"
+                                  use-input
+                                  fill-input
+                                  hide-selected
                                   :options="provincias"
                                   label="Província *"
                                   option-label="designacao"
@@ -79,6 +82,9 @@
                          <q-item>
                             <q-item-section>
                                 <q-select :value="distrito"
+                                          use-input
+                                          fill-input
+                                          hide-selected
                                           :options="distritos"
                                           label="Distrito *"
                                           option-label="designacao"
@@ -145,12 +151,24 @@
                         </q-item-->
                           <q-item>
                             <q-item-section>
-                                 <q-input :value="nivel" type="number"  label="Nível do Orgão "  @input="$emit('update:nivel', $event)"/>
+                                 <q-input :value="nivel" 
+                                  use-input
+                                  fill-input
+                                  hide-selected
+                                 type="number"  
+                                 label="Nível do Orgão "  
+                                 @input="$emit('update:nivel', $event)"/>
                             </q-item-section>
                         </q-item>
                           <q-item>
                             <q-item-section>
-                                 <q-input :value="endereco"  type="textarea"  label="Endereço  " @input="$emit('update:endereco', $event)"/>
+                                 <q-input :value="endereco"
+                                  use-input
+                                  fill-input
+                                  hide-selected
+                                 type="textarea"  
+                                 label="Endereço" 
+                                 @input="$emit('update:endereco', $event)"/>
                             </q-item-section>
                         </q-item>
                     </q-list>

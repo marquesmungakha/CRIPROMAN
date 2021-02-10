@@ -1,95 +1,94 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card bordered class="my-card" flat>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+        <div class="row">
+          <div class="col-12">
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ bairro.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-               <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ bairro.distrito.provincia.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ bairro.distrito.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('postoAdministrativo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ bairro.postoAdministrativo.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('localidade') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ bairro.localidade.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-              </div>
-            </div>
-                </q-card-section>
-                  <div class="row">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ bairro.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('provincia') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ bairro.distrito.provincia.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('distrito') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ bairro.distrito.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('postoAdministrativo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ bairro.postoAdministrativo.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('localidade') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ bairro.localidade.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+          </div>
+        </div>
+      </q-card-section>
+      <div class="row">
         <div class="col">
           <q-card-actions align="left">
-            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/bairro' " no-caps/>
+            <q-btn v-go-back=" '/bairro' " class="glossy" color="primary" label="Voltar" no-caps/>
           </q-card-actions>
         </div>
         <div class="col">
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaBairro(bairro)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeBairro(bairro)" no-caps/>
-                </q-card-actions>
+          <q-card-actions align="right">
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaBairro(bairro)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeBairro(bairro)"/>
+          </q-card-actions>
         </div>
-                  </div>
-            </q-card>
- <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localBairro.designacao"
-                    :localidade.sync="localidade"
-                    :postoAdministrativo.sync="postoAdministrativo"
-                    :distrito.sync="distrito"
-                    :provincia.sync="provincia"
-                    :provincias.sync="allProvincias"
-                    :distritos.sync="allDistritosFromProvincia"
-                    :postoAdministrativos.sync="allPostoAdministrativosFromDistrito"
-                    :localidades="allLocalidadeFromDistritoOrPostoAdministrativo"
-                    :submitting="submitting"
-                    :close="close"
-                    :createBairro="createBairro"
-                    :removeBairro="removeBairro"/>
+      </div>
+    </q-card>
+    <create-edit-form :close="close"
+                      :createBairro="createBairro"
+                      :designacao.sync="localBairro.designacao"
+                      :distrito.sync="distrito"
+                      :distritos.sync="allDistritosFromProvincia"
+                      :listErrors="listErrors"
+                      :localidade.sync="localidade"
+                      :localidades="allLocalidadeFromDistritoOrPostoAdministrativo"
+                      :postoAdministrativo.sync="postoAdministrativo"
+                      :postoAdministrativos.sync="allPostoAdministrativosFromDistrito"
+                      :provincia.sync="provincia"
+                      :provincias.sync="allProvincias"
+                      :removeBairro="removeBairro"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
 import Provincia from 'src/store/models/provincia/provincia'
 import Distrito from 'src/store/models/distrito/distrito'
-import Pais from 'src/store/models/pais/pais'
 import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdministrativo'
 import Localidade from 'src/store/models/localidade/localidade'
 import Bairro from 'src/store/models/bairro/bairro'
 
 export default {
   name: 'Distrito',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -123,7 +122,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -136,47 +135,51 @@ export default {
     // Example:
     return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     bairro: {
-      get () {
+      get() {
         return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').find(this.$route.params.id)
       },
-      set (bairro) {
+      set(bairro) {
         this.$emit('update:bairro', '')
-       Bairro.update(bairro)
+        Bairro.update(bairro)
       }
     },
-    allProvincias () {
+    allProvincias() {
       return Provincia.query().with('pais').all()
     },
-    allDistritosFromProvincia () {
+    allDistritosFromProvincia() {
       return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    allDistritos () {
+    allDistritos() {
       return Distrito.query().with('provincia').all()
     },
-    allPostoAdministrativos () {
+    allPostoAdministrativos() {
       return PostoAdministrativo.query().with('distrito.provincia').all()
     },
-    allPostoAdministrativosFromDistrito () {
+    allPostoAdministrativosFromDistrito() {
       return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
     },
-    allLocalidades () {
+    allLocalidades() {
       return Localidade.query().with('distrito.provincia').with('postoAdministrativo').all()
     },
-    allLocalidadeFromDistritoOrPostoAdministrativo () {
-      if (this.postoAdministrativo != null) { return Localidade.query().with('postoAdministrativo').where('postoAdministrativo_id', this.postoAdministrativo.id).get() } else { return Localidade.query().with('distrito').where('distrito_id', this.distrito.id).get() }
+    allLocalidadeFromDistritoOrPostoAdministrativo() {
+      if (this.postoAdministrativo != null) {
+        return Localidade.query().with('postoAdministrativo').where('postoAdministrativo_id', this.postoAdministrativo.id).get()
+      } else {
+        return Localidade.query().with('distrito').where('distrito_id', this.distrito.id).get()
+      }
     }
   },
   components: {
     'create-edit-form': require('components/bairro/createEditForm.vue').default
   },
   methods: {
-    removeBairro (bairro) {
+    removeBairro(bairro) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -194,11 +197,11 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + bairro.designacao + ' ]'
         })
-        Bairro.api().delete("/bairro/"+bairro.id)
+        Bairro.api().delete("/bairro/" + bairro.id)
         this.$router.go(-1)
       })
     },
-    createBairro () {
+    createBairro() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
@@ -210,7 +213,7 @@ export default {
       this.localBairro.distrito_id = this.distrito.id
       this.localBairro.postoAdministrativo_id = this.postoAdministrativo.id
       this.localBairro.localidade_id = this.localidade.id
-     Bairro.api().patch("/bairro/"+this.localBairro.id,this.localBairro).then(resp => {
+      Bairro.api().patch("/bairro/" + this.localBairro.id, this.localBairro).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -239,7 +242,7 @@ export default {
         }
       })
     },
-    editaBairro (bairro) {
+    editaBairro(bairro) {
       this.editedIndex = 0
       this.localBairro = Object.assign({}, bairro)
       this.localidade = Localidade.query().find(this.localBairro.localidade_id)
@@ -248,7 +251,7 @@ export default {
       this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    close () {
+    close() {
       this.show_dialog = false
       this.props = this.bairro
       setTimeout(() => {
@@ -256,10 +259,10 @@ export default {
       }, 300)
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.bairro.distrito = val
   },
   i18n: {

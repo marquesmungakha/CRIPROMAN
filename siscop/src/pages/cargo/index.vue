@@ -1,55 +1,56 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Cargo" :data="allCargos" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allCargos" :filter="filter" binary-state-sort row-key="name" title="Cargo">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/cargo/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click.stop="editaCargo(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click.stop="removeCargo(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="cargo.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createCargo="createCargo"
-                    :removeCargo="removeCargo"/>
+        <q-tr :props="props">
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/cargo/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaCargo(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click.stop="removeCargo(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :createCargo="createCargo"
+                      :designacao.sync="cargo.designacao"
+                      :listErrors="listErrors"
+                      :removeCargo="removeCargo"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import Cargo from 'src/store/models/cargo/cargo'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -58,7 +59,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Cargo',
-  data () {
+  data() {
     return {
       listErrors: [],
       cargo_details_dialog: false,
@@ -71,13 +72,20 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -89,33 +97,42 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('cargo/getAllCargo', currentRoute.params.id)
+    return this.getAllCargo()
   },
-  mounted () {
+  mounted() {
+    this.getAllCargo()
   },
   components: {
     'create-edit-form': require('components/cargo/createEditForm.vue').default
   },
-  created () {
+  created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    ...mapGetters('cargo', ['allCargo']),
-    allCargos () {
-      return this.$store.state.cargo.cargos
+    allCargos() {
+      return Cargo.query().all()
     }
   },
   methods: {
-    ...mapActions('cargo', ['getAllCargo', 'addNewCargo', 'updateCargo', 'deleteCargo']),
-    createCargo () {
+    createCargo() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       if (this.editedIndex > -1) {
-        this.updateCargo(this.cargo).then(resp => {
+        Cargo.api().patch("/cargo/" + this.cargo.id, this.cargo).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -144,7 +161,7 @@ export default {
           }
         })
       } else {
-        this.addNewCargo(this.cargo).then(resp => {
+        Cargo.api().post("/cargo/", this.cargo).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -159,22 +176,22 @@ export default {
           this.close()
         }).catch(error => {
           console.log(error)
-          // if (error.request.status !== 0) {
-          //   const arrayErrors = JSON.parse(error.request.response)
-          //   if (arrayErrors.total == null) {
-          //     this.listErrors.push(arrayErrors.message)
-          //   } else {
-          //     arrayErrors._embedded.errors.forEach(element => {
-          //       this.listErrors.push(element.message)
-          //     })
-          //   }
-          //   console.log(this.listErrors)
-          // }
+          if (error.request.status !== 0) {
+            const arrayErrors = JSON.parse(error.request.response)
+            if (arrayErrors.total == null) {
+              this.listErrors.push(arrayErrors.message)
+            } else {
+              arrayErrors._embedded.errors.forEach(element => {
+                this.listErrors.push(element.message)
+              })
+            }
+            console.log(this.listErrors)
+          }
         })
       }
     },
-    close () {
-      this.$store.dispatch('cargo/getAllCargo')
+    close() {
+      this.getAllCargo()
       this.show_dialog = false
       this.cargo = {}
       this.props = this.cargo
@@ -183,7 +200,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeCargo (cargo) {
+    removeCargo(cargo) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -201,15 +218,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + cargo.designacao + ' ]'
         })
-        this.deleteCargo(cargo)
+        Cargo.api().delete("/cargo/" + cargo.id)
       })
     },
-    editaCargo (cargo) {
-      this.editedIndex = this.$store.state.cargo.cargos.indexOf(cargo)
+    editaCargo(cargo) {
+      this.editedIndex = 0
       this.cargo = Object.assign({}, cargo)
       this.show_dialog = true
     },
-    exportTable () {
+    getAllCargo() {
+      Cargo.api().get('/cargo?offset=0&max=1000000')
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

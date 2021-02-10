@@ -1,9 +1,11 @@
 package org.informservice.criproman.quadro
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 
-
+@Secured('ROLE_ADMIN')
+@Resource(uri='/api/quadro')
 class Quadro implements Auditable{
     String numero
     String nome

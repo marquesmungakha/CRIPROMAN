@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import Acarreacao from "../acarreacao/acarreacao"
 import CorpoDelito from "../corpoDelito/corpoDelito";
 import Declaracao from "../declaracao/declaracao";
@@ -18,11 +18,11 @@ export default class Inspector extends Model {
       apelido: this.attr(''),
       sexo: this.attr(''),
       idade: this.attr(''),
-      telemovel1:this.attr(''),
-      telemovel2:this.attr(''),
-      fotografia:this.attr(''),
-      descricao:this.attr(''),
-      cargoOcupado:this.attr(''),
+      telemovel1: this.attr(''),
+      telemovel2: this.attr(''),
+      fotografia: this.attr(''),
+      descricao: this.attr(''),
+      cargoOcupado: this.attr(''),
 
       // RelationShip
       acarreacoes: this.hasMany(Acarreacao, "inspector_id"),

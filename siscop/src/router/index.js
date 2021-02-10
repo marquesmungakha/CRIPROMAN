@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import axios from 'axios'
 
 import routes from './routes'
 import Router from "vue-router";
@@ -29,10 +30,10 @@ export default function (/* { store, ssrContext } */) {
   })
 
   Router.beforeEach((to, from, next) => {
-     // const authUser = Login.query().first().access_token
-    // if(!to.meta.requiresAuth && !to.meta.roles) {
-      return next()
-    // }
+       const authUser = Login.query().first()
+    //  if(!to.meta.requiresAuth && !authUser) {
+    //   return next()
+    //  }
 
     // if(!authUser) {
     //   return next({path:'/Login'})
@@ -45,7 +46,25 @@ export default function (/* { store, ssrContext } */) {
     //   console.log('NO'+to.meta.roles.includes(authUser.auth.isAuthenticated.roles)+' '+to.meta.roles+' >> '+authUser.auth.isAuthenticated.roles)
     //   return next({name:'Home'})
     // }
+
+    console.log('beforeEach', to.path + ' - Auth: ' + authUser)
+    if ((to.path !== '/login' && to.path !== 'login') && authUser === null) {
+      next({ path: '/login' })
+    } else if ((to.path === '/login' || to.path === 'login') && authUser !== null) {
+      next({ path: '/' })
+    } else {
+      next()
+    }
   })
+
+// axios.interceptors.response.use((response) => {
+//   if (response.status === 401) {
+//     let msg = response.body.returnMessage
+//     localStorage.setItem('logoutReason', msg)
+//     authUser = null
+//   }else
+//     next()
+//   })
 
   return Router
 }

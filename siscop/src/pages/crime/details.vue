@@ -1,57 +1,67 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ crime.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('jurisdicao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getJurisdicaoLocal.designacao }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('jurisdicao') }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ crime.classeJudicial.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaCrime(crime)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeCrime(crime)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/crime' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaCrime(crime)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeCrime(crime)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
- <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localCrime.designacao"
-                    :classeJudicial.sync="classeJudicial"
-                    :jurisdicoes="allJurisdicoes"
-                    :submitting="submitting"
-                    :close="close"
-                    :createCrime="createCrime"
-                    :removeCrime="removeCrime"/>
+    <create-edit-form :classeJudicial.sync="classeJudicial"
+                      :close="close"
+                      :createCrime="createCrime"
+                      :designacao.sync="localCrime.designacao"
+                      :jurisdicoes="allJurisdicoes"
+                      :listErrors="listErrors"
+                      :removeCrime="removeCrime"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Crime from 'src/store/models/crime/crime'
+import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 
 export default {
   name: 'Crime',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -67,7 +77,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -81,39 +91,28 @@ export default {
     // this.$store.dispatch('pais/getPais', this.crime.pais.id)
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('crime/getCrime', currentRoute.params.id)
+    return Crime.query().with('classeJudicial').find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
-    this.$store.dispatch('jurisdicao/getAllJurisdicao')
+  mounted() {
   },
   computed: {
     crime: {
-      get () {
-        return this.$store.getters['crime/crime']
+      get() {
+        return Crime.query().with('classeJudicial').find(this.$route.params.id)
       },
-      set (crime) {
-        this.SET_UPDATE_CRIME({ crime })
+      set(crime) {
         this.$emit('update:crime', '')
-        this.$store.commit('crime/SET_UPDATE_CRIME', crime)
+        Crime.update(crime)
       }
-    },
-    allJurisdicoes () {
-      return this.$store.getters['jurisdicao/allJurisdicao']
-    },
-    getJurisdicaoLocal () {
-      const jurisdicaoLocal = this.allJurisdicoes.filter(jurisdicao => jurisdicao.id === this.crime.classe_judicial.id)
-      if (jurisdicaoLocal.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return jurisdicaoLocal[0] }
     }
   },
   components: {
     'create-edit-form': require('components/crime/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('crime', ['getAllCrime', 'getCrime', 'addNewCrime', 'updateCrime', 'deleteCrime']),
-    ...mapMutations('crime', ['SET_UPDATE_CRIME']),
-    removeCrime (crime) {
+    removeCrime(crime) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -131,18 +130,19 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + crime.designacao + ' ]'
         })
-        this.deleteCrime(crime)
+        Crime.api().delete("/crime/" + crime.id)
         this.$router.go(-1)
       })
     },
-    createCrime () {
+    createCrime() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.localCrime.classe_judicial.id = this.classeJudicial.id
-      this.updateCrime(this.localCrime).then(resp => {
+      this.localCrime.classeJudicial_id = this.classeJudicial.id
+      this.localCrime.classeJudicial = this.classeJudicial
+      Crime.api().patch("/crime/" + this.localCrime.id, this.localCrime).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -153,7 +153,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.crime.designacao + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localCrime.designacao + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -171,18 +171,14 @@ export default {
         }
       })
     },
-    editaCrime (crime) {
+    editaCrime(crime) {
       this.editedIndex = 0
       this.crime = Object.assign({}, crime)
       this.localCrime = Object.assign({}, crime)
-      this.classeJudicial = this.allJurisdicoes.filter(jurisdicao => jurisdicao.id === crime.classe_judicial.id)[0]
+      this.classeJudicial = ClasseJudicial.query().find(this.localCrime.classeJudicial_id)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('crime/getCrime', this.$route.params.id)
-      }
-      this.$store.dispatch('jurisdicao/getAllJurisdicao')
+    close() {
       this.show_dialog = false
       this.props = this.crime
       setTimeout(() => {
@@ -190,10 +186,10 @@ export default {
       }, 300)
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.classeJudicial = val
   },
   i18n: {

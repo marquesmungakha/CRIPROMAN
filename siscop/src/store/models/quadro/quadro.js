@@ -1,5 +1,4 @@
-import { Model } from "@vuex-orm/core";
-import Agente from "src/store/models/agente/agente";
+import {Model} from "@vuex-orm/core";
 
 export default class Quadro extends Model {
 
@@ -13,11 +12,11 @@ export default class Quadro extends Model {
       apelido: this.attr(''),
       sexo: this.attr(''),
       idade: this.attr(''),
-      telemovel1:this.attr(''),
-      telemovel2:this.attr(''),
-      fotografia:this.attr(''),
-      descricao:this.attr(''),
-      cargoOcupado:this.attr(''),
+      telemovel1: this.attr(''),
+      telemovel2: this.attr(''),
+      fotografia: this.attr(''),
+      descricao: this.attr(''),
+      cargoOcupado: this.attr(''),
 
       // RelationShip
       // agentes: this.hasMany(Agente, "inspector_id")

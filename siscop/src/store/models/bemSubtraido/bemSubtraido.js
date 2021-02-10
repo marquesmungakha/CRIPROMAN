@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import PecaProcesso from "src/store/models/pecaProcesso/pecaProcesso";
 
 export default class BemSubtraido extends Model {
@@ -11,10 +11,10 @@ export default class BemSubtraido extends Model {
       id: this.attr(null),
       descricao: this.attr(''),
       valorPrejuizo: this.attr(''),
-      pecaProcesso_id:this.attr(''),
+      pecaProcesso_id: this.attr(''),
 
       // Relationshiops
-      pecaProcesso: this.belongsTo(PecaProcesso,'pecaProcesso_id')
+      pecaProcesso: this.belongsTo(PecaProcesso, 'pecaProcesso_id')
     }
   }
 

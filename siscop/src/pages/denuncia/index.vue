@@ -1,79 +1,82 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Auto de Denúncia" :data="allDenuncias" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allDenuncias" :filter="filter" binary-state-sort row-key="name"
+             title="Auto de Denúncia">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="numero" :props="props">
-              {{ props.row.numero }}
-              <q-popup-edit v-model="props.row.numero" title="Update numero">
-                <q-input v-model="props.row.numero" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataAbertura" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
-                <q-input v-model="props.row.dataAbertura" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-             <q-td key="procedimentoCriminal" :props="props">
-              <div class="text-pre-wrap">{{ props.row.procedimentoCriminal }}</div>
-              <q-popup-edit v-model="props.row.tipoAuto">
-                <q-input v-model="props.row.procedimentoCriminal" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="inspector" :props="props">
-              <div class="text-pre-wrap">{{  getInspector(props.row.inspector.id).numero  }} - {{  getInspector(props.row.inspector.id).nome  }} {{  getInspector(props.row.inspector.id).apelido  }}</div>
-              <q-popup-edit v-model="props.row.inspector">
-                <q-input v-model="props.row.inspector" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/denuncia/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaDenuncia(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeDenuncia(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="denuncia.numero"
-                    :dataAbertura.sync="denuncia.dataAbertura"
-                    :descricao.sync="denuncia.descricao"
-                    :procedimentoCriminal.sync="denuncia.procedimentoCriminal"
-                    :inspector.sync="inspector"
-                    :anexo.sync="denuncia.anexo"
-                    :inspectors.sync="allInspectors"
-                    :submitting="submitting"
-                    :close="close"
-                    :createDenuncia="createDenuncia"
-                    :removeDenuncia="removeDenuncia"/>
+        <q-tr :props="props">
+          <q-td key="numero" :props="props">
+            {{ props.row.numero }}
+            <q-popup-edit v-model="props.row.numero" title="Update numero">
+              <q-input v-model="props.row.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataAbertura" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
+              <q-input v-model="props.row.dataAbertura" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="procedimentoCriminal" :props="props">
+            <div class="text-pre-wrap">{{ props.row.procedimentoCriminal }}</div>
+            <q-popup-edit v-model="props.row.tipoAuto">
+              <q-input v-model="props.row.procedimentoCriminal" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="inspector" :props="props">
+           <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+              {{ props.row.inspector.apelido }}
+            </div>
+            <q-popup-edit v-model="props.row.inspector.numero">
+              <q-input v-model="props.row.inspector.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/denuncia/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDenuncia(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDenuncia(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :anexo.sync="denuncia.anexo"
+                      :close="close"
+                      :createDenuncia="createDenuncia"
+                      :dataAbertura.sync="denuncia.dataAbertura"
+                      :descricao.sync="denuncia.descricao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :listErrors="listErrors"
+                      :numero.sync="denuncia.numero"
+                      :procedimentoCriminal.sync="denuncia.procedimentoCriminal"
+                      :removeDenuncia="removeDenuncia"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Denuncia from 'src/store/models/denuncia/denuncia'
+import Inspector from 'src/store/models/inspector/inspector'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -82,7 +85,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Denuncia',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -110,17 +113,45 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'numero', align: 'left', label: 'Número do Auto', field: row => row.numero, format: val => `${val}`, sortable: true },
-        { name: 'dataAbertura', align: 'left', label: 'Data de Abertura', field: row => row.dataAbertura, format: val => `${val}`, sortable: true },
-        { name: 'procedimentoCriminal', align: 'left', label: 'Procedimento Criminal?', field: row => row.procedimentoCriminal, format: val => `${val}`, sortable: true },
-        { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'numero',
+          align: 'left',
+          label: 'Número do Auto',
+          field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataAbertura',
+          align: 'left',
+          label: 'Data de Abertura',
+          field: row => row.dataAbertura,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'procedimentoCriminal',
+          align: 'left',
+          label: 'Procedimento Criminal?',
+          field: row => row.procedimentoCriminal,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'inspector',
+          align: 'left',
+          label: 'Inspector',
+          field: row => row.inspector.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -131,45 +162,40 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('denuncia/getAllDenuncia')
+    return this.getAllDenuncia()
   },
-  props: ['processo'],
-  mounted () {
-    this.$store.dispatch('denuncia/getAllDenuncia')
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  props: ['processoInvestigacao'],
+  mounted() {
+    this.getAllDenuncia()
+    this.getAllInspector()
   },
   components: {
     'create-edit-form': require('components/denuncia/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+    allInspectors() {
+       return Inspector.query().all()
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
-    },
-    allDenuncias () {
-      return this.$store.getters['denuncia/allDenuncia']
+    allDenuncias() {
+      return Denuncia.query().with('inspector').where('processo_id',this.processoInvestigacao.id).get()
     }
   },
   methods: {
-    ...mapActions('denuncia', ['getAllDenuncia', 'addNewDenuncia', 'updateDenuncia', 'deleteDenuncia']),
-    createDenuncia () {
+    createDenuncia() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
+      this.denuncia.inspector_id = this.inspector
+      this.denuncia.processo_id = this.processoInvestigacao.id
       this.denuncia.inspector = this.inspector
-      this.denuncia.processo = this.processo
-      this.denuncia.orgao = this.$store.state.orgao.orgaos[0]
+      this.denuncia.processo = this.processoInvestigacao
       //  const image = new Blob([this.denuncia.anexo])
       this.denuncia.anexo = null
       if (this.editedIndex > -1) {
-        this.updateDenuncia(this.denuncia).then(resp => {
+        Denuncia.api().patch("/denuncia/" + this.denuncia.id, this.denuncia).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -179,7 +205,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [ ' + this.denuncia.designacao + ' ]'
+            message: 'A informação foi actualizada com successo!! [ ' + this.denuncia.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -197,7 +223,7 @@ export default {
           }
         })
       } else {
-        this.addNewDenuncia(this.denuncia).then(resp => {
+         Denuncia.api().post("/denuncia/", this.denuncia).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -208,7 +234,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.denuncia.designacao + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.denuncia.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -227,10 +253,10 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('denuncia/getAllDenuncia')
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
+    close() {
+      this.getAllDenuncia()
+      this.getAllInspector()
+      this.listErrors = {}
       this.show_dialog = false
       this.denuncia = {}
       this.props = this.denuncia
@@ -238,7 +264,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeDenuncia (denuncia) {
+    removeDenuncia(denuncia) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -256,24 +282,25 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + denuncia.designacao + ' ]'
         })
-        this.deleteDenuncia(denuncia)
+        Denuncia.api().delete("/denuncia/" + this.denuncia.id)
       })
     },
-    editaDenuncia (denuncia) {
-      this.editedIndex = this.allDenuncias.indexOf(denuncia)
+    editaDenuncia(denuncia) {
+      this.editedIndex = 0
       this.denuncia = Object.assign({}, denuncia)
-      this.inspector = this.getInspector(denuncia.inspector.id)
-      this.orgao = this.$store.state.orgao.orgaos[0]
+      this.inspector = Inspector.query().find(denuncia.inspector.id) 
       this.show_dialog = true
     },
-    getInspector (id) {
-      const localInspector = this.allInspectors.filter(inspector => inspector.id === id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    getAllDenuncia() {
+      Denuncia.api().get("/denuncia?offset=0&max=1000000")
     },
-    abortFilterFn () {
+    getAllInspector() {
+      Inspector.api().get("/inspector?offset=0&max=1000000")
+    },
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

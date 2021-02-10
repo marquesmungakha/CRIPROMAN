@@ -1,5 +1,4 @@
-
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import AutoEntrada from "src/store/models/autoEntrada/autoEntrada";
 import FormaProcesso from "src/store/models/formaProcesso/formaProcesso";
 import Inspector from "src/store/models/inspector/inspector";
@@ -31,10 +30,10 @@ export default class ProcessoInvestigacao extends Model {
       magistrado_id: this.attr(''),
 
       // Relationshiops
-      autoEntrada: this.belongsTo(AutoEntrada,'numeroAuto_id'),
-      formaProcesso: this.belongsTo(FormaProcesso,'formaProcesso_id'),
-      inspector: this.belongsTo(Inspector,'inspector_id'),
-      magistrado: this.belongsTo(Magistrado,'magistrado_id'),
+      autoEntrada: this.belongsTo(AutoEntrada, 'numeroAuto_id'),
+      formaProcesso: this.belongsTo(FormaProcesso, 'formaProcesso_id'),
+      inspector: this.belongsTo(Inspector, 'inspector_id'),
+      magistrado: this.belongsTo(Magistrado, 'magistrado_id'),
 
       acarreacao: this.hasMany(Acarreacao, 'processo_id'),
       apreensoes: this.hasMany(Apreensao, 'processo_id'),
@@ -43,8 +42,7 @@ export default class ProcessoInvestigacao extends Model {
       denuncias: this.hasMany(Denuncia, 'processo_id'),
       despachos: this.hasMany(Despacho, 'processo_id'),
       detencoes: this.hasMany(Detencao, 'processo_id'),
-      perguntas: this.hasMany(Pergunta, 'processo_id')
-
+      perguntas: this.hasMany(Pergunta, 'processo_id'),
     }
   }
 

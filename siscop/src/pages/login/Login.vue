@@ -1,6 +1,6 @@
 <script src="../../services/ProfileService.js"></script>
 <template>
-  <q-layout class="bg-image" v-cloak>
+  <q-layout v-cloak class="bg-image">
     <q-page-container>
       <q-page class="flex flex-center">
         <transition
@@ -8,35 +8,35 @@
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut"
         >
-        <q-card v-bind:style="this.$q.screen.lt.sm?{'width': '80%'}:{'width':'30%','border-radius': '15px'}">
-          <q-card-section>
-            <q-avatar size="90px" class="absolute-center shadow-10">
-              <img src="~assets/User-Profile.png">
-            </q-avatar>
-          </q-card-section>
-          <q-card-section>
-            <div class="text-center q-pt-lg">
-              <div class="col text-h6  ellipsis"> Entrada ao Sistema </div>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <q-form @submit.prevent="processForm" class="q-gutter-md" >
-              <q-input v-model="username" label="Utilizador" lazy-rules>
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-              <q-input type="password" v-model="password" label="Senha" lazy-rules>
-                <template v-slot:prepend>
-                  <q-icon name="lock" />
-                </template>
-              </q-input>
-              <div>
-                <q-btn type="submit" :loading="submitting" label="Entrar" color="teal"/>
+          <q-card v-bind:style="this.$q.screen.lt.sm?{'width': '80%'}:{'width':'30%','border-radius': '15px'}">
+            <q-card-section>
+              <q-avatar class="absolute-center shadow-10" size="90px">
+                <img src="~assets/User-Profile.png">
+              </q-avatar>
+            </q-card-section>
+            <q-card-section>
+              <div class="text-center q-pt-lg">
+                <div class="col text-h6  ellipsis"> Entrada ao Sistema</div>
               </div>
-            </q-form>
-          </q-card-section>
-        </q-card>
+            </q-card-section>
+            <q-card-section>
+              <q-form class="q-gutter-md" @submit.prevent="processForm">
+                <q-input v-model="username" label="Utilizador" lazy-rules>
+                  <template v-slot:prepend>
+                    <q-icon name="person"/>
+                  </template>
+                </q-input>
+                <q-input v-model="password" label="Senha" lazy-rules type="password">
+                  <template v-slot:prepend>
+                    <q-icon name="lock"/>
+                  </template>
+                </q-input>
+                <div>
+                  <q-btn :loading="submitting" color="teal" label="Entrar" type="submit"/>
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
         </transition>
       </q-page>
     </q-page-container>
@@ -47,14 +47,13 @@
 import UsersService from '../../services/UsersService'
 import ProfileService from '../../services/ProfileService'
 import {QSpinnerBall} from "quasar";
-import Login from "src/store/models/login/login";
 
 export default {
-  data () {
+  data() {
     return {
       context: 'login context',
-      username:'',
-      password:'',
+      username: '',
+      password: '',
       submitting: false,
       data: {
         rememberMe: false,
@@ -89,25 +88,25 @@ export default {
         this.submitting = false
       }, 500)
       UsersService.login({
-        'username':  this.username,
-        'password':  this.password
+        'username': this.username,
+        'password': this.password
       })
         .then((response) => {
           if (response.response.data) {
             console.log('Login >>>>>>>>', response.response.data)//.access_token);
-            localStorage.setItem('id_token',  response.response.data.access_token)
-            localStorage.setItem('refresh_token',  response.response.data.refresh_token)
+            localStorage.setItem('id_token', response.response.data.access_token)
+            localStorage.setItem('refresh_token', response.response.data.refresh_token)
             // Login.insert(response.response.data)
             // this.$store.dispatch('auth/login',  response.response.data);
             // this.$store.dispatch('user/setToken', response.data.access_token);
             // this.$store.dispatch('user/userLogged',new Boolean(true));
 
-       //     this.getProfile(response.data.id);
+            //     this.getProfile(response.data.id);
 
-            if(response.response.data.roles[0] === 'ROLE_ADMIN') {
+            if (response.response.data.roles[0] === 'ROLE_ADMIN') {
               this.$router.push({path: '/'})
               // this.$router.push({path: 'Admin'})
-            } else if(response.response.data.roles[0] === 'ROLE_DRIVER') {
+            } else if (response.response.data.roles[0] === 'ROLE_DRIVER') {
               this.$router.push({name: 'Garage'})
             } else {
               this.$router.push({name: '/'})
@@ -115,11 +114,11 @@ export default {
           }
         })
     },
-    getProfile (userId) {
+    getProfile(userId) {
       console.log(userId)
       ProfileService.fetchProfile(userId)
         .then((res) => {
-          console.log("PROFILE" +res.data)
+          console.log("PROFILE" + res.data)
           this.$store.dispatch('user/setProfile', res.data)
           //this.$router.push({name: 'Home'})
         })
@@ -139,6 +138,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
 [v-cloak] {
   display: none !important;
 }

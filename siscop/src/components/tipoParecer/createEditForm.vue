@@ -3,7 +3,7 @@
        <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 600px; max-width: 60vw;">
         <q-card-section>
-            <div class="text-h6">Adicionar  Tipo de Parecer do Processo!</div>
+            <div class="text-h6">Adicionar  de Estágio do Processo!</div>
         </q-card-section>
                 <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">

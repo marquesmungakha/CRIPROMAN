@@ -1,70 +1,70 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card bordered class="my-card" flat>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+        <div class="row">
+          <div class="col-12">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('codigo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ cidade.codigo }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('codigo') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ cidade.codigo }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ cidade.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ cidade.provincia.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                 <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ cidade.distrito.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-              </div>
-            </div>
-                </q-card-section>
-                 <div class="row">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ cidade.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('provincia') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ cidade.provincia.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('distrito') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ cidade.distrito.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+          </div>
+        </div>
+      </q-card-section>
+      <div class="row">
         <div class="col">
           <q-card-actions align="left">
-            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/cidade' " no-caps/>
+            <q-btn v-go-back=" '/cidade' " class="glossy" color="primary" label="Voltar" no-caps/>
           </q-card-actions>
         </div>
         <div class="col">
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaCidade(cidade)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeCidade(cidade)" no-caps/>
-                </q-card-actions>
+          <q-card-actions align="right">
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaCidade(cidade)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeCidade(cidade)"/>
+          </q-card-actions>
         </div>
-                 </div>
-            </q-card>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="localCidade.codigo"
-                    :designacao.sync="localCidade.designacao"
-                    :provincia.sync="provincia"
-                    :distrito.sync="distrito"
-                    :provincias="allProvincias"
-                    :distritos="allDistritosFromProvincia"
-                    :submitting="submitting"
-                    :close="close"
-                    :createCidade="createCidade"
-                    :removeCidade="removeCidade"/>
+      </div>
+    </q-card>
+    <create-edit-form :close="close"
+                      :codigo.sync="localCidade.codigo"
+                      :createCidade="createCidade"
+                      :designacao.sync="localCidade.designacao"
+                      :distrito.sync="distrito"
+                      :distritos="allDistritosFromProvincia"
+                      :listErrors="listErrors"
+                      :provincia.sync="provincia"
+                      :provincias="allProvincias"
+                      :removeCidade="removeCidade"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
@@ -72,11 +72,10 @@
 import Cidade from 'src/store/models/cidade/cidade'
 import Provincia from 'src/store/models/provincia/provincia'
 import Distrito from 'src/store/models/distrito/distrito'
-import Pais from 'src/store/models/pais/pais'
 
 export default {
   name: 'Provincia',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -102,7 +101,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -115,27 +114,27 @@ export default {
     // Example:
     return Cidade.query().with('provincia').with('distrito').find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     cidade: {
-      get () {
+      get() {
         return Cidade.query().with('provincia').with('distrito').find(this.$route.params.id)
       },
-      set (cidade) {
+      set(cidade) {
         this.$emit('update:cidade', '')
         Cidade.update(cidade)
       }
     },
-     allProvincias () {
+    allProvincias() {
       return Provincia.query().with('pais').all()
     },
-    allDistritosFromProvincia () {
+    allDistritosFromProvincia() {
       return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    allDistritos () {
+    allDistritos() {
       return Distrito.query().all()
     }
   },
@@ -143,7 +142,7 @@ export default {
     'create-edit-form': require('components/cidade/createEditForm.vue').default
   },
   methods: {
-    removeCidade (cidade) {
+    removeCidade(cidade) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -161,22 +160,22 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + cidade.designacao + ' ]'
         })
-        Cidade.api().delete("/cidade/"+cidade.id)
+        Cidade.api().delete("/cidade/" + cidade.id)
         this.$router.go(-1)
       })
     },
-    createCidade () {
+    createCidade() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-       this.localCidade.provincia = this.provincia
-      this.localCidade.provincia =  this.provincia
+      this.localCidade.provincia = this.provincia
+      this.localCidade.provincia = this.provincia
       this.localCidade.distrito = this.distrito
       this.localCidade.provincia_id = this.provincia.id
       this.localCidade.distrito_id = this.distrito.id
-     Cidade.api().patch("/cidade/"+this.localCidade.id,this.localCidade).then(resp => {
+      Cidade.api().patch("/cidade/" + this.localCidade.id, this.localCidade).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -205,15 +204,15 @@ export default {
         }
       })
     },
-    editaCidade (cidade) {
+    editaCidade(cidade) {
       this.editedIndex = 0
       this.localCidade = Object.assign({}, cidade)
       this.provincia = Provincia.query().find(cidade.provincia.id)
       this.distrito = Distrito.query().find(cidade.distrito.id)
       this.show_dialog = true
     },
-    close () {
-       this.getAllPais()
+    close() {
+      this.getAllPais()
       this.getAllProvincia()
       this.getAllDistrito()
       this.show_dialog = false
@@ -223,7 +222,7 @@ export default {
       }, 300)
     }
   },
-  filterFn (val, update, abort) {
+  filterFn(val, update, abort) {
     const stringOptions = this.allProvincias
     if (val === '') {
       update(() => {
@@ -239,15 +238,15 @@ export default {
           .map(provincia => provincia)
           .filter(provincia => {
             return provincia &&
-                   provincia.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+              provincia.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
           })
       })
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.cidade.provincia = val
   },
   i18n: {

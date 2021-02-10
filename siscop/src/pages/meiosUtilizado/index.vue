@@ -1,115 +1,126 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Meio Utilizado" :data="allMeioUtilizadosFromPecaProcesso" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allMeioUtilizadosFromPecaProcesso" :filter="filter" binary-state-sort
+             row-key="name" title="Meio Empregue">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="matricula" :props="props">
-              {{ props.row.matricula }}
-              <q-popup-edit v-model="props.row.matricula">
-                <q-input v-model="props.row.matricula" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="cor" :props="props">
-              {{ props.row.cor }}
-              <q-popup-edit v-model="props.row.cor">
-                <q-input v-model="props.row.cor" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="calibre" :props="props">
-              {{ props.row.calibre }}
-              <q-popup-edit v-model="props.row.calibre">
-                <q-input v-model="props.row.calibre" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao">
-                <q-input v-model="props.row.designacao" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="tipoMeio" :props="props">
-              {{ getTipoMeio (props.row.tipoMeio.id).designacao }}
-              <q-popup-edit v-model="props.row.tipoMeio">
-                <q-input v-model="props.row.tipoMeio" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="marca" :props="props">
-              {{ getMarca (props.row.marca.id).designacao }}
-              <q-popup-edit v-model="props.row.marca">
-                <q-input v-model="props.row.marca" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="modelo" :props="props">
-              {{ getModelo(props.row.modelo.id).designacao  }}
-              <q-popup-edit v-model="props.row.modelo">
-                <q-input v-model="props.row.modelo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <q-btn round glossy icon="edit" color="blue" @click="editaMeioUtilizado(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeMeioUtilizado(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-   <div class="q-pa-sm q-gutter-sm">
-       <q-dialog v-model="show_dialog" persistent>
-         <q-card style="width: 1100px; max-width: 90vw;">
-        <q-card-section>
-            <div class="text-h6">Adicionar  MeioUtilizado!</div>
+        <q-tr :props="props">
+          <q-td key="matricula" :props="props">
+            {{ props.row.matricula }}
+            <q-popup-edit v-model="props.row.matricula">
+              <q-input v-model="props.row.matricula" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="cor" :props="props">
+            {{ props.row.cor }}
+            <q-popup-edit v-model="props.row.cor">
+              <q-input v-model="props.row.cor" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="calibre" :props="props">
+            {{ props.row.calibre }}
+            <q-popup-edit v-model="props.row.calibre">
+              <q-input v-model="props.row.calibre" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao">
+              <q-input v-model="props.row.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="tipoMeio" :props="props">
+            {{ props.row.tipoMeio.designacao }}
+            <q-popup-edit v-model="props.row.tipoMeio.designacao">
+              <q-input v-model="props.row.tipoMeio.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="marca" :props="props">
+            {{ props.row.marca.designacao }}
+            <q-popup-edit v-model="props.row.marca.designacao">
+              <q-input v-model="props.row.marca.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="modelo" :props="props">
+            {{ props.row.modelo.designacao }}
+            <q-popup-edit v-model="props.row.modelo.designacao">
+              <q-input v-model="props.row.modelo.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaMeioUtilizado(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click="removeMeioUtilizado(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 1100px; max-width: 90vw;">
+          <q-card-section>
+            <div class="text-h6">Adicionar Meio Empregue!</div>
+          </q-card-section>
+         <q-card-section>
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+            <ul class="list-group alert alert-danger">
+              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                  v-for="item in listErrors" :key="item">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
         </q-card-section>
-            <q-card-section>
-            <li v-for="item in listErrors" :key="item">
-            {{ item }}
-            </li>
-            </q-card-section>
-            <q-separator />
-            <q-card-section style="max-height: 70vh" class="scroll">
-                    <q-form @submit.prevent="createMeioUtilizado" class="q-gutter-md">
-                        <create-edit-form :matricula.sync="meioUtilizado.matricula"
-                                          :cor.sync="meioUtilizado.cor"
-                                          :calibre.sync="meioUtilizado.calibre"
-                                          :designacao.sync="meioUtilizado.designacao"
-                                          :tipoMeio.sync="tipoMeio"
-                                          :marca.sync="marca"
-                                          :modelo.sync="modelo"
-                                          :modeloList.sync="allModeloFromMarca"
-                                          :marcaList.sync="allMarcaFromTipoMeio"
-                                          :tipoMeioList.sync="allTipoMeio"/>
-                      </q-form>
-            </q-card-section>
-            <q-separator />
-        <q-card-actions align="right">
-            <q-btn type="submit" :loading="submitting" @click.stop="createMeioUtilizado" color="teal" label="Gravar" />
-            <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-        </q-card-actions>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createMeioUtilizado">
+              <create-edit-form :calibre.sync="meioUtilizado.calibre"
+                                :cor.sync="meioUtilizado.cor"
+                                :chassi.sync="meioUtilizado.chassi"
+                                :numeroMotor.sync="meioUtilizado.numeroMotor"
+                                :designacao.sync="meioUtilizado.designacao"
+                                :marca.sync="marca"
+                                :marcaList.sync="allMarcaFromTipoMeio"
+                                :matricula.sync="meioUtilizado.matricula"
+                                :modelo.sync="modelo"
+                                :modeloList.sync="allModeloFromMarca"
+                                :tipoMeio.sync="tipoMeio"
+                                :tipoMeioList.sync="allTipoMeio"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createMeioUtilizado"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
         </q-card>
-    </q-dialog>
-   </div>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import TipoMeio from 'src/store/models/tipoMeio/tipoMeio'
+import Marca from 'src/store/models/marca/marca'
+import Modelo from 'src/store/models/modelo/modelo'
+import MeiosUtilizado from 'src/store/models/meiosUtilizado/meiosUtilizado'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -118,7 +129,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'MeioUtilizado',
-  data () {
+  data() {
     return {
       listErrors: [],
       meioUtilizado_details_dialog: false,
@@ -132,6 +143,8 @@ export default {
         cor: '',
         calibre: '',
         designacao: '',
+        chassi: '',
+        numeroMotor: '',
         tipoMeio: {},
         marca: {},
         modelo: {},
@@ -147,20 +160,63 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'matricula', required: true, label: 'Matrícula', align: 'left', field: row => row.matricula, format: val => `${val}`, sortable: true },
-        { name: 'cor', align: 'left', label: 'Cor', field: row => row.cor, format: val => `${val}`, sortable: true },
-        { name: 'calibre', align: 'left', label: 'Calibre', field: row => row.calibre, format: val => `${val}`, sortable: true },
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'tipoMeio', align: 'left', label: 'Tipo de Meio Utilizado', field: row => row.tipoMeio, format: val => `${val}`, sortable: true },
-        { name: 'marca', align: 'left', label: 'Marca', field: row => row.marca, format: val => `${val}`, sortable: true },
-        { name: 'modelo', align: 'left', label: 'Modelo', field: row => row.modelo, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'matricula',
+          required: true,
+          label: 'Matrícula',
+          align: 'left',
+          field: row => row.matricula,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'cor', align: 'left', label: 'Cor', field: row => row.cor, format: val => `${val}`, sortable: true},
+        {
+          name: 'calibre',
+          align: 'left',
+          label: 'Calibre',
+          field: row => row.calibre,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'tipoMeio',
+          align: 'left',
+          label: 'Tipo de Meio Utilizado',
+          field: row => row.tipoMeio,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'marca',
+          align: 'left',
+          label: 'Marca',
+          field: row => row.marca,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'modelo',
+          align: 'left',
+          label: 'Modelo',
+          field: row => row.modelo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -171,60 +227,62 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('meioUtilizado/getAllMeioUtilizado')
+    return this.getAllMeioUtilizado()
   },
   props: [
-    'autoEntrada'
+    'pecaProcesso'
   ],
-  mounted () {
-    this.$store.dispatch('meioUtilizado/getAllMeioUtilizado')
-    this.$store.dispatch('tipoMeio/getAllTipoMeio')
-    this.$store.dispatch('marca/getAllMarca')
-    this.$store.dispatch('modelo/getAllModelo')
+  mounted() {
+    this.getAllMeioUtilizado()
+    this.getAllTipoMeio()
+    this.getAllMarca()
+    this.getAllModelo()
   },
   components: {
     'create-edit-form': require('components/meiosUtilizado/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+    created() {
+    },
+  metaInfo: {},
   computed: {
-    allMeioUtilizados () {
-      return this.$store.getters['meioUtilizado/allMeioUtilizado'].filter(meioUtilizado => meioUtilizado.pecaProcesso != null)
+    allMeioUtilizadosFromPecaProcesso() {
+      return MeiosUtilizado.query().with('tipoMeio').with('marca').with('modelo').all()
     },
-    allMeioUtilizadosFromPecaProcesso () {
-      return this.allMeioUtilizados.filter(meioUtilizado => meioUtilizado.pecaProcesso.id === this.autoEntrada.id)
+    allTipoMeio() {
+      return TipoMeio.query().all()
     },
-    allTipoMeio () {
-      return this.$store.getters['tipoMeio/allTipoMeio']
+    allMarca() {
+      return Marca.query().with('tipoMeio').all()
     },
-    allMarca () {
-      return this.$store.getters['marca/allMarca']
+    allModelo() {
+      return Modelo.query().with('marca').all()
     },
-    allModelo () {
-      return this.$store.getters['modelo/allModelo']
+    allMarcaFromTipoMeio() {
+      return Marca.query().with('tipoMeio').where('tipoMeio_id', this.tipoMeio.id).get()
     },
-    allMarcaFromTipoMeio () {
-      return this.allMarca.filter(marca => marca.tipoMeio.id === this.tipoMeio.id)
-    },
-    allModeloFromMarca () {
-      return this.allModelo.filter(modelo => modelo.marca.id === this.marca.id)
+    allModeloFromMarca() {
+      return Modelo.query().with('marca').where('marca_id', this.marca.id).get()
     }
   },
   methods: {
-    ...mapActions('meioUtilizado', ['getAllMeioUtilizado', 'addNewMeioUtilizado', 'updateMeioUtilizado', 'deleteMeioUtilizado']),
-    createMeioUtilizado () {
+    createMeioUtilizado() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.meioUtilizado.tipoMeio = this.tipoMeio
+      this.marca.tipoMeio = this.tipoMeio
+      this.modelo.marca = this.marca
+      this.meioUtilizado.marca_id = this.marca.id
+      this.meioUtilizado.modelo_id = this.modelo.id
+      this.meioUtilizado.pecaProcesso_id = this.pecaProcesso.id
       this.meioUtilizado.marca = this.marca
       this.meioUtilizado.modelo = this.modelo
-      this.meioUtilizado.pecaProcesso = this.autoEntrada
-      console.log('MeioUtilizado' + this.meioUtilizado[0])
+      this.meioUtilizado.pecaProcesso = this.pecaProcesso
+    
       if (this.editedIndex > -1) {
-        this.updateMeioUtilizado(this.meioUtilizado).then(resp => {
+         MeiosUtilizado.api().patch("/meioUtilizado/" + this.meioUtilizado.id, this.meioUtilizado).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -252,7 +310,7 @@ export default {
           }
         })
       } else {
-        this.addNewMeioUtilizado(this.meioUtilizado).then(resp => {
+        MeiosUtilizado.api().post("/meioUtilizado/", this.meioUtilizado).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -282,11 +340,11 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('meioUtilizado/getAllMeioUtilizado')
-      this.$store.dispatch('tipoMeio/getAllTipoMeio')
-      this.$store.dispatch('marca/getAllMarca')
-      this.$store.dispatch('modelo/getAllModelo')
+    close() {
+      this.getAllMeioUtilizado()
+    this.getAllTipoMeio()
+    this.getAllMarca()
+    this.getAllModelo()
       this.show_dialog = false
       this.meioUtilizado = {}
       this.props = this.meioUtilizado
@@ -294,7 +352,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeMeioUtilizado (meioUtilizado) {
+    removeMeioUtilizado(meioUtilizado) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -312,30 +370,30 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + meioUtilizado.nome + ' ]'
         })
-        this.deleteMeioUtilizado(meioUtilizado)
+         MeiosUtilizado.api().delete("/meioUtilizado/" + this.meioUtilizado.id)
       })
     },
-    editaMeioUtilizado (meioUtilizado) {
-      this.editedIndex = this.allMeioUtilizados.indexOf(meioUtilizado)
+    editaMeioUtilizado(meioUtilizado) {
+      this.editedIndex = 0
       this.meioUtilizado = Object.assign({}, meioUtilizado)
-      this.meioUtilizado.tipoMeio = this.tipoMeio
-      this.meioUtilizado.marca = this.marca
-      this.meioUtilizado.modelo = this.modelo
+      this.tipoMeio = TipoMeio.query().find(meioUtilizado.tipoMeio_id)
+      this.marca = Marca.query().find(meioUtilizado.marca_id)
+      this.modelo = Modelo.query().find(meioUtilizado.modelo_id)
       this.show_dialog = true
     },
-    getTipoMeio (id) {
-      const localTipoMeio = this.allTipoMeio.filter(tipoMeio => tipoMeio.id === id)
-      if (localTipoMeio.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localTipoMeio[0] }
+    getAllMeioUtilizado() {
+      MeiosUtilizado.api().get('/meioUtilizado?offset=0&max=1000000')
     },
-    getMarca (id) {
-      const localMarca = this.allMarca.filter(marca => marca.id === id)
-      if (localMarca.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localMarca[0] }
+    getAllTipoMeio() {
+      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
     },
-    getModelo (id) {
-      const localModelo = this.allModelo.filter(modelo => modelo.id === id)
-      if (localModelo.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localModelo[0] }
+    getAllMarca() {
+      Marca.api().get('/marca?offset=0&max=1000000')
     },
-    exportTable () {
+    getAllModelo() {
+      Modelo.api().get('/modelo?offset=0&max=1000000')
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

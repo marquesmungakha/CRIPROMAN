@@ -4,10 +4,9 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.rest.Resource
 import org.informservice.criproman.classeJudicial.ClasseJudicial
 import org.informservice.criproman.crimes.Crime
-import org.informservice.criproman.pecaProcesso.PecaProcesso
-import org.informservice.criproman.processoInvestigacao.ProcessoInvestigacao
-import org.informservice.criproman.tipoauto.TipoAuto
 import org.informservice.criproman.orgao.Orgao
+import org.informservice.criproman.pecaProcesso.PecaProcesso
+import org.informservice.criproman.tipoauto.TipoAuto
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/autoEntrada')
@@ -23,7 +22,7 @@ class AutoEntrada extends PecaProcesso{
     String responsavelLocal
     String contacto
 
-    static hasOne = [processo: ProcessoInvestigacao]
+//    static hasOne = [processo: ProcessoInvestigacao]
     static belongsTo = [orgao: Orgao]
 
     static constraints = {

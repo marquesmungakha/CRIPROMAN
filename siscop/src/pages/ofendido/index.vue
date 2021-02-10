@@ -1,161 +1,173 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Ofendido" :data="allOfendidosFromPecaProcesso" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allOfendidosFromPecaProcesso" :filter="filter" binary-state-sort row-key="name"
+             title="Ofendido/Vítima">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="nome" :props="props">
-              {{ props.row.nome }}
-              <q-popup-edit v-model="props.row.nome">
-                <q-input v-model="props.row.nome" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="apelido" :props="props">
-              {{ props.row.apelido }}
-              <q-popup-edit v-model="props.row.apelido">
-                <q-input v-model="props.row.apelido" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="sexo" :props="props">
-              {{ props.row.sexo }}
-              <q-popup-edit v-model="props.row.sexo">
-                <q-input v-model="props.row.sexo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataNascimento" :props="props">
-              {{ props.row.dataNascimento }}
-              <q-popup-edit v-model="props.row.dataNascimento">
-                <q-input v-model="props.row.dataNascimento" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="naturalidade" :props="props">
-              {{ props.row.naturalidade }}
-              <q-popup-edit v-model="props.row.naturalidade">
-                <q-input v-model="props.row.naturalidade" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="nacionalidade" :props="props">
-              {{ getPais (props.row.nacionalidade.id).nacionalidade }}
-              <q-popup-edit v-model="props.row.nacionalidade">
-                <q-input v-model="props.row.nacionalidade" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="provincia" :props="props">
-              {{ getProvincia (props.row.provincia.id).designacao }}
-              <q-popup-edit v-model="props.row.provincia">
-                <q-input v-model="props.row.provincia" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="localNascimento" :props="props">
-              {{ props.row.localNascimento }}
-              <q-popup-edit v-model="props.row.localNascimento">
-                <q-input v-model="props.row.localNascimento" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="estadoCivil" :props="props">
-              {{ props.row.estadoCivil }}
-              <q-popup-edit v-model="props.row.estadoCivil">
-                <q-input v-model="props.row.estadoCivil" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="tipoDocumento" :props="props">
-              {{ getTipoDocumento(props.row.tipoDocumento.id).designacao  }}
-              <q-popup-edit v-model="props.row.tipoDocumento">
-                <q-input v-model="props.row.tipoDocumento" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="numDocumentoIndentificacao" :props="props">
-              {{ props.row.numDocumentoIndentificacao }}
-              <q-popup-edit v-model="props.row.numDocumentoIndentificacao">
-                <q-input v-model="props.row.numDocumentoIndentificacao" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="documentoValidade" :props="props">
-              {{ props.row.documentoValidade }}
-              <q-popup-edit v-model="props.row.documentoValidade">
-                <q-input v-model="props.row.documentoValidade" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="morada" :props="props">
-              {{ props.row.morada }}
-              <q-popup-edit v-model="props.row.morada">
-                <q-input v-model="props.row.morada" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <q-btn round glossy icon="edit" color="blue" @click="editaOfendido(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeOfendido(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-   <div class="q-pa-sm q-gutter-sm">
-       <q-dialog v-model="show_dialog" persistent>
-         <q-card style="width: 1100px; max-width: 90vw;">
-        <q-card-section>
-            <div class="text-h6">Adicionar  Ofendido!</div>
+        <q-tr :props="props">
+          <q-td key="nome" :props="props">
+            {{ props.row.ofendido.nome }}
+            <q-popup-edit v-model="props.row.ofendido.nome">
+              <q-input v-model="props.row.ofendido.nome" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="apelido" :props="props">
+            {{ props.row.ofendido.apelido }}
+            <q-popup-edit v-model="props.row.ofendido.apelido">
+              <q-input v-model="props.row.ofendido.apelido" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="sexo" :props="props">
+            {{ props.row.ofendido.sexo }}
+            <q-popup-edit v-model="props.row.ofendido.sexo">
+              <q-input v-model="props.row.ofendido.sexo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataNascimento" :props="props">
+            {{ props.row.ofendido.dataNascimento }}
+            <q-popup-edit v-model="props.row.ofendido.dataNascimento">
+              <q-input v-model="props.row.ofendido.dataNascimento" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="naturalidade" :props="props">
+            {{ props.row.ofendido.naturalidade }}
+            <q-popup-edit v-model="props.row.ofendido.naturalidade">
+              <q-input v-model="props.row.ofendido.naturalidade" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="nacionalidade" :props="props">
+            {{ props.row.ofendido.nacionalidade.nacionalidade }}
+            <q-popup-edit v-model="props.row.ofendido.nacionalidade.nacionalidade">
+              <q-input v-model="props.row.ofendido.nacionalidade.nacionalidade" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="provincia" :props="props">
+            {{ props.row.ofendido.provincia.designacao }}
+            <q-popup-edit v-model="props.row.ofendido.provincia.designacao">
+              <q-input v-model="props.row.ofendido.provincia.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="localNascimento" :props="props">
+            {{ props.row.ofendido.localNascimento }}
+            <q-popup-edit v-model="props.row.ofendido.localNascimento">
+              <q-input v-model="props.row.ofendido.localNascimento" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="estadoCivil" :props="props">
+            {{ props.row.ofendido.estadoCivil }}
+            <q-popup-edit v-model="props.row.ofendido.estadoCivil">
+              <q-input v-model="props.row.ofendido.estadoCivil" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="tipoDocumento" :props="props">
+            {{ props.row.ofendido.tipoDocumento.designacao }}
+            <q-popup-edit v-model="props.row.ofendido.tipoDocumento.designacao">
+              <q-input v-model="props.row.ofendido.tipoDocumento.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="numDocumentoIndentificacao" :props="props">
+            {{ props.row.ofendido.numDocumentoIndentificacao }}
+            <q-popup-edit v-model="props.row.ofendido.numDocumentoIndentificacao">
+              <q-input v-model="props.row.ofendido.numDocumentoIndentificacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="documentoValidade" :props="props">
+            {{ props.row.ofendido.documentoValidade }}
+            <q-popup-edit v-model="props.row.ofendido.documentoValidade">
+              <q-input v-model="props.row.ofendido.documentoValidade" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="morada" :props="props">
+            {{ props.row.ofendido.morada }}
+            <q-popup-edit v-model="props.row.ofendido.morada">
+              <q-input v-model="props.row.ofendido.morada" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaOfendido(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeOfendido(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 1100px; max-width: 90vw;">
+          <q-card-section>
+            <div class="text-h6">Adicionar Ofendido/Vítima!</div>
+          </q-card-section>
+           <q-card-section>
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+            <ul class="list-group alert alert-danger">
+              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                  v-for="item in listErrors" :key="item">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
         </q-card-section>
-            <q-card-section>
-            <li v-for="item in listErrors" :key="item">
-            {{ item }}
-            </li>
-            </q-card-section>
-            <q-separator />
-            <q-card-section style="max-height: 70vh" class="scroll">
-                    <q-form @submit.prevent="createOfendido" class="q-gutter-md">
-                      <individuo :nome.sync="ofendido.nome"
-                                :sexo.sync="ofendido.sexo"
-                                :telemovel2.sync="ofendido.telemovel2"
-                                :apelido.sync="ofendido.apelido"
-                                :telemovel1.sync="ofendido.telemovel1"
-                                :fotografia.sync="ofendido.fotografia"
-                                :idade.sync="ofendido.idade"
-                                :estadoCivil.sync="ofendido.estadoCivil"
-                                :naturalidade.sync="ofendido.naturalidade"
-                                :dataNascimento.sync="ofendido.dataNascimento"
-                                :localNascimento.sync="ofendido.localNascimento"
-                                :morada.sync="ofendido.morada"
-                                :documentoValidade.sync="ofendido.documentoValidade"
-                                :numDocumentoIndentificacao.sync="ofendido.numDocumentoIndentificacao"
-                                :pais.sync="pais"
-                                :provincia.sync="provincia"
-                                :tipoDocumento.sync="tipoDocumento"
-                                :paises.sync="allPaises"
-                                :tipoDocumentos.sync="allTipoDocumentos"
-                                :provincias.sync="allProvinciaFromPais"/>
-                      </q-form>
-            </q-card-section>
-            <q-separator />
-        <q-card-actions align="right">
-            <q-btn type="submit" :loading="submitting" @click.stop="createOfendido" color="teal" label="Gravar" />
-            <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-        </q-card-actions>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createOfendido">
+              <individuo :apelido.sync="ofendido.apelido"
+                         :dataNascimento.sync="ofendido.dataNascimento"
+                         :documentoValidade.sync="ofendido.documentoValidade"
+                         :estadoCivil.sync="ofendido.estadoCivil"
+                         :fotografia.sync="ofendido.fotografia"
+                         :idade.sync="ofendido.idade"
+                         :localNascimento.sync="ofendido.localNascimento"
+                         :morada.sync="ofendido.morada"
+                         :naturalidade.sync="ofendido.naturalidade"
+                         :nome.sync="ofendido.nome"
+                         :numDocumentoIndentificacao.sync="ofendido.numDocumentoIndentificacao"
+                         :pais.sync="pais"
+                         :paises.sync="allPaises"
+                         :provincia.sync="provincia"
+                         :provincias.sync="allProvinciaFromPais"
+                         :sexo.sync="ofendido.sexo"
+                         :telemovel1.sync="ofendido.telemovel1"
+                         :telemovel2.sync="ofendido.telemovel2"
+                         :tipoDocumento.sync="tipoDocumento"
+                         :tipoDocumentos.sync="allTipoDocumentos"
+                         :onFileChange.sync="onFileChange"
+                         :image.sync="image"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createOfendido"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
         </q-card>
-    </q-dialog>
-   </div>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Pais from 'src/store/models/pais/pais'
+import TipoDocumentoIdentificacao from 'src/store/models/tipoDocumentoIdentificacao/tipoDocumentoIdentificacao'
+import Provincia from 'src/store/models/provincia/provincia'
+import Ofendido from 'src/store/models/ofendido/ofendido'
+import PecaProcessoOfendido from 'src/store/models/pecaProcesso/pecaProcessoOfendido'
+import PecaProcesso from 'src/store/models/pecaProcesso/pecaProcesso'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -164,7 +176,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Ofendido',
-  data () {
+  data() {
     return {
       listErrors: [],
       ofendido_details_dialog: false,
@@ -173,6 +185,7 @@ export default {
       filter: '',
       show_dialog: false,
       show_filter: false,
+      image: '',
       ofendido: {
         nome: '',
         apelido: '',
@@ -193,12 +206,16 @@ export default {
         ocupacao: '',
         qualidadeDe: '',
         pais: {},
-        provincia: {},
+        provincia: {}
+      },
+       pecaProcessoOfendido: {
+        ofendido: {},
         pecaProcesso: {}
       },
       pais: {
         codigo: '',
-        designacao: ''
+        designacao: '',
+        nacionalidade: ''
       },
       provincia: {
         codigo: '',
@@ -209,26 +226,111 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'nome', required: true, label: 'Nome', align: 'left', field: row => row.nome, format: val => `${val}`, sortable: true },
-        { name: 'apelido', align: 'left', label: 'Apelido', field: row => row.apelido, format: val => `${val}`, sortable: true },
-        { name: 'sexo', align: 'left', label: 'Gênero', field: row => row.sexo, format: val => `${val}`, sortable: true },
-        { name: 'dataNascimento', align: 'left', label: 'Data de Nascimento', field: row => row.dataNascimento, format: val => `${val}`, sortable: true },
-        { name: 'naturalidade', align: 'left', label: 'Naturalidade', field: row => row.naturalidade, format: val => `${val}`, sortable: true },
-        { name: 'nacionalidade', align: 'left', label: 'Nacionalidade', field: row => row.nacionalidade, format: val => `${val}`, sortable: true },
-        { name: 'provincia', align: 'left', label: 'Província', field: row => row.provincia, format: val => `${val}`, sortable: true },
-        { name: 'localNascimento', align: 'left', label: 'Local de Nascimento', field: row => row.localNascimento, format: val => `${val}`, sortable: true },
-        { name: 'estadoCivil', align: 'left', label: 'Estado Civil', field: row => row.estadoCivil, format: val => `${val}`, sortable: true },
-        { name: 'tipoDocumento', align: 'left', label: 'Documento de Identificação', field: row => row.tipoDocumento, format: val => `${val}`, sortable: true },
-        { name: 'numDocumentoIndentificacao', align: 'left', label: 'Número do Documento', field: row => row.numDocumentoIndentificacao, format: val => `${val}`, sortable: true },
-        { name: 'documentoValidade', align: 'left', label: 'Validade do Documento', field: row => row.documentoValidade, format: val => `${val}`, sortable: true },
-        { name: 'morada', align: 'left', label: 'Morada', field: row => row.morada, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'nome',
+          required: true,
+          label: 'Nome',
+          align: 'left',
+          field: row => row.nome,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'apelido',
+          align: 'left',
+          label: 'Apelido',
+          field: row => row.apelido,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'sexo', align: 'left', label: 'Gênero', field: row => row.sexo, format: val => `${val}`, sortable: true},
+        {
+          name: 'dataNascimento',
+          align: 'left',
+          label: 'Data de Nascimento',
+          field: row => row.dataNascimento,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'naturalidade',
+          align: 'left',
+          label: 'Naturalidade',
+          field: row => row.naturalidade,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'nacionalidade',
+          align: 'left',
+          label: 'Nacionalidade',
+          field: row => row.nacionalidade,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'provincia',
+          align: 'left',
+          label: 'Província',
+          field: row => row.provincia,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'localNascimento',
+          align: 'left',
+          label: 'Local de Nascimento',
+          field: row => row.localNascimento,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'estadoCivil',
+          align: 'left',
+          label: 'Estado Civil',
+          field: row => row.estadoCivil,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'tipoDocumento',
+          align: 'left',
+          label: 'Documento de Identificação',
+          field: row => row.tipoDocumento,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'numDocumentoIndentificacao',
+          align: 'left',
+          label: 'Número do Documento',
+          field: row => row.numDocumentoIndentificacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'documentoValidade',
+          align: 'left',
+          label: 'Validade do Documento',
+          field: row => row.documentoValidade,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'morada',
+          align: 'left',
+          label: 'Morada',
+          field: row => row.morada,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -239,57 +341,70 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('ofendido/getAllOfendido')
+    return  this.getAllOfendido()
   },
   props: [
-    'autoEntrada'
+    'pecaProcesso'
   ],
-  mounted () {
-    this.$store.dispatch('ofendido/getAllOfendido')
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('pais/getAllPais')
-    this.$store.dispatch('tipoDocumentoIdentificacao/getAllTipoDocumentoIdentificacao')
+  mounted() {
+    this.getAllOfendido()
+    this.getAllOfendidoPecaProcesso()
+    this.getAllProvincia()
+    this.getAllPais()
+    this.getAllTipoDocumentoIdentificacao()
   },
   components: {
     individuo: require('components/individuo/createEditForm.vue').default
   },
-  metaInfo: {
+    created() {
   },
+  metaInfo: {},
   computed: {
-    allOfendidos () {
-      return this.$store.getters['ofendido/allOfendido'].filter(ofendido => ofendido.pecaProcesso != null)
+   allOfendidosFromPecaProcesso() {
+      return PecaProcesso.query().with('ofendidos')
+                                 .with('ofendidos.ofendido')
+                                 .with('ofendidos.ofendido.nacionalidade')
+                                 .with('ofendidos.ofendido.provincia')
+                                 .with('ofendidos.ofendido.tipoDocumento')
+                                 .with('ofendidos.ofendido.profissao')
+                                 .find(this.pecaProcesso.id).ofendidos
     },
-    allOfendidosFromPecaProcesso () {
-      return this.allOfendidos.filter(ofendido => ofendido.pecaProcesso.id === this.autoEntrada.id)
+     // return .query().with('provincia').with('nacionalidade').with('tipoDocumento').where('pecaProcesso_id', this.pecaProcesso.id).get()
+    
+    allPaises() {
+      return Pais.query().all()
     },
-    allPaises () {
-      return this.$store.getters['pais/allPais']
+    allTipoDocumentos() {
+      return TipoDocumentoIdentificacao.query().all()
     },
-    allTipoDocumentos () {
-      return this.$store.getters['tipoDocumentoIdentificacao/allTipoDocumentoIdentificacao']
+    allProvincias() {
+      return Provincia.query().all()
     },
-    allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
-    },
-    allProvinciaFromPais () {
-      return this.allProvincias.filter(provincia => provincia.pais.id === this.pais.id)
+    allProvinciaFromPais() {
+      return Provincia.query().where('pais_id',this.pais.id).get()
     }
   },
   methods: {
-    ...mapActions('ofendido', ['getAllOfendido', 'addNewOfendido', 'updateOfendido', 'deleteOfendido']),
-    createOfendido () {
+    createOfendido() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
+      this.provincia.pais = this.pais
+      this.ofendido.nacionalidade_id = this.pais.id
+      this.ofendido.provincia_id = this.provincia.id
+      this.ofendido.tipoDocumento_id = this.tipoDocumento.id
+      this.ofendido.pecaProcesso_id = this.pecaProcesso.id
       this.ofendido.nacionalidade = this.pais
       this.ofendido.provincia = this.provincia
       this.ofendido.tipoDocumento = this.tipoDocumento
-      this.ofendido.pecaProcesso = this.autoEntrada
-      console.log('Ofendido' + this.ofendido[0])
+
+      this.pecaProcessoOfendido.ofendido = this.ofendido
+      this.pecaProcessoOfendido.pecaProcesso = this.pecaProcesso
+
       if (this.editedIndex > -1) {
-        this.updateOfendido(this.ofendido).then(resp => {
+        PecaProcessoOfendido.api().patch("/pecaProcessoOfendido/" + this.pecaProcessoOfendido.id, this.pecaProcessoOfendido).then(() => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -317,7 +432,7 @@ export default {
           }
         })
       } else {
-        this.addNewOfendido(this.ofendido).then(resp => {
+       PecaProcessoOfendido.api().post("/pecaProcessoOfendido/", this.pecaProcessoOfendido).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -347,11 +462,13 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('ofendido/getAllOfendido')
-      this.$store.dispatch('provincia/getAllProvincia')
-      this.$store.dispatch('pais/getAllPais')
-      this.$store.dispatch('tipoDocumentoIdentificacao/getAllTipoDocumentoIdentificacao')
+    close() {
+      this.getAllOfendidoPecaProcesso()
+      this.getAllOfendido()
+      this.getAllProvincia()
+      this.getAllPais()
+      this.getAllTipoDocumentoIdentificacao()
+      this.listErrors = {}
       this.show_dialog = false
       this.ofendido = {}
       this.props = this.ofendido
@@ -359,7 +476,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeOfendido (ofendido) {
+    removeOfendido(ofendido) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -377,30 +494,39 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + ofendido.nome + ' ]'
         })
-        this.deleteOfendido(ofendido)
+        PecaProcessoOfendido.api().delete("/pecaProcessoOfendido/" + this.pecaProcessoOfendido.id)
       })
     },
-    editaOfendido (ofendido) {
-      this.editedIndex = this.allOfendidos.indexOf(ofendido)
-      this.ofendido = Object.assign({}, ofendido)
-      this.ofendido.nacionalidade = this.pais
-      this.ofendido.provincia = this.provincia
-      this.ofendido.tipoDocumento = this.tipoDocumento
+    editaOfendido(ofendido) {
+      this.editedIndex = 0
+      this.pecaProcessoOfendido = Object.assign({}, ofendido)
+      this.ofendido =  this.pecaProcessoOfendido.ofendido
+      this.pais = Pais.query().find(this.ofendido.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.ofendido.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.ofendido.tipoDocumento_id)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.ofendido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    getProvincia (id) {
-      const localProvincias = this.allProvincias.filter(provincia => provincia.id === id)
-      if (localProvincias.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincias[0] }
+    getAllOfendido() {
+      Ofendido.api().get('/ofendido?offset=0&max=1000000')
+    }, 
+     getAllOfendidoPecaProcesso() {
+      PecaProcessoOfendido.api().get('/pecaProcessoOfendido?offset=0&max=1000000')
     },
-    getPais (id) {
-      const localPais = this.allPaises.filter(pais => pais.id === id)
-      if (localPais.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localPais[0] }
+    getAllTipoDocumentoIdentificacao() {
+      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
     },
-    getTipoDocumento (id) {
-      const localTipoDocumento = this.allTipoDocumentos.filter(tipoDocumento => tipoDocumento.id === id)
-      if (localTipoDocumento.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localTipoDocumento[0] }
+    getAllProvincia() {
+      Provincia.api().get('/provincia?offset=0&max=1000000')
     },
-    exportTable () {
+    getAllPais() {
+      Pais.api().get('/pais?offset=0&max=1000000')
+    },
+    onFileChange(event) {
+      this.ofendido.fotografia = event.target.files[0];
+      this.image = URL.createObjectURL(event.target.files[0]);
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import Provincia from "src/store/models/provincia/provincia"
 import Distrito from "../distrito/distrito"
 
@@ -12,8 +12,8 @@ export default class Cidade extends Model {
       id: this.attr(null),
       designacao: this.attr(''),
       codigo: this.attr(''),
-      provincia_id:this.attr(''),
-      distrito_id:this.attr(''),
+      provincia_id: this.attr(''),
+      distrito_id: this.attr(''),
 
       // Relationshiops
       provincia: this.belongsTo(Provincia, 'provincia_id'),

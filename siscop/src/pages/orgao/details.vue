@@ -1,108 +1,121 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card bordered class="my-card" flat>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+        <div class="row">
+          <div class="col-12">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('sigla') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.sigla }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('sigla') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ orgao.sigla }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ orgao.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('tipoOrgao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getTipoOrgaoLocal.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                 <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('nivel') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ orgao.nivel }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getProvincia.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ getDistrito.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaOrgao(orgao)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeOrgao(orgao)" no-caps/>
-                </q-card-actions>
-            </q-card>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('tipoOrgao') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.tipoOrgao.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('nivel') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.nivel }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('provincia') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.provincia.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('distrito') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.distrito.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </div>
+      </q-card-section>
+      <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn v-go-back=" '/orgao' " class="glossy" color="primary" label="Voltar" no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
+          <q-card-actions align="right">
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaOrgao(orgao)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeOrgao(orgao)"/>
+          </q-card-actions>
+        </div>
+      </div>
+    </q-card>
 
-          <q-card>
-            <q-tabs
-              v-model="tab"
-              class="bg-teal text-white shadow-2"
-              active-color="white"
-              indicator-color="white"
-              align="left"
-              narrow-indicator >
-              <q-tab name="alocacao" label="Alocação" />
-            </q-tabs>
+    <q-card>
+      <q-tabs
+        v-model="tab"
+        active-color="white"
+        align="left"
+        class="bg-teal text-white shadow-2"
+        indicator-color="white"
+        narrow-indicator>
+        <q-tab label="Alocação" name="alocacao"/>
+      </q-tabs>
 
-            <q-separator />
+      <q-separator/>
 
-            <q-tab-panels v-model="tab" animated>
-              <q-tab-panel name="alocacao">
-                    <list-alocacao :orgao.sync="orgao"/>
-              </q-tab-panel>
-            </q-tab-panels>
-          </q-card>
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="alocacao">
+          <list-alocacao :orgao.sync="orgao"/>
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-card>
 
-    <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :sigla.sync="localOrgao.sigla"
-                    :designacao.sync="localOrgao.designacao"
-                    :tipoOrgao.sync="tipoOrgao"
-                    :nivel.sync="localOrgao.nivel"
-                    :endereco.sync="localOrgao.endereco"
-                    :provincia.sync="provincia"
-                    :distrito.sync="distrito"
-                    :tipoOrgaos="allTipoOrgaos"
-                    :provincias="allProvincias"
-                    :distritos="allDistritosFromProvincia"
-                    :submitting="submitting"
-                    :close="close"
-                    :createOrgao="createOrgao"
-                    :removeOrgao="removeOrgao"/>
+    <create-edit-form :close="close"
+                      :createOrgao="createOrgao"
+                      :designacao.sync="localOrgao.designacao"
+                      :distrito.sync="distrito"
+                      :distritos="allDistritosFromProvincia"
+                      :endereco.sync="localOrgao.endereco"
+                      :listErrors="listErrors"
+                      :nivel.sync="localOrgao.nivel"
+                      :provincia.sync="provincia"
+                      :provincias="allProvincias"
+                      :removeOrgao="removeOrgao"
+                      :show_dialog="show_dialog"
+                      :sigla.sync="localOrgao.sigla"
+                      :submitting="submitting"
+                      :tipoOrgao.sync="tipoOrgao"
+                      :tipoOrgaos="allTipoOrgaos"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Orgao from 'src/store/models/orgao/orgao'
+import Distrito from 'src/store/models/distrito/distrito'
+import Provincia from 'src/store/models/provincia/provincia'
+import TipoOrgao from 'src/store/models/tipoOrgao/tipoOrgao'
+import Pais from 'src/store/models/pais/pais'
 
 export default {
   name: 'Orgao',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -118,8 +131,7 @@ export default {
         nivel: 0,
         endereco: '',
         provincia: {},
-        distrito: {},
-        class: 'org.devinthesky.unidadeorganica.Orgao'
+        distrito: {}
       },
       provincia: {
         codigo: '',
@@ -135,7 +147,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -149,39 +161,38 @@ export default {
     // this.$store.dispatch('tipoOrgao/getTipoOrgao', this.orgao.tipoOrgao.id)
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('orgao/getOrgao', currentRoute.params.id)
+    return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
-    this.$store.dispatch('tipoOrgao/getAllTipoOrgao')
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('distrito/getAllDistrito')
-    this.$store.dispatch('alocacao/getAllAlocacao')
+  mounted() {
   },
   computed: {
     orgao: {
-      get () {
-        return this.$store.getters['orgao/orgao']
+      get() {
+
+        return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').find(this.$route.params.id)
       },
-      set (orgao) {
-        this.SET_UPDATE_ORGAO({ orgao })
+      set(orgao) {
         this.$emit('update:orgao', '')
-        this.$store.commit('orgao/SET_UPDATE_ORGAO', orgao)
+        Orgao.update(orgao)
       }
     },
-    allTipoOrgaos () {
-      return this.$store.getters['tipoOrgao/allTipoOrgao']
+     allTipoOrgaos() {
+      return TipoOrgao.query().all()
     },
-    allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
+    allPais() {
+      return Pais.query().all()
     },
-    allDistritos () {
-      return this.$store.getters['distrito/allDistrito']
+    allProvincias() {
+      return Provincia.query().all()
     },
-    allDistritosFromProvincia () {
-      return this.allDistritos.filter(distrito => distrito.provincia.id === this.provincia.id)
+    allDistritos() {
+      return Distrito.query().all()
     },
+    allDistritosFromProvincia() {
+      return Distrito.query().where('provincia_id', this.provincia.id).get()
+    }
     // allPostoAdministrativos () {
     //   return this.$store.getters['postoAdministrativo/allPostoAdministrativo']
     // },
@@ -194,28 +205,13 @@ export default {
     // allLocalidades () {
     //   return this.$store.getters['localidade/allLocalidade']
     // },
-    getTipoOrgaoLocal () {
-      const tipoOrgaoLocal = this.allTipoOrgaos.filter(tipoOrgao => tipoOrgao.id === this.orgao.tipoOrgao.id)
-      if (tipoOrgaoLocal.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return tipoOrgaoLocal[0] }
-    },
-    getProvincia () {
-      const provincias = this.allProvincias.filter(provincia => this.orgao.provincia.id === provincia.id)
-      if (provincias.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return provincias[0] }
-    },
-    getDistrito () {
-      const distritos = this.allDistritos.filter(distrito => this.orgao.distrito.id === distrito.id)
-      if (distritos.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return distritos[0] }
-    }
   },
   components: {
     'create-edit-form': require('components/orgao/createEditForm.vue').default,
     'list-alocacao': require('pages/alocacao/index.vue').default
   },
   methods: {
-    ...mapActions('orgao', ['getAllOrgao', 'getOrgao', 'addNewOrgao', 'updateOrgao', 'deleteOrgao']),
-    ...mapActions('alocacao', ['getAllAlocacao', 'addNewAlocacao', 'updateAlocacao', 'deleteAlocacao']),
-    ...mapMutations('orgao', ['SET_UPDATE_ORGAO']),
-    removeOrgao (orgao) {
+    removeOrgao(orgao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -233,21 +229,29 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + orgao.designacao + ' ]'
         })
-        this.deleteOrgao(orgao)
+        Orgao.api().delete("/orgao/" + orgao.id)
         this.$router.go(-1)
       })
     },
-    createOrgao () {
+    createOrgao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      if (this.distrito == null) { this.distrito = {} }
-      this.localOrgao.distrito = this.distrito
+      this.localOrgao.provincia_id = this.provincia.id
       this.localOrgao.provincia = this.provincia
+      this.localOrgao.provincia.pais = Pais.query().find(this.provincia.pais_id)
+      this.localOrgao.tipoOrgao_id = this.tipoOrgao.id
       this.localOrgao.tipoOrgao = this.tipoOrgao
-      this.updateOrgao(this.localOrgao).then(resp => {
+      if (this.distrito == null) {
+        this.distrito = {}
+      } else {
+        this.localOrgao.distrito_id = this.distrito.id
+        this.localOrgao.distrito.provincia = this.provincia
+      }
+      this.localOrgao.distrito = this.distrito
+      Orgao.api().patch("/orgao/" + this.localOrgao.id, this.localOrgao).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -258,7 +262,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.orgao.designacao + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localOrgao.designacao + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -276,22 +280,17 @@ export default {
         }
       })
     },
-    editaOrgao (orgao) {
+    editaOrgao(orgao) {
       this.editedIndex = 0
       this.orgao = Object.assign({}, orgao)
       this.localOrgao = Object.assign({}, orgao)
-      this.tipoOrgao = this.allTipoOrgaos.filter(tipoOrgao => tipoOrgao.id === orgao.tipoOrgao.id)[0]
-      this.provincia = this.allProvincias.filter(provincia => provincia.id === orgao.provincia.id)[0]
-      this.distrito = this.allDistritos.filter(distrito => distrito.id === orgao.distrito.id)[0]
+      this.tipoOrgao = TipoOrgao.query().find(orgao.tipoOrgao.id)
+      this.provincia = Provincia.query().with('pais').find(orgao.provincia.id)
+      this.distrito = Distrito.query().with('provincia').find(orgao.distrito.id)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('orgao/getOrgao', this.$route.params.id)
-      }
-      this.$store.dispatch('tipoOrgao/getAllTipoOrgao')
-      this.$store.dispatch('provincia/getAllProvincia')
-      this.$store.dispatch('distrito/getAllDistrito')
+    close() {
+      this.listErrors = {}
       this.show_dialog = false
       this.props = this.orgao
       setTimeout(() => {
@@ -299,7 +298,7 @@ export default {
       }, 300)
     }
   },
-  filterFn (val, update, abort) {
+  filterFn(val, update, abort) {
     const stringOptions = this.allTipoOrgaos
     if (val === '') {
       update(() => {
@@ -315,15 +314,15 @@ export default {
           .map(tipoOrgao => tipoOrgao)
           .filter(tipoOrgao => {
             return tipoOrgao &&
-                   tipoOrgao.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+              tipoOrgao.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
           })
       })
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.orgao.tipoOrgao = val
   },
   i18n: {

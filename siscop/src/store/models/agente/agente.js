@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 
 export default class Agente extends Model {
 
@@ -12,11 +12,11 @@ export default class Agente extends Model {
       apelido: this.attr(''),
       sexo: this.attr(''),
       idade: this.attr(''),
-      telemovel1:this.attr(''),
-      telemovel2:this.attr(''),
-      fotografia:this.attr(''),
-      descricao:this.attr(''),
-      cargoOcupado:this.attr(''),
+      telemovel1: this.attr(''),
+      telemovel2: this.attr(''),
+      fotografia: this.attr(''),
+      descricao: this.attr(''),
+      cargoOcupado: this.attr(''),
 
     }
   }

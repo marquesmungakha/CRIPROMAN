@@ -1,55 +1,57 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Tipo de Meio Usado" :data="allTipoMeios" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allTipoMeios" :filter="filter" binary-state-sort row-key="name"
+             title="Tipo de Meio Usado">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/tipoMeio/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click.stop="editaTipoMeio(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click.stop="removeTipoMeio(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="tipoMeio.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createTipoMeio="createTipoMeio"
-                    :removeTipoMeio="removeTipoMeio"/>
+        <q-tr :props="props">
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/tipoMeio/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaTipoMeio(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click.stop="removeTipoMeio(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :createTipoMeio="createTipoMeio"
+                      :designacao.sync="tipoMeio.designacao"
+                      :listErrors="listErrors"
+                      :removeTipoMeio="removeTipoMeio"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import TipoMeio from 'src/store/models/tipoMeio/tipoMeio'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -58,7 +60,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'TipoMeio',
-  data () {
+  data() {
     return {
       listErrors: [],
       tipoMeio_details_dialog: false,
@@ -71,13 +73,20 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -89,33 +98,42 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('tipoMeio/getAllTipoMeio', currentRoute.params.id)
+    return this.getAllTipoMeio()
   },
-  mounted () {
+  mounted() {
+    this.getAllTipoMeio()
   },
   components: {
     'create-edit-form': require('components/tipoMeio/createEditForm.vue').default
   },
-  created () {
+  created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    ...mapGetters('tipoMeio', ['allTipoMeio']),
-    allTipoMeios () {
-      return this.$store.state.tipoMeio.tipoMeios
+    allTipoMeios() {
+      return TipoMeio.query().all()
     }
   },
   methods: {
-    ...mapActions('tipoMeio', ['getAllTipoMeio', 'addNewTipoMeio', 'updateTipoMeio', 'deleteTipoMeio']),
-    createTipoMeio () {
+    createTipoMeio() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       if (this.editedIndex > -1) {
-        this.updateTipoMeio(this.tipoMeio).then(resp => {
+        TipoMeio.api().patch("/tipoMeio/" + this.tipoMeio.id, this.tipoMeio).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -144,7 +162,7 @@ export default {
           }
         })
       } else {
-        this.addNewTipoMeio(this.tipoMeio).then(resp => {
+        TipoMeio.api().post("/tipoMeio/", this.tipoMeio).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -159,22 +177,22 @@ export default {
           this.close()
         }).catch(error => {
           console.log(error)
-          // if (error.request.status !== 0) {
-          //   const arrayErrors = JSON.parse(error.request.response)
-          //   if (arrayErrors.total == null) {
-          //     this.listErrors.push(arrayErrors.message)
-          //   } else {
-          //     arrayErrors._embedded.errors.forEach(element => {
-          //       this.listErrors.push(element.message)
-          //     })
-          //   }
-          //   console.log(this.listErrors)
-          // }
+          if (error.request.status !== 0) {
+            const arrayErrors = JSON.parse(error.request.response)
+            if (arrayErrors.total == null) {
+              this.listErrors.push(arrayErrors.message)
+            } else {
+              arrayErrors._embedded.errors.forEach(element => {
+                this.listErrors.push(element.message)
+              })
+            }
+            console.log(this.listErrors)
+          }
         })
       }
     },
-    close () {
-      this.$store.dispatch('tipoMeio/getAllTipoMeio')
+    close() {
+      this.getAllTipoMeio()
       this.show_dialog = false
       this.tipoMeio = {}
       this.props = this.tipoMeio
@@ -183,7 +201,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeTipoMeio (tipoMeio) {
+    removeTipoMeio(tipoMeio) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -201,15 +219,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + tipoMeio.designacao + ' ]'
         })
-        this.deleteTipoMeio(tipoMeio)
+        TipoMeio.api().delete("/tipoMeio/" + tipoMeio.id)
       })
     },
-    editaTipoMeio (tipoMeio) {
-      this.editedIndex = this.$store.state.tipoMeio.tipoMeios.indexOf(tipoMeio)
+    editaTipoMeio(tipoMeio) {
+      this.editedIndex = 0
       this.tipoMeio = Object.assign({}, tipoMeio)
       this.show_dialog = true
     },
-    exportTable () {
+    getAllTipoMeio() {
+      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

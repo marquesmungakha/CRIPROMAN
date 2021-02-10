@@ -1,72 +1,76 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Auto de Corpo de Delito Indirecto" :data="allCorpoDelitos" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allCorpoDelitos" :filter="filter" binary-state-sort
+             row-key="name" title="Auto de Corpo de Delito Indirecto">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="numero" :props="props">
-              {{ props.row.numero }}
-              <q-popup-edit v-model="props.row.numero" title="Update numero">
-                <q-input v-model="props.row.numero" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataAbertura" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
-                <q-input v-model="props.row.dataAbertura" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="inspector" :props="props">
-              <div class="text-pre-wrap">{{  getInspector(props.row.inspector.id).numero  }} - {{  getInspector(props.row.inspector.id).nome  }} {{  getInspector(props.row.inspector.id).apelido  }}</div>
-              <q-popup-edit v-model="props.row.inspector">
-                <q-input v-model="props.row.inspector" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/corpoDelito/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaCorpoDelito(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeCorpoDelito(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="corpoDelito.numero"
-                    :dataAbertura.sync="corpoDelito.dataAbertura"
-                    :descricao.sync="corpoDelito.descricao"
-                    :inspector.sync="inspector"
-                    :anexo.sync="corpoDelito.anexo"
-                    :inspectors.sync="allInspectors"
-                    :submitting="submitting"
-                    :close="close"
-                    :createCorpoDelito="createCorpoDelito"
-                    :removeCorpoDelito="removeCorpoDelito"/>
+        <q-tr :props="props">
+          <q-td key="numero" :props="props">
+            {{ props.row.numero }}
+            <q-popup-edit v-model="props.row.numero" title="Update numero">
+              <q-input v-model="props.row.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataAbertura" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
+              <q-input v-model="props.row.dataAbertura" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="inspector" :props="props">
+           <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+              {{ props.row.inspector.apelido }}
+            </div>
+            <q-popup-edit v-model="props.row.inspector.numero">
+              <q-input v-model="props.row.inspector.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/corpoDelito/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaCorpoDelito(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click="removeCorpoDelito(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :anexo.sync="corpoDelito.anexo"
+                      :close="close"
+                      :createCorpoDelito="createCorpoDelito"
+                      :dataAbertura.sync="corpoDelito.dataAbertura"
+                      :descricao.sync="corpoDelito.descricao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :listErrors="listErrors"
+                      :numero.sync="corpoDelito.numero"
+                      :removeCorpoDelito="removeCorpoDelito"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Inspector from 'src/store/models/inspector/inspector'
+import CorpoDelito from 'src/store/models/corpoDelito/corpoDelito'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -75,7 +79,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'CorpoDelito',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -102,16 +106,37 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'numero', align: 'left', label: 'Número do Auto', field: row => row.numero, format: val => `${val}`, sortable: true },
-        { name: 'dataAbertura', align: 'left', label: 'Data de Abertura', field: row => row.dataAbertura, format: val => `${val}`, sortable: true },
-        { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'numero',
+          align: 'left',
+          label: 'Número do Auto',
+          field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataAbertura',
+          align: 'left',
+          label: 'Data de Abertura',
+          field: row => row.dataAbertura,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'inspector',
+          align: 'left',
+          label: 'Inspector',
+          field: row => row.inspector.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -122,45 +147,40 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('corpoDelito/getAllCorpoDelito')
+    return this.getAllCorpoDelito()
   },
-  props: ['processo'],
-  mounted () {
-    this.$store.dispatch('corpoDelito/getAllCorpoDelito')
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  props: ['processoInvestigacao'],
+  mounted() {
+    this.getAllCorpoDelito()
+    this.getAllInspector()
   },
   components: {
     'create-edit-form': require('components/corpoDelito/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+    allInspectors() {
+      return Inspector.query().all()
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
-    },
-    allCorpoDelitos () {
-      return this.$store.getters['corpoDelito/allCorpoDelito'] // .filter(corpoDelito => corpoDelito.processo.id === this.processo.id)
+    allCorpoDelitos() {
+      return CorpoDelito.query().with('inspector').where('processo_id',this.processoInvestigacao.id).get()
     }
   },
   methods: {
-    ...mapActions('corpoDelito', ['getAllCorpoDelito', 'addNewCorpoDelito', 'updateCorpoDelito', 'deleteCorpoDelito']),
-    createCorpoDelito () {
+    createCorpoDelito() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.corpoDelito.processo = this.processo
+      this.corpoDelito.inspector_id = this.inspector
+      this.corpoDelito.processo_id = this.processoInvestigacao.id
       this.corpoDelito.inspector = this.inspector
-      this.corpoDelito.orgao = this.$store.state.orgao.orgaos[0]
+      this.corpoDelito.processo = this.processoInvestigacao
       //  const image = new Blob([this.corpoDelito.anexo])
       this.corpoDelito.anexo = null
       if (this.editedIndex > -1) {
-        this.updateCorpoDelito(this.corpoDelito).then(resp => {
+         CorpoDelito.api().patch("/corpoDelito/" + this.corpoDelito.id, this.corpoDelito).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -170,7 +190,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [ ' + this.corpoDelito.designacao + ' ]'
+            message: 'A informação foi actualizada com successo!! [ ' + this.corpoDelito.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -188,7 +208,7 @@ export default {
           }
         })
       } else {
-        this.addNewCorpoDelito(this.corpoDelito).then(resp => {
+       CorpoDelito.api().post("/corpoDelito/", this.corpoDelito).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -199,7 +219,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.corpoDelito.designacao + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.corpoDelito.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -218,10 +238,10 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('corpoDelito/getAllCorpoDelito')
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
+    close() {
+      this.getAllCorpoDelito()
+      this.getAllInspector()
+      this.listErrors = {}
       this.show_dialog = false
       this.corpoDelito = {}
       this.props = this.corpoDelito
@@ -229,7 +249,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeCorpoDelito (corpoDelito) {
+    removeCorpoDelito(corpoDelito) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -245,26 +265,27 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi Removida com successo! [ ' + corpoDelito.designacao + ' ]'
+          message: 'A informação foi Removida com successo! [ ' + corpoDelito.numero + ' ]'
         })
-        this.deleteCorpoDelito(corpoDelito)
+         CorpoDelito.api().delete("/corpoDelito/" + this.corpoDelito.id)
       })
     },
-    editaCorpoDelito (corpoDelito) {
-      this.editedIndex = this.allCorpoDelitos.indexOf(corpoDelito)
+    editaCorpoDelito(corpoDelito) {
+      this.editedIndex = 0
       this.corpoDelito = Object.assign({}, corpoDelito)
-      this.inspector = this.getInspector(corpoDelito.inspector.id)
-      this.orgao = this.$store.state.orgao.orgaos[0]
+      this.inspector = Inspector.query().find(corpoDelito.inspector.id)
       this.show_dialog = true
     },
-    getInspector (id) {
-      const localInspector = this.allInspectors.filter(inspector => inspector.id === id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    getAllCorpoDelito() {
+      CorpoDelito.api().get("/corpoDelito?offset=0&max=1000000")
     },
-    abortFilterFn () {
+    getAllInspector() {
+      Inspector.api().get("/inspector?offset=0&max=1000000")
+    },
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

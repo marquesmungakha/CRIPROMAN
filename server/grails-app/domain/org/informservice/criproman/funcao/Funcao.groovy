@@ -2,10 +2,9 @@ package org.informservice.criproman.funcao
 
 import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
+import grails.rest.Resource
 
 // import grails.plugins.orm.auditable.Auditable
-
-import grails.rest.Resource
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/funcao')

@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import PecaProcesso from "src/store/models/pecaProcesso/pecaProcesso";
 
 export default class ObjectoApreendido extends Model {
@@ -14,7 +14,7 @@ export default class ObjectoApreendido extends Model {
       estado: this.attr(''),
       pecaProcesso_id: this.attr(''),
       // Relationship
-      pecaProcesso: this.belongsTo(PecaProcesso,'pecaProcesso_id')
+      pecaProcesso: this.belongsTo(PecaProcesso, 'pecaProcesso_id')
 
     }
   }

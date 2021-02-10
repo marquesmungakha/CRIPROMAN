@@ -1,62 +1,63 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Provincia" :data="allProvincias" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allProvincias" :filter="filter" binary-state-sort row-key="name"
+             title="Provincia">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="codigo" :props="props">
-              {{ props.row.codigo }}
-              <q-popup-edit v-model="props.row.codigo">
-                <q-input v-model="props.row.codigo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="pais" :props="props">
-              <div class="text-pre-wrap">{{ props.row.pais.designacao }}</div>
-              <q-popup-edit v-model="props.row.pais.designacao">
-                <q-input v-model="props.row.pais.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/provincia/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaProvincia(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeProvincia(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="provincia.codigo"
-                    :designacao.sync="provincia.designacao"
-                    :pais.sync="pais"
-                    :paises="allPaises"
-                    :submitting="submitting"
-                    :close="close"
-                    :createProvincia="createProvincia"
-                    :removeProvincia="removeProvincia"/>
+        <q-tr :props="props">
+          <q-td key="codigo" :props="props">
+            {{ props.row.codigo }}
+            <q-popup-edit v-model="props.row.codigo">
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="pais" :props="props">
+            <div class="text-pre-wrap">{{ props.row.pais.designacao }}</div>
+            <q-popup-edit v-model="props.row.pais.designacao">
+              <q-input v-model="props.row.pais.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/provincia/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaProvincia(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeProvincia(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :codigo.sync="provincia.codigo"
+                      :createProvincia="createProvincia"
+                      :designacao.sync="provincia.designacao"
+                      :listErrors="listErrors"
+                      :pais.sync="pais"
+                      :paises="allPaises"
+                      :removeProvincia="removeProvincia"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
@@ -66,7 +67,7 @@ import Pais from "src/store/models/pais/pais";
 import Provincia from "src/store/models/provincia/provincia";
 
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -75,7 +76,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Provincia',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -96,16 +97,31 @@ export default {
         nacionalidade: ''
       },
       columns: [
-        { name: 'codigo', required: true, label: 'Codigo', align: 'left', field: row => row.codigo, format: val => `${val}`, sortable: true },
-        { name: 'designacao', align: 'left', label: 'Designacao', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'pais', align: 'left', label: 'Pais', field: row => row.pais, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'codigo',
+          required: true,
+          label: 'Codigo',
+          align: 'left',
+          field: row => row.codigo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designacao',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'pais', align: 'left', label: 'Pais', field: row => row.pais, format: val => `${val}`, sortable: true},
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -138,18 +154,17 @@ export default {
     }, 600)
 
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
     allPaises() {
       return Pais.query().all()
     },
-    allProvincias () {
+    allProvincias() {
       return Provincia.query().with('pais').all()
     }
   },
   methods: {
-    createProvincia () {
+    createProvincia() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
@@ -159,7 +174,7 @@ export default {
       this.provincia.pais_id = this.pais.id
       console.log(this.provincia)
       if (this.editedIndex > -1) {
-        Provincia.api().patch("/provincia/"+this.provincia.id,this.provincia).then(resp => {
+        Provincia.api().patch("/provincia/" + this.provincia.id, this.provincia).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -187,7 +202,7 @@ export default {
           }
         })
       } else {
-        Provincia.api().post("/provincia/",this.provincia).then(resp => {
+        Provincia.api().post("/provincia/", this.provincia).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -217,7 +232,7 @@ export default {
         })
       }
     },
-    close () {
+    close() {
       this.getAllProvincia()
       this.show_dialog = false
       this.provincia = {}
@@ -227,7 +242,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeProvincia (provincia) {
+    removeProvincia(provincia) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -245,16 +260,16 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + provincia.designacao + ' ]'
         })
-        Provincia.api().delete("/provincia/"+provincia.id)
+        Provincia.api().delete("/provincia/" + provincia.id)
       })
     },
-    editaProvincia (provincia) {
+    editaProvincia(provincia) {
       this.editedIndex = 0
       this.provincia = Object.assign({}, provincia)
       this.pais = Pais.query().find(provincia.pais.id)
       this.show_dialog = true
     },
-    getAllProvincia(){
+    getAllProvincia() {
       Provincia.api().get('/provincia?offset=0&max=1000000', {
         persistOptions: {
           insert: ['pais']
@@ -276,10 +291,10 @@ export default {
         }
       })
     },
-    getAllPais () {
-        return Pais.api().get("/pais?offset=0&max=1000000")
+    getAllPais() {
+      return Pais.api().get("/pais?offset=0&max=1000000")
     },
-    filterFn (val, update, abort) {
+    filterFn(val, update, abort) {
       const stringOptions = Pais.query().all()
       if (val === '') {
         update(() => {
@@ -295,18 +310,18 @@ export default {
             .map(pais => pais)
             .filter(pais => {
               return pais &&
-                   pais.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+                pais.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
             })
         })
       }
     },
-    abortFilterFn () {
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    setModel (val) {
+    setModel(val) {
       this.provincia.pais = val
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

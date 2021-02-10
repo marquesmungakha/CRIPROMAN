@@ -1,62 +1,65 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Situacão Prisional" :data="allSituacaoPrisionals" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allSituacaoPrisionals" :filter="filter" binary-state-sort
+             row-key="name" title="Situacão Prisional">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="codigo" :props="props">
-              {{ props.row.codigo }}
-              <q-popup-edit v-model="props.row.codigo">
-                <q-input v-model="props.row.codigo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/situacaoPrisional/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click.stop="editaSituacaoPrisional(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click.stop="removeSituacaoPrisional(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="situacaoPrisional.codigo"
-                    :designacao.sync="situacaoPrisional.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createSituacaoPrisional="createSituacaoPrisional"
-                    :removeSituacaoPrisional="removeSituacaoPrisional"/>
+        <q-tr :props="props">
+          <q-td key="codigo" :props="props">
+            {{ props.row.codigo }}
+            <q-popup-edit v-model="props.row.codigo">
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/situacaoPrisional/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm
+                     @click.stop="editaSituacaoPrisional(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round
+                     size=sm @click.stop="removeSituacaoPrisional(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :codigo.sync="situacaoPrisional.codigo"
+                      :createSituacaoPrisional="createSituacaoPrisional"
+                      :designacao.sync="situacaoPrisional.designacao"
+                      :listErrors="listErrors"
+                      :removeSituacaoPrisional="removeSituacaoPrisional"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import SituacaoPrisional from 'src/store/models/situacaoPrisional/situacaoPrisional'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -65,7 +68,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'SituacaoPrisional',
-  data () {
+  data() {
     return {
       listErrors: [],
       situacaoPrisional_details_dialog: false,
@@ -79,14 +82,29 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'codigo', required: true, label: 'Código', align: 'left', field: row => row.codigo, format: val => `${val}`, sortable: true },
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'codigo',
+          required: true,
+          label: 'Código',
+          align: 'left',
+          field: row => row.codigo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -98,33 +116,42 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('situacaoPrisional/getAllSituacaoPrisional', currentRoute.params.id)
+    return this.getAllSituacaoPrisional()
   },
-  mounted () {
+  mounted() {
+    this.getAllSituacaoPrisional()
   },
   components: {
     'create-edit-form': require('components/situacaoPrisional/createEditForm.vue').default
   },
-  created () {
+  created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    ...mapGetters('situacaoPrisional', ['allSituacaoPrisional']),
-    allSituacaoPrisionals () {
-      return this.$store.state.situacaoPrisional.situacaoPrisionals
+    allSituacaoPrisionals() {
+      return SituacaoPrisional.query().all()
     }
   },
   methods: {
-    ...mapActions('situacaoPrisional', ['getAllSituacaoPrisional', 'addNewSituacaoPrisional', 'updateSituacaoPrisional', 'deleteSituacaoPrisional']),
-    createSituacaoPrisional () {
+    createSituacaoPrisional() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       if (this.editedIndex > -1) {
-        this.updateSituacaoPrisional(this.situacaoPrisional).then(resp => {
+        SituacaoPrisional.api().patch("/situacaoPrisional/" + this.situacaoPrisional.id, this.situacaoPrisional).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -153,7 +180,7 @@ export default {
           }
         })
       } else {
-        this.addNewSituacaoPrisional(this.situacaoPrisional).then(resp => {
+        SituacaoPrisional.api().post("/situacaoPrisional/", this.situacaoPrisional).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -168,22 +195,22 @@ export default {
           this.close()
         }).catch(error => {
           console.log(error)
-          // if (error.request.status !== 0) {
-          //   const arrayErrors = JSON.parse(error.request.response)
-          //   if (arrayErrors.total == null) {
-          //     this.listErrors.push(arrayErrors.message)
-          //   } else {
-          //     arrayErrors._embedded.errors.forEach(element => {
-          //       this.listErrors.push(element.message)
-          //     })
-          //   }
-          //   console.log(this.listErrors)
-          // }
+          if (error.request.status !== 0) {
+            const arrayErrors = JSON.parse(error.request.response)
+            if (arrayErrors.total == null) {
+              this.listErrors.push(arrayErrors.message)
+            } else {
+              arrayErrors._embedded.errors.forEach(element => {
+                this.listErrors.push(element.message)
+              })
+            }
+            console.log(this.listErrors)
+          }
         })
       }
     },
-    close () {
-      this.$store.dispatch('situacaoPrisional/getAllSituacaoPrisional')
+    close() {
+      this.getAllSituacaoPrisional()
       this.show_dialog = false
       this.situacaoPrisional = {}
       this.props = this.situacaoPrisional
@@ -192,7 +219,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeSituacaoPrisional (situacaoPrisional) {
+    removeSituacaoPrisional(situacaoPrisional) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -210,15 +237,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + situacaoPrisional.designacao + ' ]'
         })
-        this.deleteSituacaoPrisional(situacaoPrisional)
+        SituacaoPrisional.api().delete("/situacaoPrisional/" + situacaoPrisional.id)
       })
     },
-    editaSituacaoPrisional (situacaoPrisional) {
-      this.editedIndex = this.$store.state.situacaoPrisional.situacaoPrisionals.indexOf(situacaoPrisional)
+    getAllSituacaoPrisional() {
+      SituacaoPrisional.api().get('/situacaoPrisional?offset=0&max=1000000')
+    },
+    editaSituacaoPrisional(situacaoPrisional) {
+      this.editedIndex = 0
       this.situacaoPrisional = Object.assign({}, situacaoPrisional)
       this.show_dialog = true
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

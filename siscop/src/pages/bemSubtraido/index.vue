@@ -1,77 +1,83 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Bem Subtraido" :data="allBemSubtraidosFromPecaProcesso" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allBemSubtraidosFromPecaProcesso" :filter="filter" binary-state-sort
+             row-key="name" title="Prejuízos Causados">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="descricao" :props="props">
-              {{ props.row.descricao }}
-              <q-popup-edit v-model="props.row.descricao">
-                <q-input v-model="props.row.descricao" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="valorPrejuizo" :props="props">
-              {{ props.row.valorPrejuizo }}
-              <q-popup-edit v-model="props.row.valorPrejuizo">
-                <q-input v-model="props.row.valorPrejuizo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <q-btn round glossy icon="edit" color="blue" @click="editaBemSubtraido(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeBemSubtraido(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-   <div class="q-pa-sm q-gutter-sm">
-       <q-dialog v-model="show_dialog" persistent>
-         <q-card style="width: 1100px; max-width: 90vw;">
-        <q-card-section>
-            <div class="text-h6">Adicionar  Bem Subtraido!</div>
+        <q-tr :props="props">
+          <q-td key="descricao" :props="props">
+            {{ props.row.descricao }}
+            <q-popup-edit v-model="props.row.descricao">
+              <q-input v-model="props.row.descricao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="valorPrejuizo" :props="props">
+            {{ props.row.valorPrejuizo }}
+            <q-popup-edit v-model="props.row.valorPrejuizo">
+              <q-input v-model="props.row.valorPrejuizo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaBemSubtraido(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click="removeBemSubtraido(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 1100px; max-width: 90vw;">
+          <q-card-section>
+            <div class="text-h6">Adicionar Prejuízos Causados!</div>
+          </q-card-section>
+         <q-card-section>
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+            <ul class="list-group alert alert-danger">
+              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                  v-for="item in listErrors" :key="item">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
         </q-card-section>
-            <q-card-section>
-            <li v-for="item in listErrors" :key="item">
-            {{ item }}
-            </li>
-            </q-card-section>
-            <q-separator />
-            <q-card-section style="max-height: 70vh" class="scroll">
-                    <q-form @submit.prevent="createBemSubtraido" class="q-gutter-md">
-                        <create-edit-form :descricao.sync="bemSubtraido.descricao"
-                                          :valorPrejuizo.sync="bemSubtraido.valorPrejuizo"/>
-                      </q-form>
-            </q-card-section>
-            <q-separator />
-        <q-card-actions align="right">
-            <q-btn type="submit" :loading="submitting" @click.stop="createBemSubtraido" color="teal" label="Gravar" />
-            <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-        </q-card-actions>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createBemSubtraido">
+              <create-edit-form :descricao.sync="bemSubtraido.descricao"
+                                :valorPrejuizo.sync="bemSubtraido.valorPrejuizo"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createBemSubtraido"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
         </q-card>
-    </q-dialog>
-   </div>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import BemSubtraido from 'src/store/models/bemSubtraido/bemSubtraido'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -80,7 +86,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'BemSubtraido',
-  data () {
+  data() {
     return {
       listErrors: [],
       bemSubtraido_details_dialog: false,
@@ -95,15 +101,30 @@ export default {
         pecaProcesso: {}
       },
       columns: [
-        { name: 'descricao', required: true, label: 'Descrição', align: 'left', field: row => row.descricao, format: val => `${val}`, sortable: true },
-        { name: 'valorPrejuizo', align: 'left', label: 'Valor do Prejuizo (MZ)', field: row => row.valorPrejuizo, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'descricao',
+          required: true,
+          label: 'Descrição',
+          align: 'left',
+          field: row => row.descricao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'valorPrejuizo',
+          align: 'left',
+          label: 'Valor do Prejuizo (MZ)',
+          field: row => row.valorPrejuizo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -114,39 +135,34 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('bemSubtraido/getAllBemSubtraido')
+    return this.getAllBemSubtraido()
   },
   props: [
-    'autoEntrada'
+    'pecaProcesso'
   ],
-  mounted () {
-    this.$store.dispatch('bemSubtraido/getAllBemSubtraido')
+  mounted() {
+    this.getAllBemSubtraido()
   },
   components: {
     'create-edit-form': require('components/bemSubtraido/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allBemSubtraidos () {
-      return this.$store.getters['bemSubtraido/allBemSubtraido'].filter(bemSubtraido => bemSubtraido.pecaProcesso != null)
-    },
-    allBemSubtraidosFromPecaProcesso () {
-      return this.allBemSubtraidos.filter(bemSubtraido => bemSubtraido.pecaProcesso.id === this.autoEntrada.id)
+    allBemSubtraidosFromPecaProcesso() {
+      return BemSubtraido.query().where('pecaProcesso_id',this.pecaProcesso.id).get()
     }
   },
   methods: {
-    ...mapActions('bemSubtraido', ['getAllBemSubtraido', 'addNewBemSubtraido', 'updateBemSubtraido', 'deleteBemSubtraido']),
-    createBemSubtraido () {
+    createBemSubtraido() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.bemSubtraido.pecaProcesso = this.autoEntrada
-      console.log('BemSubtraido' + this.bemSubtraido[0])
+      this.bemSubtraido.pecaProcesso_id = this.pecaProcesso.id
+      this.bemSubtraido.pecaProcesso = this.pecaProcesso
       if (this.editedIndex > -1) {
-        this.updateBemSubtraido(this.bemSubtraido).then(resp => {
+         BemSubtraido.api().patch("/bemSubtraido/" + this.bemSubtraido.id, this.bemSubtraido).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -174,7 +190,7 @@ export default {
           }
         })
       } else {
-        this.addNewBemSubtraido(this.bemSubtraido).then(resp => {
+       BemSubtraido.api().post("/bemSubtraido/", this.bemSubtraido).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -204,8 +220,9 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('bemSubtraido/getAllBemSubtraido')
+    close() {
+      this.getAllBemSubtraido()
+        this.listErrors = {}
       this.show_dialog = false
       this.bemSubtraido = {}
       this.props = this.bemSubtraido
@@ -213,7 +230,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeBemSubtraido (bemSubtraido) {
+    removeBemSubtraido(bemSubtraido) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -231,15 +248,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + bemSubtraido.nome + ' ]'
         })
-        this.deleteBemSubtraido(bemSubtraido)
+        BemSubtraido.api().delete("/bemSubtraido/" + this.bemSubtraido.id)
       })
     },
-    editaBemSubtraido (bemSubtraido) {
-      this.editedIndex = this.allBemSubtraidos.indexOf(bemSubtraido)
+    editaBemSubtraido(bemSubtraido) {
+      this.editedIndex = 0
       this.bemSubtraido = Object.assign({}, bemSubtraido)
       this.show_dialog = true
     },
-    exportTable () {
+     getAllBemSubtraido() {
+      BemSubtraido.api().get('/bemSubtraido?offset=0&max=1000000')
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

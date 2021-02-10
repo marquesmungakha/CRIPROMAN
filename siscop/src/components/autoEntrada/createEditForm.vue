@@ -179,7 +179,7 @@
                                 <q-input :value="responsavelLocal"
                                 @input="$emit('update:responsavelLocal', $event)"
                                 ref="responsavelLocal"
-                                label="Resoinsável do Local *"
+                                label="Responsável do Local *"
                                 lazy-rules
                                 :rules="[ val => val && val.length > 0 || 'Introduza o Nome do responsável']" />
                             </q-item-section>
@@ -189,7 +189,7 @@
                                 <q-input :value="contacto"
                                 @input="$emit('update:contacto', $event)"
                                 ref="contacto"
-                                label="Contacto do Resoinsável *"
+                                label="Contacto do Responsável *"
                                 lazy-rules
                                 :rules="[ val => val && val.length > 0 || 'Introduza o Contacto']" />
                             </q-item-section>
@@ -219,15 +219,6 @@
                               </template>
                             </q-select>
                             </q-item-section>
-                        </q-item>
-                        <q-item>
-                          <q-item-section>
-                            <q-file color="primary" :value="anexo" label="Label"  @input="$emit('update:anexo', $event)">
-                              <template v-slot:prepend>
-                                <q-icon name="attach_file" />
-                              </template>
-                            </q-file>
-                          </q-item-section>
                         </q-item>
                     </q-list>
                 </q-form>

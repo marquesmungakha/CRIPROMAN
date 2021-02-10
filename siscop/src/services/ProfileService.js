@@ -1,52 +1,52 @@
 import Api from '../services/Api'
 
 export default {
-  fetchProfile (id) {
-    return Api().get('secUser/'+id)//)
-    .catch((error) => {
+  fetchProfile(id) {
+    return Api().get('secUser/' + id)//)
+      .catch((error) => {
         if (error.response) {
-            console.log(error.response);
+          console.log(error.response);
         } else if (error.request) {
-            console.log(error.request);
+          console.log(error.request);
         } else {
-            console.log('Error', error.message);
+          console.log('Error', error.message);
         }
-    });
+      });
   },
-  createProfile (params) {
+  createProfile(params) {
     return Api().post('profile', params)
-    .catch((error) => {
+      .catch((error) => {
         if (error.response) {
-            console.log(error.response);
+          console.log(error.response);
         } else if (error.request) {
-            console.log(error.request);
+          console.log(error.request);
         } else {
-            console.log('Error', error.message);
+          console.log('Error', error.message);
         }
-    });
+      });
   },
-  updateProfile (params) {
+  updateProfile(params) {
     return Api().patch('profile/' + params.id, params)
-    .catch((error) => {
+      .catch((error) => {
         if (error.response) {
-            console.log(error.response);
+          console.log(error.response);
         } else if (error.request) {
-            console.log(error.request);
+          console.log(error.request);
         } else {
-            console.log('Error', error.message);
+          console.log('Error', error.message);
         }
-    });
+      });
   },
-  deleteProfile (id) {
+  deleteProfile(id) {
     return Api().delete('orders/' + id)
-    .catch((error) => {
+      .catch((error) => {
         if (error.response) {
-            console.log(error.response);
+          console.log(error.response);
         } else if (error.request) {
-            console.log(error.request);
+          console.log(error.request);
         } else {
-            console.log('Error', error.message);
+          console.log('Error', error.message);
         }
-    });
+      });
   }
 }

@@ -77,15 +77,6 @@
                             </q-select>
                             </q-item-section>
                         </q-item>
-                        <q-item>
-                          <q-item-section>
-                            <q-file color="primary" :value="anexo" label="Label"  @input="$emit('update:anexo', $event)">
-                              <template v-slot:prepend>
-                                <q-icon name="attach_file" />
-                              </template>
-                            </q-file>
-                          </q-item-section>
-                        </q-item>
                     </q-list>
                 </q-form>
         </q-card-section>
@@ -146,7 +137,6 @@ export default {
       'dataAbertura',
       'descricao',
       'inspector',
-      'anexo',
       'inspectors',
       'close',
       'submitting',

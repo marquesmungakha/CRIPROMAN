@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-card class="my-card" flat bordered>
+    <q-card bordered class="my-card" flat>
       <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ $t('basicInformation') }}</div>
       </q-card-section>
@@ -10,21 +10,21 @@
           <div class="col-12">
             <q-item class="full-width">
               <q-item-section>
-                <q-item-label lines="1" caption>{{ $t('codigo') }}</q-item-label>
+                <q-item-label caption lines="1">{{ $t('codigo') }}</q-item-label>
                 <q-item-label class="text-grey-9">{{ pais.codigo }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="full-width">
               <q-item-section>
-                <q-item-label lines="1" caption>{{ $t('designacao') }}</q-item-label>
+                <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                 <q-item-label class="text-grey-9">{{ pais.designacao }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="full-width">
               <q-item-section>
-                <q-item-label lines="1" caption>{{ $t('nacionalidade') }}</q-item-label>
+                <q-item-label caption lines="1">{{ $t('nacionalidade') }}</q-item-label>
                 <q-item-label class="text-grey-9">{{ pais.nacionalidade }}</q-item-label>
               </q-item-section>
             </q-item>
@@ -35,26 +35,26 @@
       <div class="row">
         <div class="col">
           <q-card-actions align="left">
-            <q-btn class="glossy" label="Voltar" color="primary" v-go-back="'/pais'" no-caps/>
+            <q-btn v-go-back="'/pais'" class="glossy" color="primary" label="Voltar" no-caps/>
           </q-card-actions>
         </div>
         <div class="col">
           <q-card-actions align="right">
-            <q-btn class="glossy" label="Editar" color="teal" @click="editaPais(pais)" no-caps/>
-            <q-btn class="glossy" label="Apagar" color="negative" @click="removePais(pais)" no-caps/>
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaPais(pais)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removePais(pais)"/>
           </q-card-actions>
         </div>
       </div>
     </q-card>
-    <create-edit-form :show_dialog="show_dialog"
-                      :listErrors="listErrors"
+    <create-edit-form :close="close"
                       :codigo.sync="localPais.codigo"
-                      :designacao.sync="localPais.designacao"
-                      :nacionalidade.sync="localPais.nacionalidade"
-                      :submitting="submitting"
-                      :close="close"
                       :createPais="createPais"
-                      :removePais="removePais"/>
+                      :designacao.sync="localPais.designacao"
+                      :listErrors="listErrors"
+                      :nacionalidade.sync="localPais.nacionalidade"
+                      :removePais="removePais"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 

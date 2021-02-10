@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 
 export default class TipoOrgao extends Model {
 
@@ -9,7 +9,7 @@ export default class TipoOrgao extends Model {
     return {
       id: this.attr(null),
       designacao: this.attr(''),
-      codigo:this.attr('')
+      codigo: this.attr('')
     }
   }
 

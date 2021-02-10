@@ -1,47 +1,56 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ tipoDedo.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaTipoDedo(tipoDedo)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeTipoDedo(tipoDedo)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/tipoDedo' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaTipoDedo(tipoDedo)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removeTipoDedo(tipoDedo)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localTipoDedo.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createTipoDedo="createTipoDedo"
-                    :removeTipoDedo="removeTipoDedo"/>
+    <create-edit-form :close="close"
+                      :createTipoDedo="createTipoDedo"
+                      :designacao.sync="localTipoDedo.designacao"
+                      :listErrors="listErrors"
+                      :removeTipoDedo="removeTipoDedo"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import TipoDedo from 'src/store/models/tipoDedo/tipoDedo'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -53,21 +62,20 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('tipoDedo/getTipoDedo', currentRoute.params.id)
+    return TipoDedo.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     tipoDedo: {
-      get () {
-        return this.$store.getters['tipoDedo/tipoDedo']
+      get() {
+        return TipoDedo.query().find(this.$route.params.id)
       },
-      set (tipoDedo) {
-        this.SET_UPDATE_TIPODEDO({ tipoDedo })
+      set(tipoDedo) {
         this.$emit('update:tipoDedo', '')
-        this.$store.commit('tipoDedo/SET_UPDATE_TIPODEDO', tipoDedo)
+        TipoDedo.update(tipoDedo)
       }
 
     }
@@ -76,9 +84,7 @@ export default {
     'create-edit-form': require('components/tipoDedo/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('tipoDedo', ['getAllTipoDedo', 'getTipoDedo', 'addNewTipoDedo', 'updateTipoDedo', 'deleteTipoDedo']),
-    ...mapMutations('tipoDedo', ['SET_UPDATE_TIPODEDO']),
-    removeTipoDedo (tipoDedo) {
+    removeTipoDedo(tipoDedo) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -96,18 +102,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + tipoDedo.designacao + ' ]'
         })
-        this.deleteTipoDedo(tipoDedo)
+        TipoDedo.api().delete("/tipoDedo/" + tipoDedo.id)
         this.$router.go(-1)
       })
     },
-    createTipoDedo () {
+    createTipoDedo() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.tipoDedo = this.localTipoDedo
-      this.updateTipoDedo(this.localTipoDedo).then(resp => {
+      TipoDedo.api().patch("/tipoDedo/" + this.localTipoDedo.id, this.localTipoDedo).then(resp => {
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -136,12 +142,12 @@ export default {
         }
       })
     },
-    editaTipoDedo (tipoDedo) {
+    editaTipoDedo(tipoDedo) {
       this.localTipoDedo = Object.assign({}, tipoDedo)
       this.tipoDedo = Object.assign({}, tipoDedo)
       this.show_dialog = true
     },
-    close () {
+    close() {
       if (this.$route.params.id !== null) {
         this.$store.dispatch('tipoDedo/getTipoDedo', this.$route.params.id)
       }
@@ -153,7 +159,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

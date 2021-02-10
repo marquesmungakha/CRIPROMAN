@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-card class="my-card" flat bordered>
+    <q-card bordered class="my-card" flat>
       <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ $t('basicInformation') }}</div>
       </q-card-section>
@@ -10,21 +10,21 @@
           <div class="col-12">
             <q-item class="full-width">
               <q-item-section>
-                <q-item-label lines="1" caption>{{ $t('codigo') }}</q-item-label>
+                <q-item-label caption lines="1">{{ $t('codigo') }}</q-item-label>
                 <q-item-label class="text-grey-9">{{ provincia.codigo }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="full-width">
               <q-item-section>
-                <q-item-label lines="1" caption>{{ $t('designacao') }}</q-item-label>
+                <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                 <q-item-label class="text-grey-9">{{ provincia.designacao }}</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="full-width">
               <q-item-section>
-                <q-item-label lines="1" caption>{{ $t('pais') }}</q-item-label>
+                <q-item-label caption lines="1">{{ $t('pais') }}</q-item-label>
                 <q-item-label class="text-grey-9">{{ provincia.pais.designacao }}</q-item-label>
               </q-item-section>
             </q-item>
@@ -36,29 +36,29 @@
       <div class="row">
         <div class="col">
           <q-card-actions align="left">
-            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/provincia' " no-caps/>
+            <q-btn v-go-back=" '/provincia' " class="glossy" color="primary" label="Voltar" no-caps/>
           </q-card-actions>
         </div>
         <div class="col">
           <q-card-actions align="right">
-            <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaProvincia(provincia)" no-caps/>
-            <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeProvincia(provincia)" no-caps/>
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaProvincia(provincia)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeProvincia(provincia)"/>
           </q-card-actions>
         </div>
       </div>
 
     </q-card>
 
-    <create-edit-form :show_dialog="show_dialog"
-                      :listErrors="(listErrors)"
+    <create-edit-form :close="close"
                       :codigo.sync="localProvincia.codigo"
+                      :createProvincia="createProvincia"
                       :designacao.sync="localProvincia.designacao"
+                      :listErrors="(listErrors)"
                       :pais.sync="pais"
                       :paises="allPaises"
-                      :submitting="submitting"
-                      :close="close"
-                      :createProvincia="createProvincia"
-                      :removeProvincia="removeProvincia"/>
+                      :removeProvincia="removeProvincia"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 

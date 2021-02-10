@@ -1,8 +1,11 @@
 package org.informservice.criproman.seguranca
 
-
 import grails.plugin.springsecurity.rest.token.AccessToken
 import grails.plugin.springsecurity.rest.token.rendering.AccessTokenJsonRenderer
+
+
+//import grails.plugin.springsecurity.rest.token.AccessToken
+//import grails.plugin.springsecurity.rest.token.rendering.AccessTokenJsonRenderer
 import groovy.json.JsonBuilder
 import org.springframework.security.core.GrantedAuthority
 
@@ -11,7 +14,7 @@ import org.springframework.security.core.GrantedAuthority
  */
 class CustomAppRestAuthTokenJsonRenderer implements AccessTokenJsonRenderer  {
 
-    @Override
+//    @Override
     String generateJson(AccessToken accessToken){
 
         // Add extra custom parameters if you want in this map to be rendered in login response

@@ -1,84 +1,84 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Bairro" :data="allBairros" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allBairros" :filter="filter" binary-state-sort row-key="name" title="Bairro">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-             <q-td key="provincia" :props="props">
-              <div class="text-pre-wrap">{{  props.row.distrito.provincia.designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito.provincia.designacao">
-                <q-input v-model="props.row.distrito.provincia.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="distrito" :props="props">
-              <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito.designacao">
-                <q-input v-model="props.row.distrito.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="postoAdministrativo" :props="props">
-              <div class="text-pre-wrap">{{ props.row.postoAdministrativo.designacao }}</div>
-              <q-popup-edit v-model="props.row.postoAdministrativo.designacao">
-                <q-input v-model="props.row.postoAdministrativo.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="localidade" :props="props">
-              <div class="text-pre-wrap">{{ props.row.localidade.designacao }}</div>
-              <q-popup-edit v-model="props.row.localidade.designacao">
-                <q-input v-model="props.row.localidade.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/bairro/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaBairro(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeBairro(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="bairro.designacao"
-                    :localidade.sync="localidade"
-                    :postoAdministrativo.sync="postoAdministrativo"
-                    :distrito.sync="distrito"
-                    :provincia.sync="provincia"
-                    :provincias.sync="allProvincias"
-                    :distritos.sync="allDistritosFromProvincia"
-                    :postoAdministrativos.sync="allPostoAdministrativosFromDistrito"
-                    :localidades="allLocalidadeFromDistritoOrPostoAdministrativo"
-                    :submitting="submitting"
-                    :close="close"
-                    :createBairro="createBairro"
-                    :removeBairro="removeBairro"/>
+        <q-tr :props="props">
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="provincia" :props="props">
+            <div class="text-pre-wrap">{{ props.row.distrito.provincia.designacao }}</div>
+            <q-popup-edit v-model="props.row.distrito.provincia.designacao">
+              <q-input v-model="props.row.distrito.provincia.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="distrito" :props="props">
+            <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
+            <q-popup-edit v-model="props.row.distrito.designacao">
+              <q-input v-model="props.row.distrito.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="postoAdministrativo" :props="props">
+            <div class="text-pre-wrap">{{ props.row.postoAdministrativo.designacao }}</div>
+            <q-popup-edit v-model="props.row.postoAdministrativo.designacao">
+              <q-input v-model="props.row.postoAdministrativo.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="localidade" :props="props">
+            <div class="text-pre-wrap">{{ props.row.localidade.designacao }}</div>
+            <q-popup-edit v-model="props.row.localidade.designacao">
+              <q-input v-model="props.row.localidade.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/bairro/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaBairro(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeBairro(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :createBairro="createBairro"
+                      :designacao.sync="bairro.designacao"
+                      :distrito.sync="distrito"
+                      :distritos.sync="allDistritosFromProvincia"
+                      :listErrors="listErrors"
+                      :localidade.sync="localidade"
+                      :localidades="allLocalidadeFromDistritoOrPostoAdministrativo"
+                      :postoAdministrativo.sync="postoAdministrativo"
+                      :postoAdministrativos.sync="allPostoAdministrativosFromDistrito"
+                      :provincia.sync="provincia"
+                      :provincias.sync="allProvincias"
+                      :removeBairro="removeBairro"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { exportFile, QSpinnerBall } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
 import Provincia from 'src/store/models/provincia/provincia'
 import Distrito from 'src/store/models/distrito/distrito'
 import Pais from 'src/store/models/pais/pais'
@@ -86,7 +86,7 @@ import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdmin
 import Localidade from 'src/store/models/localidade/localidade'
 import Bairro from 'src/store/models/bairro/bairro'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -95,7 +95,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Bairro',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -128,18 +128,53 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'provincia', align: 'left', label: 'Província', field: row => row.provincia, format: val => `${val}`, sortable: true },
-        { name: 'distrito', align: 'left', label: 'Distrito', field: row => row.distrito.id, format: val => `${val}`, sortable: true },
-        { name: 'postoAdministrativo', align: 'left', label: 'Posto Administrativo', field: row => row.postoAdministrativo.id, format: val => `${val}`, sortable: true },
-        { name: 'localidade', align: 'left', label: 'Localidade', field: row => row.localidade.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'provincia',
+          align: 'left',
+          label: 'Província',
+          field: row => row.provincia,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'distrito',
+          align: 'left',
+          label: 'Distrito',
+          field: row => row.distrito.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'postoAdministrativo',
+          align: 'left',
+          label: 'Posto Administrativo',
+          field: row => row.postoAdministrativo.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'localidade',
+          align: 'left',
+          label: 'Localidade',
+          field: row => row.localidade.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -152,18 +187,18 @@ export default {
     // Example:
     return this.getAllBairro()
   },
-  mounted () {
-   this.getAllPais()
-   this.getAllPostoAdministrativo()
-   this.getAllProvincia()
-   this.getAllDistrito()
-   this.getAllLocalidade()
-   this.getAllBairro()
+  mounted() {
+    this.getAllPais()
+    this.getAllPostoAdministrativo()
+    this.getAllProvincia()
+    this.getAllDistrito()
+    this.getAllLocalidade()
+    this.getAllBairro()
   },
   components: {
     'create-edit-form': require('components/bairro/createEditForm.vue').default
   },
-   created() {
+  created() {
     this.$q.loading.show({
       message: "Carregando ...",
       spinnerColor: "grey-4",
@@ -176,36 +211,39 @@ export default {
     }, 600)
 
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-  allProvincias () {
+    allProvincias() {
       return Provincia.query().with('pais').all()
     },
-    allDistritosFromProvincia () {
+    allDistritosFromProvincia() {
       return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    allDistritos () {
+    allDistritos() {
       return Distrito.query().with('provincia').all()
     },
-    allPostoAdministrativos () {
+    allPostoAdministrativos() {
       return PostoAdministrativo.query().with('distrito.provincia').all()
     },
-    allPostoAdministrativosFromDistrito () {
+    allPostoAdministrativosFromDistrito() {
       return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
     },
-    allLocalidades () {
+    allLocalidades() {
       return Localidade.query().with('distrito.provincia').with('postoAdministrativo').all()
     },
-    allLocalidadeFromDistritoOrPostoAdministrativo () {
-      if (this.postoAdministrativo != null) { return Localidade.query().with('postoAdministrativo').where('postoAdministrativo_id', this.postoAdministrativo.id).get() } else { return Localidade.query().with('distrito').where('distrito_id', this.distrito.id).get() }
+    allLocalidadeFromDistritoOrPostoAdministrativo() {
+      if (this.postoAdministrativo != null) {
+        return Localidade.query().with('postoAdministrativo').where('postoAdministrativo_id', this.postoAdministrativo.id).get()
+      } else {
+        return Localidade.query().with('distrito').where('distrito_id', this.distrito.id).get()
+      }
     },
-    allBairros () {
+    allBairros() {
       return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').all()
     }
   },
   methods: {
-    createBairro () {
+    createBairro() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
@@ -218,7 +256,7 @@ export default {
       this.bairro.postoAdministrativo_id = this.postoAdministrativo.id
       this.bairro.localidade_id = this.localidade.id
       if (this.editedIndex > -1) {
-      Bairro.api().patch("/bairro/"+this.bairro.id,this.bairro).then(resp => {
+        Bairro.api().patch("/bairro/" + this.bairro.id, this.bairro).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -246,7 +284,7 @@ export default {
           }
         })
       } else {
-       Bairro.api().post("/bairro/",this.bairro).then(resp => {
+        Bairro.api().post("/bairro/", this.bairro).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -275,7 +313,7 @@ export default {
         })
       }
     },
-    close () {
+    close() {
       this.getAllBairro()
       this.getAllLocalidade()
       this.getAllPostoAdministrativo()
@@ -283,6 +321,7 @@ export default {
       this.getAllProvincia()
       this.getAllDistrito()
       this.show_dialog = false
+      this.listErrors = {}
       this.bairro = {}
       this.localidade = {}
       this.distrito = {}
@@ -293,7 +332,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeBairro (bairro) {
+    removeBairro(bairro) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -311,10 +350,10 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + bairro.designacao + ' ]'
         })
-        Bairro.api().delete("/bairro/"+bairro.id)
+        Bairro.api().delete("/bairro/" + bairro.id)
       })
     },
-    editaBairro (bairro) {
+    editaBairro(bairro) {
       this.editedIndex = 0
       this.bairro = Object.assign({}, bairro)
       this.localidade = Localidade.query().find(bairro.localidade_id)
@@ -323,35 +362,35 @@ export default {
       this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    getAllBairro(){
+    getAllBairro() {
       Bairro.api().get('/bairro?offset=0&max=1000000')
     },
-    getAllLocalidade(){
+    getAllLocalidade() {
       Localidade.api().get('/localidade?offset=0&max=1000000')
     },
-    getAllPais () {
+    getAllPais() {
       Pais.api().get('/pais?offset=0&max=1000000')
     },
-    getAllProvincia () {
-      return Provincia.api().get('/provincia?offset=0&max=1000000', { 
+    getAllProvincia() {
+      return Provincia.api().get('/provincia?offset=0&max=1000000', {
         persistOptions: {
           insert: ['pais']
         }
-    })
+      })
     },
-    getAllDistrito () {
-     Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllDistrito() {
+      Distrito.api().get('/distrito?offset=0&max=1000000')
     },
-    getAllPostoAdministrativo () {
-       PostoAdministrativo.api().get('/postoAdministrativo?offset=0&max=1000000')
+    getAllPostoAdministrativo() {
+      PostoAdministrativo.api().get('/postoAdministrativo?offset=0&max=1000000')
     },
-    abortFilterFn () {
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    setModel (val) {
+    setModel(val) {
       this.bairro.distrito = val
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

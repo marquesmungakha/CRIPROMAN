@@ -3,7 +3,7 @@
        <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
         <q-card-section>
-            <div class="text-h6">Adicionar Processo!</div>
+            <div class="text-h6">Adicionar Despacho!</div>
         </q-card-section>
                 <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -17,51 +17,15 @@
         </q-card-section>
         <q-separator />
         <q-card-section style="max-height: 50vh" class="scroll">
-                <q-form @submit.prevent="createProcesso" class="q-gutter-md">
+                <q-form @submit.prevent="createParecerProcesso" class="q-gutter-md">
                     <q-list>
-                        <q-item>
-                            <q-item-section>
-                                <q-input :value="numeroProcesso"
-                                @input="$emit('update:numeroProcesso', $event)"
-                                ref="numeroProcesso"
-                                label="Número do Processo *"
-                                lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza o Número do Auto']" />
-                            </q-item-section>
-                        </q-item>
                          <q-item>
                             <q-item-section>
-                            <q-select
-                              :value="numeroAuto"
-                              use-input
-                              fill-input
-                              hide-selected
-                              label="Número do Auto *"
-                              input-debounce="0"
-                              :options="optionsAutoEntrada"
-                              option-label="numero"
-                              option-value="id"
-                              @filter="filterFnAutoEntrada"
-                              @input="$emit('update:numeroAuto', $event)"
-                              abort="abortFilterFn"
-                              hint="Autocompleta o Texto">
-                              <template v-slot:no-option>
-                                <q-item>
-                                  <q-item-section class="text-grey">
-                                    No results
-                                  </q-item-section>
-                                </q-item>
-                              </template>
-                            </q-select>
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
-                                <q-input :value="dataEntrada"  label="Data de Entrada " @input="$emit('update:dataEntrada', $event)" :rules="['####-##-##']">
+                                <q-input :value="dataRegisto"  label="Data de Abertura " @input="$emit('update:dataRegisto', $event)" :rules="['####-##-##']">
                                 <template v-slot:append>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                                      <q-date :value="dataEntrada" minimal mask="YYYY-MM-DD" @input="$emit('update:dataEntrada', $event)">
+                                      <q-date :value="dataRegisto" minimal mask="YYYY-MM-DD" @input="$emit('update:dataRegisto', $event)">
                                         <div class="row items-center justify-end">
                                           <q-btn v-close-popup label="Close" color="primary" flat />
                                         </div>
@@ -74,28 +38,23 @@
                             </q-item>
                             <q-item>
                             <q-item-section>
-                                <q-input :value="proveniencia"
-                                @input="$emit('update:proveniencia', $event)"
-                                ref="proveniencia"
-                                label="Proveniência *"
-                                lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza a Proveniência']" />
+                                 <q-input :value="parecer"  type="textarea"  label="Descrição do Despacho  " @input="$emit('update:parecer', $event)"/>
                             </q-item-section>
                         </q-item>
                          <q-item>
                             <q-item-section>
                             <q-select
-                              :value="formaProcesso"
+                              :value="tipoParecer"
                               use-input
                               fill-input
                               hide-selected
-                              label="Forma de Processo  *"
+                              label="Despacho *"
                               input-debounce="0"
-                              :options="optionsFormaProcesso"
+                              :options="optionsTipoParecer"
                               option-label="designacao"
                               option-value="id"
-                              @filter="filterFnFormaProcesso"
-                              @input="$emit('update:formaProcesso', $event)"
+                              @filter="filterFnTipoParecer"
+                              @input="$emit('update:tipoParecer', $event)"
                               abort="abortFilterFn"
                               hint="Autocompleta o Texto">
                               <template v-slot:no-option>
@@ -108,40 +67,15 @@
                             </q-select>
                             </q-item-section>
                         </q-item>
+                    
                         <q-item>
-                            <q-item-section>
-                            <q-select
-                              :value="inspector"
-                              use-input
-                              fill-input
-                              hide-selected
-                              label="Inspector Responsável "
-                              input-debounce="0"
-                              :options="optionsInspector"
-                              option-label="numero"
-                              option-value="id"
-                              @filter="filterFnInspector"
-                              @input="$emit('update:inspector', $event)"
-                              abort="abortFilterFn"
-                              hint="Autocompleta o Texto">
-                              <template v-slot:no-option>
-                                <q-item>
-                                  <q-item-section class="text-grey">
-                                    No results
-                                  </q-item-section>
-                                </q-item>
-                              </template>
-                            </q-select>
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
                             <q-item-section>
                             <q-select
                               :value="magistrado"
                               use-input
                               fill-input
                               hide-selected
-                              label="Magistrado "
+                              label="Magistrado Responsável * "
                               input-debounce="0"
                               :options="optionsMagistrado"
                               option-label="numero"
@@ -160,6 +94,34 @@
                             </q-select>
                             </q-item-section>
                         </q-item>
+
+                        <q-item>
+                            <q-item-section>
+                            <q-select
+                              :value="destino"
+                              use-input
+                              fill-input
+                              hide-selected
+                              label="Destino * "
+                              input-debounce="0"
+                              :options="optionsDestino"
+                              option-label="designacao"
+                              option-value="id"
+                              @filter="filterFnDestino"
+                              @input="$emit('update:destino', $event)"
+                              abort="abortFilterFn"
+                              hint="Autocompleta o Texto">
+                              <template v-slot:no-option>
+                                <q-item>
+                                  <q-item-section class="text-grey">
+                                    No results
+                                  </q-item-section>
+                                </q-item>
+                              </template>
+                            </q-select>
+                            </q-item-section>
+                        </q-item>
+
                         <q-item>
                           <q-item-section>
                             <q-file color="primary" :value="anexo" label="Label"  @input="$emit('update:anexo', $event)">
@@ -174,7 +136,7 @@
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
-            <q-btn type="submit" :loading="submitting" @click.stop="createProcesso" color="teal" label="Gravar" />
+            <q-btn type="submit" :loading="submitting" @click.stop="createParecerProcesso" color="teal" label="Gravar" />
             <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
         </q-card-actions>
         </q-card>
@@ -187,53 +149,31 @@ export default {
 
   data () {
     return {
-      optionsFormaProcesso: [],
-      optionsAutoEntrada: [],
-      optionsInspector: [],
-      optionsMagistrado: []
+      optionsTipoParecer: [],
+      optionsMagistrado: [],
+      optionsDestino: []
     }
   },
   computed: {
   },
   methods: {
-    filterFnFormaProcesso (val, update, abort) {
-      const stringOptions = this.formaProcessos
+    filterFnTipoParecer (val, update, abort) {
+      const stringOptions = this.tiposParecer
       if (val === '') {
         update(() => {
-          this.optionsFormaProcesso = stringOptions.map(formaProcesso => formaProcesso)
+          this.optionsTipoParecer = stringOptions.map(tipoParecer => tipoParecer)
         })
       } else if (stringOptions.length === 0) {
         update(() => {
-          this.optionsFormaProcesso = []
+          this.optionsTipoParecer = []
         })
       } else {
         update(() => {
-          this.optionsFormaProcesso = stringOptions
-            .map(formaProcesso => formaProcesso)
-            .filter(formaProcesso => {
-              return formaProcesso &&
-                   formaProcesso.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
-            })
-        })
-      }
-    },
-    filterFnAutoEntrada (val, update, abort) {
-      const stringOptions = this.autoEntradas
-      if (val === '') {
-        update(() => {
-          this.optionsAutoEntrada = stringOptions.map(autoEntrada => autoEntrada)
-        })
-      } else if (stringOptions.length === 0) {
-        update(() => {
-          this.optionsAutoEntrada = []
-        })
-      } else {
-        update(() => {
-          this.optionsAutoEntrada = stringOptions
-            .map(autoEntrada => autoEntrada)
-            .filter(autoEntrada => {
-              return autoEntrada &&
-                   autoEntrada.numero.toLowerCase().indexOf(val.toLowerCase()) !== -1
+          this.optionsTipoParecer = stringOptions
+            .map(tipoParecer => tipoParecer)
+            .filter(tipoParecer => {
+              return tipoParecer &&
+                   tipoParecer.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
             })
         })
       }
@@ -259,23 +199,23 @@ export default {
         })
       }
     },
-    filterFnInspector (val, update, abort) {
-      const stringOptions = this.inspectors
+    filterFnDestino (val, update, abort) {
+      const stringOptions = this.destinos
       if (val === '') {
         update(() => {
-          this.optionsInspector = stringOptions.map(inspector => inspector)
+          this.optionsDestino = stringOptions.map(destino => destino)
         })
       } else if (stringOptions.length === 0) {
         update(() => {
-          this.optionsInspector = []
+          this.optionsDestino = []
         })
       } else {
         update(() => {
-          this.optionsInspector = stringOptions
-            .map(inspector => inspector)
-            .filter(inspector => {
-              return inspector &&
-                   inspector.numero.toLowerCase().indexOf(val.toLowerCase()) !== -1
+          this.optionsDestino = stringOptions
+            .map(destino => destino)
+            .filter(destino => {
+              return destino &&
+                   destino.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
             })
         })
       }
@@ -291,21 +231,19 @@ export default {
     [
       'show_dialog',
       'listErrors',
-      'numeroProcesso',
-      'numeroAuto',
-      'proveniencia',
-      'dataEntrada',
-      'formaProcesso',
+      'destino',
+      'destinos',
+      'dataRegisto',
+      'parecer',
+      'localDespacho',
+      'tipoParecer',
       'magistrado',
-      'inspector',
       'anexo',
-      'inspectors',
       'magistrados',
-      'formaProcessos',
-      'autoEntradas',
+      'tiposParecer',
       'close',
       'submitting',
-      'createProcesso'
+      'createParecerProcesso'
     ]
 
 }

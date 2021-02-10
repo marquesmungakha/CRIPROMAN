@@ -1,7 +1,7 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import TipoParecer from "src/store/models/tipoParecer/tipoParecer";
 import Orgao from "../orgao/orgao";
-import Magistrado from "../inspector/inspector"
+import Magistrado from "../magistrado/magistrado"
 import ProcessoInstrucaoPreparatoria from "../processoInstrucaoPreparatoria/processoInstrucaoPreparatoria"
 
 export default class ParecerProcesso extends Model {
@@ -19,10 +19,10 @@ export default class ParecerProcesso extends Model {
       processo_id: this.attr(''),
 
       // Relationshiops
-      tipoParecer: this.belongsTo(TipoParecer,'tipoParecer_id'),
-      destino: this.belongsTo(Orgao,'destino_id'),
-      magistrado: this.belongsTo(Magistrado,'magistrado_id'),
-      processo: this.belongsTo(ProcessoInstrucaoPreparatoria,'processo_id')
+      tipoParecer: this.belongsTo(TipoParecer, 'tipoParecer_id'),
+      destino: this.belongsTo(Orgao, 'destino_id'),
+      magistrado: this.belongsTo(Magistrado, 'magistrado_id'),
+      processo: this.belongsTo(ProcessoInstrucaoPreparatoria, 'processo_id')
     }
 
   }

@@ -2,10 +2,10 @@ package org.informservice.criproman.classeJudicial
 
 import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
+import grails.rest.Resource
 
 // import grails.plugins.orm.auditable.Auditable
 
-import grails.rest.Resource
 import org.informservice.criproman.crimes.Crime
 
 @Secured('ROLE_ADMIN')

@@ -1,87 +1,90 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Detencao" :data="allDetencaos" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allDetencaos" :filter="filter" binary-state-sort row-key="name" title="Detencao">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="numero" :props="props">
-              {{ props.row.numero }}
-              <q-popup-edit v-model="props.row.numero" title="Update numero">
-                <q-input v-model="props.row.numero" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataAbertura" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
-                <q-input v-model="props.row.dataAbertura" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-             <q-td key="localDetencao" :props="props">
-              <div class="text-pre-wrap">{{ props.row.localDetencao }}</div>
-              <q-popup-edit v-model="props.row.localDetencao">
-                <q-input v-model="props.row.localDetencao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="motivoDetencao" :props="props">
-              <div class="text-pre-wrap">{{ getMotivoDetencao(props.row.motivoDetencao.id).designacao }}</div>
-              <q-popup-edit v-model="props.row.motivoDetencao">
-                <q-input v-model="props.row.motivoDetencao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="inspector" :props="props">
-              <div class="text-pre-wrap">{{  getInspector(props.row.inspector.id).numero  }} - {{  getInspector(props.row.inspector.id).nome  }} {{  getInspector(props.row.inspector.id).apelido  }}</div>
-              <q-popup-edit v-model="props.row.inspector">
-                <q-input v-model="props.row.inspector" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/detencao/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaDetencao(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeDetencao(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="detencao.numero"
-                    :dataAbertura.sync="detencao.dataAbertura"
-                    :descricao.sync="detencao.descricao"
-                    :motivoDetencao.sync="motivoDetencao"
-                    :localDetencao.sync="detencao.localDetencao"
-                    :inspector.sync="inspector"
-                    :anexo.sync="detencao.anexo"
-                    :inspectors.sync="allInspectors"
-                    :motivoDetencaos.sync="allMotivoDetencaos"
-                    :submitting="submitting"
-                    :close="close"
-                    :createDetencao="createDetencao"
-                    :removeDetencao="removeDetencao"/>
+        <q-tr :props="props">
+          <q-td key="numero" :props="props">
+            {{ props.row.numero }}
+            <q-popup-edit v-model="props.row.numero" title="Update numero">
+              <q-input v-model="props.row.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataAbertura" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
+              <q-input v-model="props.row.dataAbertura" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="localDetencao" :props="props">
+            <div class="text-pre-wrap">{{ props.row.localDetencao }}</div>
+            <q-popup-edit v-model="props.row.localDetencao">
+              <q-input v-model="props.row.localDetencao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="motivoDetencao" :props="props">
+            <div class="text-pre-wrap">{{ props.row.motivoDetencao.designacao }}</div>
+            <q-popup-edit v-model="props.row.motivoDetencao.designacao">
+              <q-input v-model="props.row.motivoDetencao.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="inspector" :props="props">
+           <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+              {{ props.row.inspector.apelido }}
+            </div>
+            <q-popup-edit v-model="props.row.inspector.numero">
+              <q-input v-model="props.row.inspector.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/detencao/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDetencao(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDetencao(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :anexo.sync="detencao.anexo"
+                      :close="close"
+                      :createDetencao="createDetencao"
+                      :dataAbertura.sync="detencao.dataAbertura"
+                      :descricao.sync="detencao.descricao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :listErrors="listErrors"
+                      :localDetencao.sync="detencao.localDetencao"
+                      :motivoDetencao.sync="motivoDetencao"
+                      :motivoDetencaos.sync="allMotivoDetencaos"
+                      :numero.sync="detencao.numero"
+                      :removeDetencao="removeDetencao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Inspector from 'src/store/models/inspector/inspector'
+import MotivoDetencao from 'src/store/models/motivoDetencao/motivoDetencao'
+import Detencao from 'src/store/models/detencao/detencao'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -90,7 +93,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Detencao',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -122,18 +125,53 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'numero', align: 'left', label: 'Número do Auto', field: row => row.numero, format: val => `${val}`, sortable: true },
-        { name: 'dataAbertura', align: 'left', label: 'Data de Abertura', field: row => row.dataAbertura, format: val => `${val}`, sortable: true },
-        { name: 'localDetencao', align: 'left', label: 'Local Detenção', field: row => row.localDetencao, format: val => `${val}`, sortable: true },
-        { name: 'motivoDetencao', align: 'left', label: 'Motivo de Detenção', field: row => row.motivoDetencao.id, format: val => `${val}`, sortable: true },
-        { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'numero',
+          align: 'left',
+          label: 'Número do Auto',
+          field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataAbertura',
+          align: 'left',
+          label: 'Data de Abertura',
+          field: row => row.dataAbertura,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'localDetencao',
+          align: 'left',
+          label: 'Local Detenção',
+          field: row => row.localDetencao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'motivoDetencao',
+          align: 'left',
+          label: 'Motivo de Detenção',
+          field: row => row.motivoDetencao.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'inspector',
+          align: 'left',
+          label: 'Inspector',
+          field: row => row.inspector.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -144,50 +182,46 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('detencao/getAllDetencao')
+    return this.getAllDetencao()
   },
-  props: ['processo'],
-  mounted () {
-    this.$store.dispatch('tipoAuto/getAllTipoAuto')
-    this.$store.dispatch('motivoDetencao/getAllMotivoDetencao')
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  props: ['processoInvestigacao'],
+  mounted() {
+    this.getAllDetencao()
+    this.getAllMotivoDetencao()
+    this.getAllInspector()
   },
   components: {
     'create-edit-form': require('components/detencao/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+    allInspectors() {
+      return Inspector.query().all()
     },
-    allMotivoDetencaos () {
-      return this.$store.getters['motivoDetencao/allMotivoDetencao']
+    allMotivoDetencaos() {
+      return MotivoDetencao.query().all()
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
-    },
-    allDetencaos () {
-      return this.$store.getters['detencao/allDetencao']
+    allDetencaos() {
+      return Detencao.query().with('inspector').with('motivoDetencao').where('processo_id',this.processoInvestigacao.id).get()
     }
   },
   methods: {
-    ...mapActions('detencao', ['getAllDetencao', 'addNewDetencao', 'updateDetencao', 'deleteDetencao']),
-    createDetencao () {
+    createDetencao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.detencao.motivoDetencao = this.motivoDetencao
-      this.detencao.processo = this.processo
+      this.detencao.motivoDetencao_ID = this.motivoDetencao.id
+      this.detencao.inspector_id = this.inspector
       this.detencao.inspector = this.inspector
-      this.detencao.orgao = this.$store.state.orgao.orgaos[0]
+      this.detencao.processo_id = this.processoInvestigacao.id
+      this.detencao.processo = this.processoInvestigacao
       //  const image = new Blob([this.detencao.anexo])
       this.detencao.anexo = null
       if (this.editedIndex > -1) {
-        this.updateDetencao(this.detencao).then(resp => {
+         Detencao.api().patch("/detencao/" + this.detencao.id, this.detencao).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -197,7 +231,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [ ' + this.detencao.designacao + ' ]'
+            message: 'A informação foi actualizada com successo!! [ ' + this.detencao.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -215,7 +249,7 @@ export default {
           }
         })
       } else {
-        this.addNewDetencao(this.detencao).then(resp => {
+       Detencao.api().post("/detencao/", this.detencao).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -226,7 +260,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.detencao.designacao + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.detencao.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -245,11 +279,11 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('detencao/getAllDetencao')
-      this.$store.dispatch('motivoDetencao/getAllMotivoDetencao')
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
+    close() {
+      this.getAllDetencao()
+      this.getAllMotivoDetencao()
+      this.getAllInspector()
+      this.listErrors = {}
       this.show_dialog = false
       this.detencao = {}
       this.props = this.detencao
@@ -257,7 +291,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeDetencao (detencao) {
+    removeDetencao(detencao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -273,31 +307,31 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi Removida com successo! [ ' + detencao.designacao + ' ]'
+          message: 'A informação foi Removida com successo! [ ' + detencao.numero + ' ]'
         })
-        this.deleteDetencao(detencao)
+         Detencao.api().delete("/detencao/" + this.detencao.id)
       })
     },
-    editaDetencao (detencao) {
-      this.editedIndex = this.allDetencaos.indexOf(detencao)
+    editaDetencao(detencao) {
+      this.editedIndex = 0
       this.detencao = Object.assign({}, detencao)
-      this.motivoDetencao = this.getMotivoDetencao(detencao.motivoDetencao.id)
-      this.inspector = this.getInspector(detencao.inspector.id)
-      this.orgao = this.$store.state.orgao.orgaos[0]
+      this.motivoDetencao = MotivoDetencao.query().find(detencao.motivoDetencao_id)
+      this.inspector = Inspector.query().find(detencao.inspector.id) 
       this.show_dialog = true
     },
-    getMotivoDetencao (id) {
-      const localMotivoDetencao = this.allMotivoDetencaos.filter(motivoDetencao => motivoDetencao.id === id)
-      if (localMotivoDetencao.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localMotivoDetencao[0] }
+    getAllDetencao() {
+      Detencao.api().get("/detencao?offset=0&max=1000000")
     },
-    getInspector (id) {
-      const localInspector = this.allInspectors.filter(inspector => inspector.id === id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    getAllMotivoDetencao() {
+      MotivoDetencao.api().get("/motivoDetencao?offset=0&max=1000000")
     },
-    abortFilterFn () {
+    getAllInspector() {
+      Inspector.api().get("/inspector?offset=0&max=1000000")
+    },
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

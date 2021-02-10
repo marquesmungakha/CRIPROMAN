@@ -1,47 +1,56 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ modoAtuacao.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaModoAtuacao(modoAtuacao)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeModoAtuacao(modoAtuacao)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/modoAtuacao' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaModoAtuacao(modoAtuacao)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removeModoAtuacao(modoAtuacao)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localModoAtuacao.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createModoAtuacao="createModoAtuacao"
-                    :removeModoAtuacao="removeModoAtuacao"/>
+    <create-edit-form :close="close"
+                      :createModoAtuacao="createModoAtuacao"
+                      :designacao.sync="localModoAtuacao.designacao"
+                      :listErrors="listErrors"
+                      :removeModoAtuacao="removeModoAtuacao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import ModoAtuacao from 'src/store/models/modoAtuacao/modoAtuacao'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -53,21 +62,20 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('modoAtuacao/getModoAtuacao', currentRoute.params.id)
+    return ModoAtuacao.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     modoAtuacao: {
-      get () {
-        return this.$store.getters['modoAtuacao/modoAtuacao']
+      get() {
+        return ModoAtuacao.query().find(this.$route.params.id)
       },
-      set (modoAtuacao) {
-        this.SET_UPDATE_MODOATUACAO({ modoAtuacao })
+      set(modoAtuacao) {
         this.$emit('update:modoAtuacao', '')
-        this.$store.commit('modoAtuacao/SET_UPDATE_MODOATUACAO', modoAtuacao)
+        ModoAtuacao.update(modoAtuacao)
       }
 
     }
@@ -76,9 +84,7 @@ export default {
     'create-edit-form': require('components/modoAtuacao/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('modoAtuacao', ['getAllModoAtuacao', 'getModoAtuacao', 'addNewModoAtuacao', 'updateModoAtuacao', 'deleteModoAtuacao']),
-    ...mapMutations('modoAtuacao', ['SET_UPDATE_MODOATUACAO']),
-    removeModoAtuacao (modoAtuacao) {
+    removeModoAtuacao(modoAtuacao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -96,18 +102,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + modoAtuacao.designacao + ' ]'
         })
-        this.deleteModoAtuacao(modoAtuacao)
+        ModoAtuacao.api().delete("/modoAtuacao/" + modoAtuacao.id)
         this.$router.go(-1)
       })
     },
-    createModoAtuacao () {
+    createModoAtuacao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.modoAtuacao = this.localModoAtuacao
-      this.updateModoAtuacao(this.localModoAtuacao).then(resp => {
+      ModoAtuacao.api().patch("/modoAtuacao/" + this.modoAtuacao.id, this.modoAtuacao).then(resp => {
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -136,15 +142,12 @@ export default {
         }
       })
     },
-    editaModoAtuacao (modoAtuacao) {
+    editaModoAtuacao(modoAtuacao) {
       this.localModoAtuacao = Object.assign({}, modoAtuacao)
       this.modoAtuacao = Object.assign({}, modoAtuacao)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('modoAtuacao/getModoAtuacao', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.modoAtuacao = {}
       this.props = this.modoAtuacao
@@ -153,7 +156,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

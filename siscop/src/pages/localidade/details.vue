@@ -1,92 +1,91 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card bordered class="my-card" flat>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+        <div class="row">
+          <div class="col-12">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('codigo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ localidade.codigo }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('codigo') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ localidade.codigo }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ localidade.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('provincia') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ localidade.distrito.provincia.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('distrito') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ localidade.distrito.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('postoAdministrativo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ localidade.postoAdministrativo.designacao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-              </div>
-            </div>
-                </q-card-section>
-                <div class="row">
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ localidade.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('provincia') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ localidade.distrito.provincia.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('distrito') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ localidade.distrito.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('postoAdministrativo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ localidade.postoAdministrativo.designacao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+          </div>
+        </div>
+      </q-card-section>
+      <div class="row">
         <div class="col">
           <q-card-actions align="left">
-            <q-btn class="glossy" label="Voltar" color="primary" v-go-back=" '/localidade' " no-caps/>
+            <q-btn v-go-back=" '/localidade' " class="glossy" color="primary" label="Voltar" no-caps/>
           </q-card-actions>
         </div>
         <div class="col">
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaLocalidade(localidade)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeLocalidade(localidade)" no-caps/>
-                </q-card-actions>
+          <q-card-actions align="right">
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaLocalidade(localidade)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeLocalidade(localidade)"/>
+          </q-card-actions>
         </div>
-                </div>
-            </q-card>
- <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="localLocalidade.codigo"
-                    :designacao.sync="localLocalidade.designacao"
-                    :postoAdministrativo.sync="postoAdministrativo"
-                    :distrito.sync="distrito"
-                    :provincia.sync="provincia"
-                    :provincias.sync="allProvincias"
-                    :distritos.sync="allDistritosFromProvincia"
-                    :postoAdministrativos.sync="allPostoAdministrativosFromDistrito"
-                    :submitting="submitting"
-                    :close="close"
-                    :createLocalidade="createLocalidade"
-                    :removeLocalidade="removeLocalidade"/>
+      </div>
+    </q-card>
+    <create-edit-form :close="close"
+                      :codigo.sync="localLocalidade.codigo"
+                      :createLocalidade="createLocalidade"
+                      :designacao.sync="localLocalidade.designacao"
+                      :distrito.sync="distrito"
+                      :distritos.sync="allDistritosFromProvincia"
+                      :listErrors="listErrors"
+                      :postoAdministrativo.sync="postoAdministrativo"
+                      :postoAdministrativos.sync="allPostoAdministrativosFromDistrito"
+                      :provincia.sync="provincia"
+                      :provincias.sync="allProvincias"
+                      :removeLocalidade="removeLocalidade"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
 import Provincia from 'src/store/models/provincia/provincia'
 import Distrito from 'src/store/models/distrito/distrito'
-import Pais from 'src/store/models/pais/pais'
 import PostoAdministrativo from 'src/store/models/postoAdministrativo/postoAdministrativo'
 import Localidade from 'src/store/models/localidade/localidade'
 
 export default {
   name: 'Distrito',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -116,7 +115,7 @@ export default {
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -129,33 +128,33 @@ export default {
     // Example:
     return Localidade.query().with('distrito').with('postoAdministrativo').find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     localidade: {
-      get () {
+      get() {
         return Localidade.query().with('distrito.provincia').with('postoAdministrativo').find(this.$route.params.id)
       },
-      set (localidade) {
+      set(localidade) {
         this.$emit('update:localidade', '')
-         Localidade.update(localidade)
+        Localidade.update(localidade)
       }
     },
-   allProvincias () {
+    allProvincias() {
       return Provincia.query().with('pais').all()
     },
-    allDistritosFromProvincia () {
+    allDistritosFromProvincia() {
       return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    allDistritos () {
+    allDistritos() {
       return Distrito.query().with('provincia').all()
     },
-    allPostoAdministrativos () {
+    allPostoAdministrativos() {
       return PostoAdministrativo.query().with('distrito.provincia').all()
     },
-    allPostoAdministrativosFromDistrito () {
+    allPostoAdministrativosFromDistrito() {
       return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
     }
   },
@@ -163,7 +162,7 @@ export default {
     'create-edit-form': require('components/localidade/createEditForm.vue').default
   },
   methods: {
-    removeLocalidade (localidade) {
+    removeLocalidade(localidade) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -181,11 +180,11 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + localidade.designacao + ' ]'
         })
-       Localidade.api().delete("/localidade/"+localidade.id)
+        Localidade.api().delete("/localidade/" + localidade.id)
         this.$router.go(-1)
       })
     },
-    createLocalidade () {
+    createLocalidade() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
@@ -195,7 +194,7 @@ export default {
       this.localLocalidade.postoAdministrativo = this.postoAdministrativo
       this.localLocalidade.postoAdministrativo_id = this.postoAdministrativo.id
       this.localLocalidade.distrito_id = this.distrito.id
-      Localidade.api().patch("/localidade/"+this.localLocalidade.id,this.localLocalidade).then(resp => {
+      Localidade.api().patch("/localidade/" + this.localLocalidade.id, this.localLocalidade).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -224,7 +223,7 @@ export default {
         }
       })
     },
-    editaLocalidade (localidade) {
+    editaLocalidade(localidade) {
       this.editedIndex = 0
       this.localidade = Object.assign({}, localidade)
       this.postoAdministrativo = PostoAdministrativo.query().find(localidade.postoAdministrativo_id)
@@ -232,7 +231,7 @@ export default {
       this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    close () {
+    close() {
       this.show_dialog = false
       this.props = this.localidade
       setTimeout(() => {
@@ -240,10 +239,10 @@ export default {
       }, 300)
     }
   },
-  abortFilterFn () {
+  abortFilterFn() {
     // console.log('delayed filter aborted')
   },
-  setModel (val) {
+  setModel(val) {
     this.localidade.distrito = val
   },
   i18n: {

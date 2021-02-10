@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import TipoDedo from "../tipoDedo/tipoDedo"
 
 export default class ImpressaoDigital extends Model {

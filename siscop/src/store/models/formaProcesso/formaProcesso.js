@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import ProcessoInvestigacao from "src/store/models/processoInvestigacao/processoInvestigacao";
 import ProcessoInstrucaoPreparatoria from "src/store/models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoria"
 
@@ -18,7 +18,6 @@ export default class FormaProcesso extends Model {
 
     }
   }
-
 
 
 }

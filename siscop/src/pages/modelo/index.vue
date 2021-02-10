@@ -1,70 +1,72 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Modelo" :data="allModelos" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allModelos" :filter="filter" binary-state-sort row-key="name" title="Modelo">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="codigo" :props="props">
-              {{ props.row.codigo }}
-              <q-popup-edit v-model="props.row.codigo">
-                <q-input v-model="props.row.codigo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="marca" :props="props">
-              <div class="text-pre-wrap">{{  getMarca (props.row.marca.id ).designacao }}</div>
-              <q-popup-edit v-model="props.row.marca.id">
-                <q-input v-model="props.row.marca.id" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/modelo/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaModelo(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeModelo(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="modelo.codigo"
-                    :designacao.sync="modelo.designacao"
-                    :marca.sync="marca"
-                    :marcas="allMarcas"
-                    :submitting="submitting"
-                    :close="close"
-                    :createModelo="createModelo"
-                    :removeModelo="removeModelo"/>
+        <q-tr :props="props">
+          <q-td key="codigo" :props="props">
+            {{ props.row.codigo }}
+            <q-popup-edit v-model="props.row.codigo">
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="marca" :props="props">
+            <div class="text-pre-wrap">{{ props.row.marca.designacao }}</div>
+            <q-popup-edit v-model="props.row.marca.designacao">
+              <q-input v-model="props.row.marca.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/modelo/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaModelo(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeModelo(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :codigo.sync="modelo.codigo"
+                      :createModelo="createModelo"
+                      :designacao.sync="modelo.designacao"
+                      :listErrors="listErrors"
+                      :marca.sync="marca"
+                      :marcas="allMarcas"
+                      :removeModelo="removeModelo"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
+import Marca from 'src/store/models/marca/marca'
+import Modelo from 'src/store/models/modelo/modelo'
+import TipoMeio from 'src/store/models/tipoMeio/tipoMeio'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -73,7 +75,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Modelo',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -93,16 +95,38 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'codigo', required: true, label: 'Codigo', align: 'left', field: row => row.codigo, format: val => `${val}`, sortable: true },
-        { name: 'designacao', align: 'left', label: 'Designacao', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'marca', align: 'left', label: 'Marca', field: row => row.marca.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'codigo',
+          required: true,
+          label: 'Codigo',
+          align: 'left',
+          field: row => row.codigo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designacao',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'marca',
+          align: 'left',
+          label: 'Marca',
+          field: row => row.marca.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -113,35 +137,50 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('modelo/getAllModelo')
+    return this.getAllModelo()
   },
-  mounted () {
-    this.$store.dispatch('marca/getAllMarca')
+  mounted() {
+    this.getAllMarca()
+    this.getAllModelo()
+    this.getAllTipoMeio()
   },
   components: {
     'create-edit-form': require('components/modelo/createEditForm.vue').default
   },
-  metaInfo: {
+  created() {
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+
+    setTimeout(() => {
+      this.$q.loading.hide()
+    }, 600)
+
   },
+  metaInfo: {},
   computed: {
-    allMarcas () {
-      return this.$store.getters['marca/allMarca']
+    allMarcas() {
+      return Marca.query().all()
     },
-    allModelos () {
-      return this.$store.getters['modelo/allModelo']
+    allModelos() {
+      return Modelo.query().with('marca').all()
     }
   },
   methods: {
-    ...mapActions('modelo', ['getAllModelo', 'addNewModelo', 'updateModelo', 'deleteModelo']),
-    createModelo () {
+    createModelo() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.modelo.marca.id = this.marca.id
+      this.modelo.marca = this.marca
+      this.modelo.marca.tipoMeio = TipoMeio.query().find(this.marca.tipoMeio_id)
+      this.modelo.marca_id = this.marca.id
       if (this.editedIndex > -1) {
-        this.updateModelo(this.modelo).then(resp => {
+        Modelo.api().patch("/modelo/" + this.modelo.id, this.modelo).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -169,7 +208,7 @@ export default {
           }
         })
       } else {
-        this.addNewModelo(this.modelo).then(resp => {
+        Modelo.api().post("/modelo/", this.modelo).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -199,9 +238,9 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('modelo/getAllModelo')
-      this.$store.dispatch('marca/getAllMarca')
+    close() {
+      this.getAllMarca()
+      this.getAllModelo()
       this.show_dialog = false
       this.modelo = {}
       this.props = this.modelo
@@ -209,7 +248,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeModelo (modelo) {
+    removeModelo(modelo) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -227,26 +266,31 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + modelo.designacao + ' ]'
         })
-        this.deleteModelo(modelo)
+        Modelo.api().delete("/modelo/" + modelo.id)
       })
     },
-    editaModelo (modelo) {
-      this.editedIndex = this.allModelos.indexOf(modelo)
+    editaModelo(modelo) {
+      this.editedIndex = 0
       this.modelo = Object.assign({}, modelo)
-      this.marca = this.allMarcas.filter(marca => marca.id === modelo.marca.id)[0]
+      this.marca = Marca.query().find(modelo.marca_id)
       this.show_dialog = true
     },
-    getMarca (id) {
-      const marcalocal = this.allMarcas.filter(marca => marca.id === id)
-      if (marcalocal.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return marcalocal[0] }
-    },
-    abortFilterFn () {
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    setModel (val) {
+    setModel(val) {
       this.modelo.marca = val
     },
-    exportTable () {
+    getAllMarca() {
+      Marca.api().get('/marca?offset=0&max=1000000')
+    },
+    getAllModelo() {
+      Modelo.api().get('/modelo?offset=0&max=1000000')
+    },
+    getAllTipoMeio() {
+      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

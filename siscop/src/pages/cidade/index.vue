@@ -1,81 +1,81 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Cidade" :data="allCidades" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allCidades" :filter="filter" binary-state-sort row-key="name" title="Cidade">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="codigo" :props="props">
-              {{ props.row.codigo }}
-              <q-popup-edit v-model="props.row.codigo">
-                <q-input v-model="props.row.codigo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="designacao" :props="props">
-              {{ props.row.designacao }}
-              <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-                <q-input v-model="props.row.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="provincia" :props="props">
-              <div class="text-pre-wrap">{{ props.row.provincia.designacao }}</div>
-              <q-popup-edit v-model="props.row.provincia.designacao">
-                <q-input v-model="props.row.provincia.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="distrito" :props="props">
-              <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
-              <q-popup-edit v-model="props.row.distrito.designacao">
-                <q-input v-model="props.row.distrito.designacao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/cidade/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaCidade(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeCidade(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="cidade.codigo"
-                    :designacao.sync="cidade.designacao"
-                    :provincia.sync="provincia"
-                    :distrito.sync="distrito"
-                    :provincias="allProvincias"
-                    :distritos="allDistritosFromProvincia"
-                    :submitting="submitting"
-                    :close="close"
-                    :createCidade="createCidade"
-                    :removeCidade="removeCidade"/>
+        <q-tr :props="props">
+          <q-td key="codigo" :props="props">
+            {{ props.row.codigo }}
+            <q-popup-edit v-model="props.row.codigo">
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="designacao" :props="props">
+            {{ props.row.designacao }}
+            <q-popup-edit v-model="props.row.designacao" title="Update designacao">
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="provincia" :props="props">
+            <div class="text-pre-wrap">{{ props.row.provincia.designacao }}</div>
+            <q-popup-edit v-model="props.row.provincia.designacao">
+              <q-input v-model="props.row.provincia.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="distrito" :props="props">
+            <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
+            <q-popup-edit v-model="props.row.distrito.designacao">
+              <q-input v-model="props.row.distrito.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/cidade/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaCidade(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeCidade(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :close="close"
+                      :codigo.sync="cidade.codigo"
+                      :createCidade="createCidade"
+                      :designacao.sync="cidade.designacao"
+                      :distrito.sync="distrito"
+                      :distritos="allDistritosFromProvincia"
+                      :listErrors="listErrors"
+                      :provincia.sync="provincia"
+                      :provincias="allProvincias"
+                      :removeCidade="removeCidade"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { exportFile, QSpinnerBall } from 'quasar'
+import {exportFile, QSpinnerBall} from 'quasar'
 import Cidade from 'src/store/models/cidade/cidade'
 import Provincia from 'src/store/models/provincia/provincia'
 import Distrito from 'src/store/models/distrito/distrito'
 import Pais from 'src/store/models/pais/pais'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -84,7 +84,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Cidade',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -107,17 +107,46 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'codigo', required: true, label: 'Código', align: 'left', field: row => row.codigo, format: val => `${val}`, sortable: true },
-        { name: 'designacao', align: 'left', label: 'Designação', field: row => row.designacao, format: val => `${val}`, sortable: true },
-        { name: 'provincia', align: 'left', label: 'Próvincia', field: row => row.provincia, format: val => `${val}`, sortable: true },
-        { name: 'distrito', align: 'left', label: 'Distrito', field: row => row.distrito, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'codigo',
+          required: true,
+          label: 'Código',
+          align: 'left',
+          field: row => row.codigo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'designacao',
+          align: 'left',
+          label: 'Designação',
+          field: row => row.designacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'provincia',
+          align: 'left',
+          label: 'Próvincia',
+          field: row => row.provincia,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'distrito',
+          align: 'left',
+          label: 'Distrito',
+          field: row => row.distrito,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -130,20 +159,20 @@ export default {
     // Example:
     return this.getAllCidade()
   },
-  mounted () {
-   this.getAllPais()
-   this.getAllCidade()
-   this.getAllProvincia()
-   this.getAllDistrito()
+  mounted() {
+    this.getAllPais()
+    this.getAllCidade()
+    this.getAllProvincia()
+    this.getAllDistrito()
   },
   components: {
     'create-edit-form': require('components/cidade/createEditForm.vue').default
   },
   created() {
-  //  this.getAllPais()
-  //  this.getAllCidade()
-  //  this.getAllProvincia()
-  //  this.getAllDistrito()
+    //  this.getAllPais()
+    //  this.getAllCidade()
+    //  this.getAllProvincia()
+    //  this.getAllDistrito()
     this.$q.loading.show({
       message: "Carregando ...",
       spinnerColor: "grey-4",
@@ -156,37 +185,36 @@ export default {
     }, 600)
 
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allProvincias () {
+    allProvincias() {
       return Provincia.query().with('pais').all()
     },
-    allDistritosFromProvincia () {
+    allDistritosFromProvincia() {
       return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
-    allDistritos () {
+    allDistritos() {
       return Distrito.query().all()
     },
-    allCidades () {
+    allCidades() {
       return Cidade.query().with('provincia').with('distrito').all()
     }
   },
   methods: {
-    createCidade () {
+    createCidade() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.cidade.provincia = this.provincia
-      this.distrito.provincia =  this.provincia
+      this.distrito.provincia = this.provincia
       this.cidade.distrito = this.distrito
       this.cidade.provincia_id = this.provincia.id
       this.cidade.distrito_id = this.distrito.id
       console.log(this.cidade)
       if (this.editedIndex > -1) {
-      Cidade.api().patch("/cidade/"+this.cidade.id,this.cidade).then(resp => {
+        Cidade.api().patch("/cidade/" + this.cidade.id, this.cidade).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -214,7 +242,7 @@ export default {
           }
         })
       } else {
-       Cidade.api().post("/cidade/",this.cidade).then(resp => {
+        Cidade.api().post("/cidade/", this.cidade).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -244,7 +272,7 @@ export default {
         })
       }
     },
-    close () {
+    close() {
       this.getAllCidade()
       this.getAllPais()
       this.getAllProvincia()
@@ -259,7 +287,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeCidade (cidade) {
+    removeCidade(cidade) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -277,17 +305,17 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + cidade.designacao + ' ]'
         })
-       Cidade.api().delete("/cidade/"+cidade.id)
+        Cidade.api().delete("/cidade/" + cidade.id)
       })
     },
-    editaCidade (cidade) {
+    editaCidade(cidade) {
       this.editedIndex = 0
       this.cidade = Object.assign({}, cidade)
       this.provincia = Provincia.query().find(cidade.provincia.id)
       this.distrito = Distrito.query().find(cidade.distrito.id)
       this.show_dialog = true
     },
-     getAllCidade(){
+    getAllCidade() {
       Cidade.api().get('/cidade?offset=0&max=1000000').then(resp => {
         console.log(resp)
       }).catch(error => {
@@ -305,20 +333,20 @@ export default {
         }
       })
     },
-    getAllPais () {
+    getAllPais() {
       Pais.api().get('/pais?offset=0&max=1000000')
     },
-    getAllProvincia () {
-      return Provincia.api().get('/provincia?offset=0&max=1000000', { 
+    getAllProvincia() {
+      return Provincia.api().get('/provincia?offset=0&max=1000000', {
         persistOptions: {
           insert: ['pais']
         }
-    })
+      })
     },
-    getAllDistrito () {
-     Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllDistrito() {
+      Distrito.api().get('/distrito?offset=0&max=1000000')
     },
-    filterFn (val, update, abort) {
+    filterFn(val, update, abort) {
       const stringOptions = this.allProvincias
       if (val === '') {
         update(() => {
@@ -334,18 +362,18 @@ export default {
             .map(provincia => provincia)
             .filter(provincia => {
               return provincia &&
-                   provincia.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+                provincia.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
             })
         })
       }
     },
-    abortFilterFn () {
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    setModel (val) {
+    setModel(val) {
       this.cidade.provincia = val
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import Crime from "src/store/models/crime/crime";
 
 export default class ClasseJudicial extends Model {
@@ -12,7 +12,7 @@ export default class ClasseJudicial extends Model {
       designacao: this.attr(''),
 
       // Relationshiops
-      crimes: this.hasMany(Crime,'classeJudicial_id')
+      crimes: this.hasMany(Crime, 'classeJudicial_id')
     }
   }
 

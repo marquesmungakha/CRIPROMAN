@@ -1,10 +1,10 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 
 export default class Login extends Model {
 
   static  entity = 'logins'
 
-  static state ()  {
+  static state() {
     return {
       fetching: false
     }
@@ -15,7 +15,7 @@ export default class Login extends Model {
       id: this.attr(null),
       access_token: this.attr(''),
       refresh_token: this.attr(''),
-      username:this.attr('')
+      username: this.attr('')
     }
 
   }

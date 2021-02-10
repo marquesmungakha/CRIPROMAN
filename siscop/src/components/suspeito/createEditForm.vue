@@ -55,7 +55,7 @@
       </q-item>
       <q-item>
             <q-item-section>
-            <q-input :value="dataSituacaoPrisional"  label="Situação Prisional " @input="$emit('update:dataSituacaoPrisional', $event)" :rules="['####-##-##']">
+            <q-input :value="dataSituacaoPrisional"  label="Data Situação Prisional " @input="$emit('update:dataSituacaoPrisional', $event)" :rules="['####-##-##']">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">

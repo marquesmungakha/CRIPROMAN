@@ -1,47 +1,47 @@
- <template>
+<template>
   <q-page class="flex flex-center q-mt-md qmr-sr">
     <div class="row q-col-gutter-md q-px-md q-py-md">
       <div class="col-md-6 col-sm-12 col-xs-12">
-         <apex-heatmap></apex-heatmap>
-      </div>
-      <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
-      </div>
-      <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
-      </div>
-      <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
         <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12">
-          <apex-heatmap></apex-heatmap>
+        <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+        <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+        <apex-heatmap></apex-heatmap>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12">
+        <apex-heatmap></apex-heatmap>
       </div>
     </div>
   </q-page>
@@ -49,12 +49,13 @@
 
 <script>
 import ApexHeatmap from 'components/ApexHeatmap'
+
 export default {
   name: 'PageIndex',
   components: {
     ApexHeatmap
   },
-  data () {
+  data() {
     return {
       colors: [
         'linear-gradient( 135deg, #ABDCFF 10%, #0396FF 100%)',

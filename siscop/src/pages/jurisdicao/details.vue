@@ -1,69 +1,78 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ jurisdicao.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaJurisdicao(jurisdicao)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeJurisdicao(jurisdicao)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card>
-            <q-tabs
-              v-model="tab"
-              class="bg-teal text-white shadow-2"
-              active-color="white"
-              indicator-color="white"
-              align="left"
-              narrow-indicator >
-              <q-tab name="crimes" label="crimes" />
-            </q-tabs>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/jurisdicao' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaJurisdicao(jurisdicao)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removeJurisdicao(jurisdicao)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card>
+          <q-tabs
+            v-model="tab"
+            active-color="white"
+            align="left"
+            class="bg-teal text-white shadow-2"
+            indicator-color="white"
+            narrow-indicator>
+            <q-tab label="crimes" name="crimes"/>
+          </q-tabs>
 
-            <q-separator />
+          <q-separator/>
 
-            <q-tab-panels v-model="tab" animated>
-              <q-tab-panel name="crimes">
-                <div class="text-h6">{{ $t('crimes') }}</div>
-                Component List Crimes
-              </q-tab-panel>
-            </q-tab-panels>
-          </q-card>
-        </div>
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="crimes">
+              <div class="text-h6">{{ $t('crimes') }}</div>
+              Component List Crimes
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :designacao.sync="localJurisdicao.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createJurisdicao="createJurisdicao"
-                    :removeJurisdicao="removeJurisdicao"/>
+    <create-edit-form :close="close"
+                      :createJurisdicao="createJurisdicao"
+                      :designacao.sync="localJurisdicao.designacao"
+                      :listErrors="listErrors"
+                      :removeJurisdicao="removeJurisdicao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -75,21 +84,20 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('jurisdicao/getJurisdicao', currentRoute.params.id)
+    return ClasseJudicial.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     jurisdicao: {
-      get () {
-        return this.$store.getters['jurisdicao/jurisdicao']
+      get() {
+        return ClasseJudicial.query().find(this.$route.params.id)
       },
-      set (jurisdicao) {
-        this.SET_UPDATE_JURISDICAO({ jurisdicao })
+      set(jurisdicao) {
         this.$emit('update:jurisdicao', '')
-        this.$store.commit('jurisdicao/SET_UPDATE_JURISDICAO', jurisdicao)
+        ClasseJudicial.update(jurisdicao)
       }
 
     }
@@ -98,9 +106,7 @@ export default {
     'create-edit-form': require('components/jurisdicao/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('jurisdicao', ['getAllJurisdicao', 'getJurisdicao', 'addNewJurisdicao', 'updateJurisdicao', 'deleteJurisdicao']),
-    ...mapMutations('jurisdicao', ['SET_UPDATE_JURISDICAO']),
-    removeJurisdicao (jurisdicao) {
+    removeJurisdicao(jurisdicao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -118,18 +124,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + jurisdicao.designacao + ' ]'
         })
-        this.deleteJurisdicao(jurisdicao)
+        ClasseJudicial.api().delete("/classeJudicial/" + jurisdicao.id)
         this.$router.go(-1)
       })
     },
-    createJurisdicao () {
+    createJurisdicao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.jurisdicao = this.localJurisdicao
-      this.updateJurisdicao(this.localJurisdicao).then(resp => {
+      ClasseJudicial.api().patch("/classeJudicial/" + this.localJurisdicao.id, this.localJurisdicao).then(resp => {
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -158,15 +164,12 @@ export default {
         }
       })
     },
-    editaJurisdicao (jurisdicao) {
+    editaJurisdicao(jurisdicao) {
       this.localJurisdicao = Object.assign({}, jurisdicao)
       this.jurisdicao = Object.assign({}, jurisdicao)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('jurisdicao/getJurisdicao', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.jurisdicao = {}
       this.props = this.jurisdicao
@@ -175,7 +178,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

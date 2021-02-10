@@ -1,4 +1,3 @@
-
 const user = {
   namespaced: true,
   state: {
@@ -8,25 +7,25 @@ const user = {
     profile: ''
   },
   mutations: {
-    allUsers (state, payload) {
+    allUsers(state, payload) {
       state.users = payload
     },
-    userLogged  (state, payload) {
+    userLogged(state, payload) {
       state.data = payload
       state.userLogged = true
     },
-    setToken (state, payload) {
+    setToken(state, payload) {
       state.token = payload
     },
-    setProfile (state, payload) {
+    setProfile(state, payload) {
       state.profile = payload
     },
-    deleteUser (state, payload) {
+    deleteUser(state, payload) {
       state.users = state.users.filter((user) => {
         return user._id !== payload
       })
     },
-    logout (state, payload) {
+    logout(state, payload) {
       state.token = ''
       state.data = ''
       state.userLogged = false
@@ -34,22 +33,22 @@ const user = {
     }
   },
   actions: {
-    userLogged ({commit}, payload) {
+    userLogged({commit}, payload) {
       commit('userLogged', payload)
     },
-    setToken ({commit}, payload) {
+    setToken({commit}, payload) {
       commit('setToken', payload)
     },
-    setProfile ({commit}, payload) {
+    setProfile({commit}, payload) {
       commit('setProfile', payload)
     },
-    allUsers ({commit}, payload) {
+    allUsers({commit}, payload) {
       commit('allUsers', payload)
     },
-    deleteUser ({commit}, payload) {
+    deleteUser({commit}, payload) {
       commit('deleteUser', payload)
     },
-    logout ({commit}) {
+    logout({commit}) {
       commit('logout')
     }
   },

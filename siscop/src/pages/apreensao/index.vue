@@ -1,79 +1,83 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Auto de Apreensão" :data="allApreensaos" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allApreensaos" :filter="filter" binary-state-sort row-key="name"
+             title="Auto de Apreensão">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="numero" :props="props">
-              {{ props.row.numero }}
-              <q-popup-edit v-model="props.row.numero" title="Update numero">
-                <q-input v-model="props.row.numero" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataAbertura" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
-                <q-input v-model="props.row.dataAbertura" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-             <q-td key="localApreencao" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.localApreencao" title="Update localApreencao">
-                <q-input v-model="props.row.localApreencao" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="inspector" :props="props">
-              <div class="text-pre-wrap">{{  getInspector(props.row.inspector.id).numero  }} - {{  getInspector(props.row.inspector.id).nome  }} {{  getInspector(props.row.inspector.id).apelido  }}</div>
-              <q-popup-edit v-model="props.row.inspector">
-                <q-input v-model="props.row.inspector" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/apreensao/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaApreensao(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeApreensao(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="apreensao.numero"
-                    :dataAbertura.sync="apreensao.dataAbertura"
-                    :descricao.sync="apreensao.descricao"
-                    :localApreencao.sync="apreensao.localApreencao"
-                    :inspector.sync="inspector"
-                    :anexo.sync="apreensao.anexo"
-                    :inspectors.sync="allInspectors"
-                    :submitting="submitting"
-                    :close="close"
-                    :createApreensao="createApreensao"
-                    :removeApreensao="removeApreensao"/>
+        <q-tr :props="props">
+          <q-td key="numero" :props="props">
+            {{ props.row.numero }}
+            <q-popup-edit v-model="props.row.numero" title="Update numero">
+              <q-input v-model="props.row.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataAbertura" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
+              <q-input v-model="props.row.dataAbertura" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="localApreencao" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.localApreencao" title="Update localApreencao">
+              <q-input v-model="props.row.localApreencao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="inspector" :props="props">
+            <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+              {{ props.row.inspector.apelido }}
+            </div>
+            <q-popup-edit v-model="props.row.inspector.numero">
+              <q-input v-model="props.row.inspector.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/apreensao/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaApreensao(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click="removeApreensao(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :anexo.sync="apreensao.anexo"
+                      :close="close"
+                      :createApreensao="createApreensao"
+                      :dataAbertura.sync="apreensao.dataAbertura"
+                      :descricao.sync="apreensao.descricao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :listErrors="listErrors"
+                      :localApreencao.sync="apreensao.localApreencao"
+                      :numero.sync="apreensao.numero"
+                      :removeApreensao="removeApreensao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Inspector from 'src/store/models/inspector/inspector'
+import Apreensao from 'src/store/models/apreensao/apreensao'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -82,7 +86,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Apreensao',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -110,17 +114,45 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'numero', align: 'left', label: 'Número do Auto', field: row => row.numero, format: val => `${val}`, sortable: true },
-        { name: 'dataAbertura', align: 'left', label: 'Data de Abertura', field: row => row.dataAbertura, format: val => `${val}`, sortable: true },
-        { name: 'localApreencao', align: 'left', label: 'Local de Apreensão', field: row => row.localApreencao, format: val => `${val}`, sortable: true },
-        { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'numero',
+          align: 'left',
+          label: 'Número do Auto',
+          field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataAbertura',
+          align: 'left',
+          label: 'Data de Abertura',
+          field: row => row.dataAbertura,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'localApreencao',
+          align: 'left',
+          label: 'Local de Apreensão',
+          field: row => row.localApreencao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'inspector',
+          align: 'left',
+          label: 'Inspector',
+          field: row => row.inspector.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -131,45 +163,40 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('apreensao/getAllApreensao')
+    return this.getAllApreensao()
   },
-  props: ['processo'],
-  mounted () {
-    this.$store.dispatch('apreensao/getAllApreensao')
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  props: ['processoInvestigacao'],
+  mounted() {
+    this.getAllApreensao()
+    this.getAllInspector()
   },
   components: {
     'create-edit-form': require('components/apreensao/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+    allInspectors() {
+      return Inspector.query().all()
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
-    },
-    allApreensaos () {
-      return this.$store.getters['apreensao/allApreensao'].filter(apreesao => apreesao.processo.id === this.processo.id)
+    allApreensaos() {
+      return Apreensao.query().with('inspector').where('processo_id',this.processoInvestigacao.id).get()
     }
   },
   methods: {
-    ...mapActions('apreensao', ['getAllApreensao', 'addNewApreensao', 'updateApreensao', 'deleteApreensao']),
-    createApreensao () {
+    createApreensao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
+      this.apreensao.inspector_id = this.inspector
+      this.apreensao.processo_id = this.processoInvestigacao.id
       this.apreensao.inspector = this.inspector
-      this.apreensao.processo = this.processo
-      this.apreensao.orgao = this.$store.state.orgao.orgaos[0]
+      this.apreensao.processo = this.processoInvestigacao
       //  const image = new Blob([this.apreensao.anexo])
       this.apreensao.anexo = null
       if (this.editedIndex > -1) {
-        this.updateApreensao(this.apreensao).then(resp => {
+        Apreensao.api().patch("/apreensao/" + this.apreensao.id, this.apreensao).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -179,7 +206,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [ ' + this.apreensao.designacao + ' ]'
+            message: 'A informação foi actualizada com successo!! [ ' + this.apreensao.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -197,7 +224,7 @@ export default {
           }
         })
       } else {
-        this.addNewApreensao(this.apreensao).then(resp => {
+       Apreensao.api().post("/apreensao/", this.apreensao).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -208,7 +235,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.apreensao.designacao + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.apreensao.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -227,10 +254,10 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('apreensao/getAllApreensao')
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
+    close() {
+      this.getAllApreensao()
+      this.getAllInspector()
+      this.listErrors = {}
       this.show_dialog = false
       this.apreensao = {}
       this.props = this.apreensao
@@ -238,7 +265,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeApreensao (apreensao) {
+    removeApreensao(apreensao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -256,24 +283,25 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + apreensao.designacao + ' ]'
         })
-        this.deleteApreensao(apreensao)
+        Apreensao.api().delete("/apreensao/" + this.apreensao.id)
       })
     },
-    editaApreensao (apreensao) {
-      this.editedIndex = this.allApreensaos.indexOf(apreensao)
+    editaApreensao(apreensao) {
+      this.editedIndex = 0
       this.apreensao = Object.assign({}, apreensao)
-      this.inspector = this.getInspector(apreensao.inspector.id)
-      this.orgao = this.$store.state.orgao.orgaos[0]
+      this.inspector = Inspector.query().find(apreensao.inspector.id)
       this.show_dialog = true
     },
-    getInspector (id) {
-      const localInspector = this.allInspectors.filter(inspector => inspector.id === id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    getAllApreensao() {
+      Apreensao.api().get("/apreensao?offset=0&max=1000000")
     },
-    abortFilterFn () {
+    getAllInspector() {
+      Inspector.api().get("/inspector?offset=0&max=1000000")
+    },
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

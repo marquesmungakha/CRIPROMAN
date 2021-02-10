@@ -1,5 +1,3 @@
-import Login from "src/store/models/login/login";
-import Router from "vue-router";
 
 const routes = [
   {
@@ -64,8 +62,10 @@ const routes = [
       { path: '/magistrado/:id', component: () => import('pages/magistrado/details') },
       { path: '/autoEntrada', component: () => import('pages/autoEntrada/index') },
       { path: '/autoEntrada/:id', component: () => import('pages/autoEntrada/details') },
-      // { path: '/processo', component: () => import('pages/processo/index') },
-      // { path: '/processo/:id', component: () => import('pages/processo/details') },
+      { path: '/processoInvestigacao', component: () => import('pages/processoInvestigacao/index') },
+      { path: '/processoInvestigacao/:id', component: () => import('pages/processoInvestigacao/details') },
+      { path: '/processoInstrucaoPreparatoria', component: () => import('pages/processoInstrucaoPreparatoria/index') },
+      { path: '/processoInstrucaoPreparatoria/:id', component: () => import('pages/processoInstrucaoPreparatoria/details') },
       { path: '/motivoDetencao', component: () => import('pages/motivoDetencao/index') },
       { path: '/motivoDetencao/:id', component: () => import('pages/motivoDetencao/details') },
       { path: '/acarreacao/:id', component: () => import('pages/acarreacao/details') },

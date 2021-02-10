@@ -1,55 +1,64 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('codigo') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ tipoAuto.codigo }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
+                <q-item class="full-width">
+                  <q-item-section>
+                    <q-item-label caption lines="1">{{ $t('codigo') }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ tipoAuto.codigo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ tipoAuto.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaTipoAuto(tipoAuto)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeTipoAuto(tipoAuto)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/tipoAuto' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaTipoAuto(tipoAuto)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removeTipoAuto(tipoAuto)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="localTipoAuto.codigo"
-                    :designacao.sync="localTipoAuto.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createTipoAuto="createTipoAuto"
-                    :removeTipoAuto="removeTipoAuto"/>
+    <create-edit-form :close="close"
+                      :codigo.sync="localTipoAuto.codigo"
+                      :createTipoAuto="createTipoAuto"
+                      :designacao.sync="localTipoAuto.designacao"
+                      :listErrors="listErrors"
+                      :removeTipoAuto="removeTipoAuto"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import TipoAuto from 'src/store/models/tipoAuto/tipoAuto'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -61,32 +70,28 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('tipoAuto/getTipoAuto', currentRoute.params.id)
+    return TipoAuto.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     tipoAuto: {
-      get () {
-        return this.$store.getters['tipoAuto/tipoAuto']
+      get() {
+        return TipoAuto.query().find(this.$route.params.id)
       },
-      set (tipoAuto) {
-        this.SET_UPDATE_TIPOAUTO({ tipoAuto })
+      set(tipoAuto) {
         this.$emit('update:tipoAuto', '')
-        this.$store.commit('tipoAuto/SET_UPDATE_TIPOAUTO', tipoAuto)
+        TipoAuto.update(tipoAuto)
       }
-
     }
   },
   components: {
     'create-edit-form': require('components/tipoAuto/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('tipoAuto', ['getAllTipoAuto', 'getTipoAuto', 'addNewTipoAuto', 'updateTipoAuto', 'deleteTipoAuto']),
-    ...mapMutations('tipoAuto', ['SET_UPDATE_TIPOAUTO']),
-    removeTipoAuto (tipoAuto) {
+    removeTipoAuto(tipoAuto) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -104,18 +109,19 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + tipoAuto.designacao + ' ]'
         })
-        this.deleteTipoAuto(tipoAuto)
+        TipoAuto.api().delete("/tipoAuto/" + tipoAuto.id)
         this.$router.go(-1)
       })
     },
-    createTipoAuto () {
+    createTipoAuto() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.tipoAuto = this.localTipoAuto
-      this.updateTipoAuto(this.localTipoAuto).then(resp => {
+      TipoAuto.api().patch("/tipoAuto/" + this.localTipoAuto.id, this.localTipoAuto).then(resp => {
+        console.log(resp)
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -144,15 +150,12 @@ export default {
         }
       })
     },
-    editaTipoAuto (tipoAuto) {
+    editaTipoAuto(tipoAuto) {
       this.localTipoAuto = Object.assign({}, tipoAuto)
       this.tipoAuto = Object.assign({}, tipoAuto)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('tipoAuto/getTipoAuto', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.tipoAuto = {}
       this.props = this.tipoAuto
@@ -161,7 +164,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

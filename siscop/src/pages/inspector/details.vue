@@ -1,132 +1,167 @@
 <template>
   <q-page>
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
+    <q-card bordered class="my-card" flat>
+      <q-card-section class="bg-secondary text-white">
+        <div class="text-h6">{{ $t('basicInformation') }}</div>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section class="bg-white text-grey">
+
+    <div class="q-pa-md q-gutter-sm">
+
+      <div class="row">
+        <div class="col col-md-8">
+        <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('numero') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.numero }}</q-item-label>
+              </q-item-section>
+            </q-item>
             <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('numero') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ inspector.numero }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('nome') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.nome }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('apelido') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.apelido }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                 <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('sexo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.sexo }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('idade') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.idade }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                 <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('contacto1') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.telemovel1 }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                 <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('contacto2') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.telemovel2 }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('cargo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.cargoOcupado }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator/>
-                <q-item class="full-width">
-                  <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('descricao_cargo') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ inspector.descricao }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('nome') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.nome }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('apelido') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.apelido }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('sexo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.sexo }}</q-item-label>
+              </q-item-section>
+            </q-item>
+        </div>
+        <div class="col-6 col-md-4">
+            <q-item class="full-width">
+              <q-item-section>
+              <q-avatar size="205px" rounded>
+                <img :src="dataUrl">
+              </q-avatar>
+              </q-item-section>
+            </q-item>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-12">
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('idade') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.idade }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('contacto1') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.telemovel1 }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('contacto2') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.telemovel2 }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('cargo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.cargoOcupado }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator/>
+            <q-item class="full-width">
+              <q-item-section>
+                <q-item-label caption lines="1">{{ $t('descricao_cargo') }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ inspector.descricao }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </div>
+      </div>
+      </q-card-section>
+      <div class="row">
+        <div class="col">
+          <q-card-actions align="left">
+            <q-btn v-go-back=" '/inspector' " class="glossy" color="primary" label="Voltar" no-caps/>
+          </q-card-actions>
+        </div>
+        <div class="col">
+          <q-card-actions align="right">
+            <q-btn class="glossy" color="teal" label="Editar" no-caps @click.stop="editaInspector(inspector)"/>
+            <q-btn class="glossy" color="negative" label="Apagar" no-caps @click.stop="removeInspector(inspector)"/>
+          </q-card-actions>
+        </div>
+      </div>
+    </q-card>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 1100px; max-width: 90vw;">
+          <q-card-section>
+            <div class="text-h6">Editar Inspector!</div>
+          </q-card-section>
+          <q-card-section>
+            <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm"
+                 style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+              <ul class="list-group alert alert-danger">
+                <li v-for="item in listErrors"
+                    :key="item" class="list-group-item text-negative q-pl-xs text-weight-regular text-caption">
+                  {{ item }}
+                </li>
+              </ul>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click.stop="editaInspector(inspector)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click.stop="removeInspector(inspector)" no-caps/>
-                </q-card-actions>
-            </q-card>
-            <div class="q-pa-sm q-gutter-sm">
-                <q-dialog v-model="show_dialog" persistent>
-                  <q-card style="width: 1100px; max-width: 90vw;">
-                  <q-card-section>
-                      <div class="text-h6">Editar Inspector!</div>
-                  </q-card-section>
-                      <q-card-section>
-                      <li v-for="item in listErrors" :key="item">
-                      {{ item }}
-                      </li>
-                      </q-card-section>
-                      <q-separator />
-                      <q-card-section style="max-height: 70vh" class="scroll">
-                              <q-form @submit.prevent="createInspector" class="q-gutter-md">
-                                  <quadro :nome.sync="localInspector.nome"
-                                          :sexo.sync="localInspector.sexo"
-                                          :telemovel2.sync="localInspector.telemovel2"
-                                          :apelido.sync="localInspector.apelido"
-                                          :telemovel1.sync="localInspector.telemovel1"
-                                          :fotografia.sync="localInspector.fotografia"
-                                          :idade.sync="localInspector.idade"
-                                          :numero.sync="localInspector.numero"/>
-                                  <create-edit-form :descricao.sync="localInspector.descricao"
-                                                    :cargoOcupado.sync="localInspector.cargoOcupado"/>
-                                </q-form>
-                      </q-card-section>
-                      <q-separator />
-                  <q-card-actions align="right">
-                      <q-btn type="submit" :loading="submitting" @click.stop="createInspector" color="teal" label="Gravar" />
-                      <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-                  </q-card-actions>
-                  </q-card>
-              </q-dialog>
-            </div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createInspector">
+              <quadro :apelido.sync="localInspector.apelido"
+                      :fotografia.sync="localInspector.fotografia"
+                      :idade.sync="localInspector.idade"
+                      :nome.sync="localInspector.nome"
+                      :numero.sync="localInspector.numero"
+                      :sexo.sync="localInspector.sexo"
+                      :telemovel1.sync="localInspector.telemovel1"
+                      :telemovel2.sync="localInspector.telemovel2"
+                      :onFileChange.sync="onFileChange"
+                      :image.sync="image"/>
+              <create-edit-form :cargoOcupado.sync="localInspector.cargoOcupado"
+                                :descricao.sync="localInspector.descricao"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createInspector"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Inspector from 'src/store/models/inspector/inspector'
 
 export default {
   name: 'Inspector',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
       submitting: false,
       show_dialog: false,
       splitterModel: 20,
+      image: '',
       localInspector: {
         nome: '',
         sexo: '',
@@ -135,14 +170,13 @@ export default {
         apelido: '',
         telemovel1: '',
         fotografia: '',
-        class: 'org.devinthesky.quadro.Inspector',
         descricao: '',
         numero: '',
         cargoOcupado: ''
       }
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -156,25 +190,27 @@ export default {
     // this.$store.dispatch('tipoInspector/getTipoInspector', this.inspector.tipoInspector.id)
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('inspector/getInspector', currentRoute.params.id)
+    return Inspector.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     inspector: {
-      get () {
-        return this.$store.getters['inspector/inspector']
+      get() {
+        return Inspector.query().find(this.$route.params.id)
       },
-      set (inspector) {
-        this.SET_UPDATE_INSPECTOR({ inspector })
+      set(inspector) {
         this.$emit('update:inspector', '')
-        this.$store.commit('inspector/SET_UPDATE_INSPECTOR', inspector)
+        Inspector.update(inspector)
       }
     },
-    allTipoInspectors () {
-      return this.$store.getters['tipoInspector/allTipoInspector']
+    dataUrl(){
+        return 'data:image/jpeg;base64,' + btoa(
+            new Uint8Array(this.inspector.fotografia)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
     }
   },
   components: {
@@ -182,9 +218,7 @@ export default {
     quadro: require('components/quadro/createEditFields.vue').default
   },
   methods: {
-    ...mapActions('inspector', ['getAllInspector', 'getInspector', 'addNewInspector', 'updateInspector', 'deleteInspector']),
-    ...mapMutations('inspector', ['SET_UPDATE_INSPECTOR']),
-    removeInspector (inspector) {
+    removeInspector(inspector) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -202,18 +236,30 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + inspector.numero + ' ]'
         })
-        this.deleteInspector(inspector)
+        Inspector.api().delete("/inspector/" + inspector.id)
         this.$router.go(-1)
       })
     },
-    createInspector () {
+    createInspector() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      console.log(this.localInspector.fotografia)
-      this.updateInspector(this.localInspector).then(resp => {
+     
+      let formData = new FormData();
+      formData.append("nome", this.localInspector.nome);
+      formData.append("apelido", this.localInspector.apelido);
+      formData.append("sexo", this.localInspector.sexo);
+      formData.append("idade", this.localInspector.idade);
+      formData.append("telemovel2", this.localInspector.telemovel2);
+      formData.append("telemovel1", this.localInspector.telemovel1);
+      formData.append("fotografia", this.localInspector.fotografia);
+      formData.append("descricao", this.localInspector.descricao);
+      formData.append("numero", this.localInspector.numero);
+      formData.append("cargoOcupado", this.localInspector.cargoOcupado);
+     
+      Inspector.api().patch("/inspector/" + this.localInspector.id, formData).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',
@@ -224,7 +270,7 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi actualizada com successo!! [ ' + this.inspector.numero + ' ]'
+          message: 'A informação foi actualizada com successo!! [ ' + this.localInspector.numero + ' ]'
         })
         this.close()
       }).catch(error => {
@@ -242,16 +288,18 @@ export default {
         }
       })
     },
-    editaInspector (inspector) {
+    onFileChange(event){
+      this.localInspector.fotografia = event.target.files[0];
+      this.image = URL.createObjectURL(event.target.files[0]);
+    },
+    editaInspector(inspector) {
       this.editedIndex = 0
       this.inspector = Object.assign({}, inspector)
       this.localInspector = Object.assign({}, inspector)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(inspector.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('inspector/getInspector', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.props = this.inspector
       setTimeout(() => {

@@ -1,100 +1,108 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Alocacao" :data="allAlocacaos" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allAlocacaos" :filter="filter" binary-state-sort row-key="name" title="Alocacao">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="data" :props="props">
-              {{ props.row.data }}
-              <q-popup-edit v-model="props.row.data">
-                <q-input v-model="props.row.data" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="descricao" :props="props">
-              {{ props.row.descricao }}
-              <q-popup-edit v-model="props.row.descricao">
-                <q-input v-model="props.row.descricao" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="funcao" :props="props">
-              {{ getFuncao(props.row.funcao.id).designacao}}
-              <q-popup-edit v-model="props.row.funcao.id" title="Update funcao">
-                <q-input v-model="props.row.funcao.id" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-                <q-td key="quadro" :props="props">
-              {{ getQuadro(props.row.quadro.id).numero }} - {{ getQuadro(props.row.quadro.id).nome }} {{ getQuadro(props.row.quadro.id).apelido }}
-              <q-popup-edit v-model="props.row.quadro.id" title="Update quadro">
-                <q-input v-model="props.row.quadro.id" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="activo" :props="props">
-              {{ props.row.activo }}
-              <q-popup-edit v-model="props.row.activo" title="Update activo">
-                <q-input v-model="props.row.activo" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <q-btn round glossy icon="edit" color="blue" @click="editaAlocacao(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeAlocacao(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-   <div class="q-pa-sm q-gutter-sm">
-       <q-dialog v-model="show_dialog" persistent>
+        <q-tr :props="props">
+          <q-td key="data" :props="props">
+            {{ props.row.data }}
+            <q-popup-edit v-model="props.row.data">
+              <q-input v-model="props.row.data" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="descricao" :props="props">
+            {{ props.row.descricao }}
+            <q-popup-edit v-model="props.row.descricao">
+              <q-input v-model="props.row.descricao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="funcao" :props="props">
+            {{ props.row.funcao.designacao }}
+            <q-popup-edit v-model="props.row.funcao.designacao" title="Update funcao">
+              <q-input v-model="props.row.funcao.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="quadro" :props="props">
+            {{ props.row.quadro.numero }} - {{ props.row.quadro.nome }}
+            {{ props.row.quadro.apelido }}
+            <q-popup-edit v-model="props.row.quadro.numero" title="Update quadro">
+              <q-input v-model="props.row.quadro.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="activo" :props="props">
+            {{ props.row.activo }}
+            <q-popup-edit v-model="props.row.activo" title="Update activo">
+              <q-input v-model="props.row.activo" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaAlocacao(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeAlocacao(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
-        <q-card-section>
-            <div class="text-h6">Adicionar  Alocação!</div>
+          <q-card-section>
+            <div class="text-h6">Adicionar Alocação!</div>
+          </q-card-section>
+          <q-card-section>
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+            <ul class="list-group alert alert-danger">
+              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                  v-for="item in listErrors" :key="item">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
         </q-card-section>
-            <q-card-section>
-            <li v-for="item in listErrors" :key="item">
-            {{ item }}
-            </li>
-            </q-card-section>
-            <q-separator />
-            <q-card-section style="max-height: 70vh" class="scroll">
-                    <q-form @submit.prevent="createAlocacao" class="q-gutter-md">
-                        <create-edit-form :data.sync="alocacao.data"
-                                          :descricao.sync="alocacao.descricao"
-                                          :funcao.sync="funcao"
-                                          :funcoes.sync="allFuncoes"
-                                          :quadro.sync="quadro"
-                                          :quadros.sync="allQuadros"
-                                          :activo.sync="alocacao.activo"/>
-                      </q-form>
-            </q-card-section>
-            <q-separator />
-        <q-card-actions align="right">
-            <q-btn type="submit" :loading="submitting" @click.stop="createAlocacao" color="teal" label="Gravar" />
-            <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-        </q-card-actions>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createAlocacao">
+              <create-edit-form :activo.sync="alocacao.activo"
+                                :data.sync="alocacao.data"
+                                :descricao.sync="alocacao.descricao"
+                                :funcao.sync="funcao"
+                                :funcoes.sync="allFuncoes"
+                                :quadro.sync="quadro"
+                                :quadros.sync="allQuadros"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createAlocacao"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
         </q-card>
-    </q-dialog>
-   </div>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Funcao from 'src/store/models/funcao/funcao'
+import Quadro from 'src/store/models/quadro/quadro'
+import Alocacao from 'src/store/models/alocacao/alocacao'
+import Orgao from 'src/store/models/orgao/orgao'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -103,7 +111,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Alocacao',
-  data () {
+  data() {
     return {
       listErrors: [],
       alocacao_details_dialog: false,
@@ -130,18 +138,54 @@ export default {
         apelido: ''
       },
       columns: [
-        { name: 'data', required: true, label: 'Data da Alocação', align: 'left', field: row => row.data, format: val => `${val}`, sortable: true },
-        { name: 'descricao', align: 'left', label: 'Descrição', field: row => row.descricao, format: val => `${val}`, sortable: true },
-        { name: 'funcao', align: 'left', label: 'Função', field: row => row.funcao.id, format: val => `${val}`, sortable: true },
-        { name: 'quadro', align: 'left', label: 'Membro', field: row => row.quadro.id, format: val => `${val}`, sortable: true },
-        { name: 'activo', align: 'left', label: 'Activo', field: row => row.activo, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'data',
+          required: true,
+          label: 'Data da Alocação',
+          align: 'left',
+          field: row => row.data,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'descricao',
+          align: 'left',
+          label: 'Descrição',
+          field: row => row.descricao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'funcao',
+          align: 'left',
+          label: 'Função',
+          field: row => row.funcao.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'quadro',
+          align: 'left',
+          label: 'Membro',
+          field: row => row.quadro.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'activo',
+          align: 'left',
+          label: 'Activo',
+          field: row => row.activo,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -152,45 +196,47 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('alocacao/getAllAlocacao')
+    return this.getAllAlocacao()
   },
   props: [
     'orgao'
   ],
-  mounted () {
-    this.$store.dispatch('funcao/getAllFuncao')
-    this.$store.dispatch('inspector/getAllInspector')
+  mounted() {
+    this.getAllAlocacao()
+    this.getAllFuncao()
+    this.getAllQuadro()
   },
   components: {
     'create-edit-form': require('components/alocacao/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allAlocacaos () {
-      return this.$store.getters['alocacao/allAlocacao'].filter(alocacao => alocacao.orgao.id === this.orgao.id)
+    allAlocacaos() {
+      return Alocacao.query().with('funcao').with('quadro').where('orgao_id',this.orgao.id).all()
     },
-    allFuncoes () {
-      return this.$store.getters['funcao/allFuncao']
+    allFuncoes() {
+      return Funcao.query().all()
     },
-    allQuadros () {
-      return this.$store.getters['inspector/allInspector']
+    allQuadros() {
+      return Quadro.query().all()
     }
   },
   methods: {
-    ...mapActions('alocacao', ['getAllAlocacao', 'addNewAlocacao', 'updateAlocacao', 'deleteAlocacao']),
-    createAlocacao () {
+    createAlocacao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
+      this.orgao = Orgao.query().with('provincia.pais').with('distrito.provincia.pais').with('tipoOrgao').find(this.orgao.id)
+      this.alocacao.funcao_id = this.funcao.id
+      this.alocacao.quadro_id = this.quadro.id
+      this.alocacao.orgao_id = this.orgao.id
       this.alocacao.funcao = this.funcao
       this.alocacao.quadro = this.quadro
-      this.alocacao.orgao = this.orgao.id
-      console.log('Alocacao' + this.alocacao[0])
+      this.alocacao.orgao = this.orgao
       if (this.editedIndex > -1) {
-        this.updateAlocacao(this.alocacao).then(resp => {
+        Alocacao.api().patch("/alocacao/" + this.alocacao.id, this.alocacao).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -218,7 +264,7 @@ export default {
           }
         })
       } else {
-        this.addNewAlocacao(this.alocacao).then(resp => {
+        Alocacao.api().post("/alocacao/", this.alocacao).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -248,8 +294,11 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('alocacao/getAllAlocacao')
+    close() { 
+      this.getAllAlocacao()
+      this.getAllFuncao()
+      this.getAllQuadro()
+      this.listErrors = {}
       this.show_dialog = false
       this.alocacao = {}
       this.props = this.alocacao
@@ -257,7 +306,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeAlocacao (alocacao) {
+    removeAlocacao(alocacao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -275,25 +324,27 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + alocacao.designacao + ' ]'
         })
-        this.deleteAlocacao(alocacao)
+        Alocacao.api().delete("/alocacao/" + this.alocacao.id)
       })
     },
-    editaAlocacao (alocacao) {
+    editaAlocacao(alocacao) {
       this.editedIndex = this.allAlocacaos.indexOf(alocacao)
       this.alocacao = Object.assign({}, alocacao)
-      this.alocacao.funcao.id = this.funcao.id
-      this.alocacao.quadro.id = this.quadro.id
+      this.alocacao.funcao.id = Funcao.query().find(this.funcao.id)
+      this.alocacao.quadro.id = Quadro.query().find(this.quadro.id)
       this.show_dialog = true
     },
-    getFuncao (id) {
-      const funcoes = this.allFuncoes.filter(funcao => funcao.id === id)
-      if (funcoes.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return funcoes[0] }
+    getAllAlocacao() {
+      Alocacao.api().get('/alocacao?offset=0&max=1000000')
     },
-    getQuadro (id) {
-      const quadros = this.allQuadros.filter(quadro => quadro.id === id)
-      if (quadros.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return quadros[0] }
+    getAllFuncao() {
+      Funcao.api().get('/funcao?offset=0&max=1000000')
     },
-    exportTable () {
+     getAllQuadro() {
+      Quadro.api().get('/quadro?offset=0&max=1000000')
+    }
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
@@ -320,6 +371,5 @@ export default {
         })
       }
     }
-  }
 }
 </script>

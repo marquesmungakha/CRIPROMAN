@@ -1,4 +1,4 @@
-import { Model } from "@vuex-orm/core";
+import {Model} from "@vuex-orm/core";
 import Detido from "../detido/detido"
 
 export default class ObjectoDetido extends Model {
@@ -14,7 +14,7 @@ export default class ObjectoDetido extends Model {
       detido_id: this.attr(''),
 
       // Relationships
-      detido: this.belongsTo(Detido,"detido_id")
+      detido: this.belongsTo(Detido, "detido_id")
     }
   }
 

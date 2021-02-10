@@ -1,55 +1,64 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-sm q-ma-xs">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card class="my-card" flat bordered>
-            <q-card-section class="bg-secondary text-white">
-                <div class="text-h6">{{ $t('basicInformation') }}</div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section class="bg-white text-grey">
-              <div class="row">
-                <div class="col-12">
-                  <q-item class="full-width">
-                    <q-item-section>
-                      <q-item-label lines="1" caption >{{ $t('codigo') }}</q-item-label>
-                      <q-item-label class="text-grey-9">{{ funcao.codigo }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card bordered class="my-card" flat>
+          <q-card-section class="bg-secondary text-white">
+            <div class="text-h6">{{ $t('basicInformation') }}</div>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="bg-white text-grey">
+            <div class="row">
+              <div class="col-12">
+                <q-item class="full-width">
+                  <q-item-section>
+                    <q-item-label caption lines="1">{{ $t('codigo') }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ funcao.codigo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
                 <q-separator/>
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('designacao') }}</q-item-label>
+                    <q-item-label caption lines="1">{{ $t('designacao') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ funcao.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator/>
               </div>
             </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                    <q-btn class="glossy" label="Editar" color="teal" @click="editaFuncao(funcao)" no-caps />
-                    <q-btn class="glossy" label="Apagar" color="negative" @click="removeFuncao(funcao)" no-caps/>
-                </q-card-actions>
-            </q-card>
-        </div>
+          </q-card-section>
+          <div class="row">
+            <div class="col">
+              <q-card-actions align="left">
+                <q-btn v-go-back=" '/funcao' " class="glossy" color="primary" label="Voltar" no-caps/>
+              </q-card-actions>
+            </div>
+            <div class="col">
+              <q-card-actions align="right">
+                <q-btn class="glossy" color="teal" label="Editar" no-caps @click="editaFuncao(funcao)"/>
+                <q-btn class="glossy" color="negative" label="Apagar" no-caps @click="removeFuncao(funcao)"/>
+              </q-card-actions>
+            </div>
+          </div>
+        </q-card>
+      </div>
     </div>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :codigo.sync="localFuncao.codigo"
-                    :designacao.sync="localFuncao.designacao"
-                    :submitting="submitting"
-                    :close="close"
-                    :createFuncao="createFuncao"
-                    :removeFuncao="removeFuncao"/>
+    <create-edit-form :close="close"
+                      :codigo.sync="localFuncao.codigo"
+                      :createFuncao="createFuncao"
+                      :designacao.sync="localFuncao.designacao"
+                      :listErrors="listErrors"
+                      :removeFuncao="removeFuncao"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import Funcao from 'src/store/models/funcao/funcao'
 
 export default {
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
     // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
@@ -61,21 +70,20 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('funcao/getFuncao', currentRoute.params.id)
+    return Funcao.query().find(currentRoute.params.id)
   },
-  created () {
+  created() {
   },
-  mounted () {
+  mounted() {
   },
   computed: {
     funcao: {
-      get () {
-        return this.$store.getters['funcao/funcao']
+      get() {
+        return Funcao.query().find(this.$route.params.id)
       },
-      set (funcao) {
-        this.SET_UPDATE_FUNCAO({ funcao })
+      set(funcao) {
         this.$emit('update:funcao', '')
-        this.$store.commit('funcao/SET_UPDATE_FUNCAO', funcao)
+        Funcao.update(funcao)
       }
 
     }
@@ -84,9 +92,7 @@ export default {
     'create-edit-form': require('components/funcao/createEditForm.vue').default
   },
   methods: {
-    ...mapActions('funcao', ['getAllFuncao', 'getFuncao', 'addNewFuncao', 'updateFuncao', 'deleteFuncao']),
-    ...mapMutations('funcao', ['SET_UPDATE_FUNCAO']),
-    removeFuncao (funcao) {
+    removeFuncao(funcao) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -104,18 +110,18 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + funcao.designacao + ' ]'
         })
-        this.deleteFuncao(funcao)
+        Funcao.api().delete("/funcao/" + funcao.id)
         this.$router.go(-1)
       })
     },
-    createFuncao () {
+    createFuncao() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
       this.funcao = this.localFuncao
-      this.updateFuncao(this.localFuncao).then(resp => {
+      Funcao.api().patch("/funcao/" + this.localFuncao.id, this.localFuncao).then(resp => {
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',
@@ -144,15 +150,12 @@ export default {
         }
       })
     },
-    editaFuncao (funcao) {
+    editaFuncao(funcao) {
       this.localFuncao = Object.assign({}, funcao)
       this.funcao = Object.assign({}, funcao)
       this.show_dialog = true
     },
-    close () {
-      if (this.$route.params.id !== null) {
-        this.$store.dispatch('funcao/getFuncao', this.$route.params.id)
-      }
+    close() {
       this.show_dialog = false
       this.funcao = {}
       this.props = this.funcao
@@ -161,7 +164,7 @@ export default {
       }, 300)
     }
   },
-  data () {
+  data() {
     return {
       listErrors: [],
       submitting: false,

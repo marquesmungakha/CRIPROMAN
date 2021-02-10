@@ -34,6 +34,7 @@ import PostoAdministrativo from "./models/postoAdministrativo/postoAdministrativ
 import FormaProcesso from "./models/formaProcesso/formaProcesso"
 import Funcao from "./models/funcao/funcao"
 import ImpressaoDigital from "./models/impressaoDigital/impressaoDigital"
+import Individuo from "./models/individuo/Individuo"
 import Inspector from "./models/inspector/inspector"
 import Magistrado from "./models/magistrado/magistrado"
 import Marca from "./models/marca/marca"
@@ -45,14 +46,40 @@ import ObjectoApreendido from "./models/objectoApreendido/objectoApreendido"
 import ObjectoDetido from "./models/objectoDetido/objectoDetido"
 import Ofendido from "./models/ofendido/ofendido"
 import Orgao from "./models/orgao/orgao"
+import PecaProcesso from "./models/pecaProcesso/pecaProcesso"
+import PecaProcessoAcusado from "./models/pecaProcesso/pecaProcessoAcusado"
+import PecaProcessoArguido from "./models/pecaProcesso/pecaProcessoArguido"
+import PecaProcessoCustodiado from "./models/pecaProcesso/pecaProcessoCustodiado"
+import PecaProcessoDeclarante from "./models/pecaProcesso/pecaProcessoDeclarante"
+import PecaProcessoDenunciante from "./models/pecaProcesso/pecaProcessoDenunciante"
+import PecaProcessoDetido from "./models/pecaProcesso/pecaProcessoDetido"
+import PecaProcessoOfendido from "./models/pecaProcesso/pecaProcessoOfendido"
+import PecaProcessoPossuidor from "./models/pecaProcesso/pecaProcessoPossuidor"
+import PecaProcessoSuspeito from "./models/pecaProcesso/pecaProcessoSuspeito"
+import PecaProcessoTestemunha from "./models/pecaProcesso/pecaProcessoTestemunha"
+import PecaProcessoVitima from "./models/pecaProcesso/pecaProcessoVitima"
 import ParecerProcesso from "./models/parecerProcesso/parecerProcesso"
 import Pergunta from "./models/pergunta/pergunta"
 import Possuidor from "./models/possuidor/possuidor"
 import ProcessoInstrucaoPreparatoria from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoria"
+import ProcessoInstrucaoPreparatoriaAcusado from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaAcusado"
+import ProcessoInstrucaoPreparatoriaArguido from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaArguido"
+import ProcessoInstrucaoPreparatoriaCustodiado from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaCustodiado"
+import ProcessoInstrucaoPreparatoriaDeclarante from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaDeclarante"
+import ProcessoInstrucaoPreparatoriaDenunciante from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaDenunciante"
+import ProcessoInstrucaoPreparatoriaDetido from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaDetido"
+import ProcessoInstrucaoPreparatoriaOfendido from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaOfendido"
+import ProcessoInstrucaoPreparatoriaPossuidor from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaPossuidor"
+import ProcessoInstrucaoPreparatoriaSuspeito from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaSuspeito"
+import ProcessoInstrucaoPreparatoriaTestemunha from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaTestemunha"
+import ProcessoInstrucaoPreparatoriaVitima from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaVitima"
+
 import ProcessoInvestigacao from "./models/processoInvestigacao/processoInvestigacao"
 import Profissao from "./models/profissao/profissao"
+import Quadro from "./models/quadro/quadro"
 import ResponsavelOrgao from "./models/responsavelOrgao/responsavelOrgao"
 import SituacaoPrisional from "./models/situacaoPrisional/situacaoPrisional"
+import Suspeito from "./models/suspeito/suspeito"
 import Testemunha from "./models/testemunha/testemunha"
 import TipoAuto from "./models/tipoAuto/tipoAuto"
 import TipoDedo from "./models/tipoDedo/tipoDedo"
@@ -70,18 +97,18 @@ VuexORM.use(VuexORMAxios, {
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },
-  baseURL: 'http://localhost:8080/api'
+  baseURL: 'http://192.168.8.105:8080/api'
 })
 
 
-// Request interceptor for API calls
+// // Request interceptor for API calls
 axios.interceptors.request.use(
   async config => {
     // const value = await redisClient.get(rediskey)
     // const keys = JSON.parse(value)
     config.headers = {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded'
     }
     if (Login.all().length != 0) {
@@ -94,7 +121,6 @@ axios.interceptors.request.use(
       //console.log(">>VFF2 "+JSON.parse(localStorage.getItem('vuex'))+"------------"+ JSON.stringify(localStorage));
       delete config.headers['Authorization']
     }
-    console.log("entra 0")
     return config;
   },
   error => {
@@ -102,10 +128,9 @@ axios.interceptors.request.use(
   });
 
 // Response interceptor for API calls
-axios.interceptors.response.use((response) => { console.log("entra 1")
+axios.interceptors.response.use((response) => {
   return response
 }, async function (error) {
-  console.log("entra 2")
   console.log(localStorage.getItem('refresh_token'))
   console.log(Login.query().all())
 
@@ -179,6 +204,7 @@ database.register(PostoAdministrativo)
 database.register(FormaProcesso)
 database.register(Funcao)
 database.register(ImpressaoDigital)
+database.register(Individuo)
 database.register(Inspector)
 database.register(Magistrado)
 database.register(Marca)
@@ -191,13 +217,38 @@ database.register(ObjectoDetido)
 database.register(Ofendido)
 database.register(Orgao)
 database.register(ParecerProcesso)
+database.register(PecaProcesso)
+database.register(PecaProcessoAcusado)
+database.register(PecaProcessoArguido)
+database.register(PecaProcessoCustodiado)
+database.register(PecaProcessoDeclarante)
+database.register(PecaProcessoDenunciante)
+database.register(PecaProcessoDetido)
+database.register(PecaProcessoOfendido)
+database.register(PecaProcessoPossuidor)
+database.register(PecaProcessoSuspeito)
+database.register(PecaProcessoTestemunha)
+database.register(PecaProcessoVitima)
 database.register(Pergunta)
 database.register(Possuidor)
 database.register(ProcessoInstrucaoPreparatoria)
+database.register(ProcessoInstrucaoPreparatoriaAcusado)
+database.register(ProcessoInstrucaoPreparatoriaArguido)
+database.register(ProcessoInstrucaoPreparatoriaCustodiado)
+database.register(ProcessoInstrucaoPreparatoriaDeclarante)
+database.register(ProcessoInstrucaoPreparatoriaDenunciante)
+database.register(ProcessoInstrucaoPreparatoriaDetido)
+database.register(ProcessoInstrucaoPreparatoriaOfendido)
+database.register(ProcessoInstrucaoPreparatoriaPossuidor)
+database.register(ProcessoInstrucaoPreparatoriaSuspeito)
+database.register(ProcessoInstrucaoPreparatoriaTestemunha)
+database.register(ProcessoInstrucaoPreparatoriaVitima)
 database.register(ProcessoInvestigacao)
 database.register(Profissao)
+database.register(Quadro)
 database.register(ResponsavelOrgao)
 database.register(SituacaoPrisional)
+database.register(Suspeito)
 database.register(Testemunha)
 database.register(TipoAuto)
 database.register(TipoDedo)

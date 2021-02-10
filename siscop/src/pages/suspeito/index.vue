@@ -1,178 +1,192 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Suspeito" :data="allSuspeitosFromPecaProcesso" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allSuspeitosFromPecaProcesso" :filter="filter" binary-state-sort row-key="name"
+             title="Suspeito">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="nome" :props="props">
-              {{ props.row.nome }}
-              <q-popup-edit v-model="props.row.nome">
-                <q-input v-model="props.row.nome" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="apelido" :props="props">
-              {{ props.row.apelido }}
-              <q-popup-edit v-model="props.row.apelido">
-                <q-input v-model="props.row.apelido" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="sexo" :props="props">
-              {{ props.row.sexo }}
-              <q-popup-edit v-model="props.row.sexo">
-                <q-input v-model="props.row.sexo" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataNascimento" :props="props">
-              {{ props.row.dataNascimento }}
-              <q-popup-edit v-model="props.row.dataNascimento">
-                <q-input v-model="props.row.dataNascimento" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="naturalidade" :props="props">
-              {{ props.row.naturalidade }}
-              <q-popup-edit v-model="props.row.naturalidade">
-                <q-input v-model="props.row.naturalidade" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="nacionalidade" :props="props">
-              {{ getPais (props.row.nacionalidade.id).nacionalidade }}
-              <q-popup-edit v-model="props.row.nacionalidade">
-                <q-input v-model="props.row.nacionalidade" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="provincia" :props="props">
-              {{ getProvincia (props.row.provincia.id).designacao }}
-              <q-popup-edit v-model="props.row.provincia">
-                <q-input v-model="props.row.provincia" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="localNascimento" :props="props">
-              {{ props.row.localNascimento }}
-              <q-popup-edit v-model="props.row.localNascimento">
-                <q-input v-model="props.row.localNascimento" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="estadoCivil" :props="props">
-              {{ props.row.estadoCivil }}
-              <q-popup-edit v-model="props.row.estadoCivil">
-                <q-input v-model="props.row.estadoCivil" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="tipoDocumento" :props="props">
-              {{ getTipoDocumento(props.row.tipoDocumento.id).designacao  }}
-              <q-popup-edit v-model="props.row.tipoDocumento">
-                <q-input v-model="props.row.tipoDocumento" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="numDocumentoIndentificacao" :props="props">
-              {{ props.row.numDocumentoIndentificacao }}
-              <q-popup-edit v-model="props.row.numDocumentoIndentificacao">
-                <q-input v-model="props.row.numDocumentoIndentificacao" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="documentoValidade" :props="props">
-              {{ props.row.documentoValidade }}
-              <q-popup-edit v-model="props.row.documentoValidade">
-                <q-input v-model="props.row.documentoValidade" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="morada" :props="props">
-              {{ props.row.morada }}
-              <q-popup-edit v-model="props.row.morada">
-                <q-input v-model="props.row.morada" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="profissao" :props="props">
-              {{ getProfissao(props.row.profissao.id).designacao }}
-              <q-popup-edit v-model="props.row.profissao">
-                <q-input v-model="props.row.profissao" dense autofocus counter ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="situacaoPrisional" :props="props">
-              {{ getSituacaoPrisional(props.row.situacaoPrisional.id).designacao }}
-              <q-popup-edit v-model="props.row.situacaoPrisional" >
-                <q-input v-model="props.row.situacaoPrisional" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <q-btn round glossy icon="edit" color="blue" @click="editaSuspeito(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeSuspeito(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-   <div class="q-pa-sm q-gutter-sm">
-       <q-dialog v-model="show_dialog" persistent>
-         <q-card style="width: 1100px; max-width: 90vw;">
+        <q-tr :props="props">
+          <q-td key="nome" :props="props">
+            {{ props.row.suspeito.nome }}
+            <q-popup-edit v-model="props.row.suspeito.nome">
+              <q-input v-model="props.row.suspeito.nome" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="apelido" :props="props">
+            {{ props.row.suspeito.apelido }}
+            <q-popup-edit v-model="props.row.suspeito.apelido">
+              <q-input v-model="props.row.suspeito.apelido" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="sexo" :props="props">
+            {{ props.row.suspeito.sexo }}
+            <q-popup-edit v-model="props.row.suspeito.sexo">
+              <q-input v-model="props.row.suspeito.sexo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataNascimento" :props="props">
+            {{ props.row.suspeito.dataNascimento }}
+            <q-popup-edit v-model="props.row.suspeito.dataNascimento">
+              <q-input v-model="props.row.suspeito.dataNascimento" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="naturalidade" :props="props">
+            {{ props.row.suspeito.naturalidade }}
+            <q-popup-edit v-model="props.row.suspeito.naturalidade">
+              <q-input v-model="props.row.suspeito.naturalidade" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="nacionalidade" :props="props">
+            {{ props.row.suspeito.nacionalidade.nacionalidade }}
+            <q-popup-edit v-model="props.row.suspeito.nacionalidade.nacionalidade">
+              <q-input v-model="props.row.suspeito.nacionalidade.nacionalidade" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="provincia" :props="props">
+            {{ props.row.suspeito.provincia.designacao }}
+            <q-popup-edit v-model="props.row.suspeito.provincia.designacao">
+              <q-input v-model="props.row.suspeito.provincia.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="localNascimento" :props="props">
+            {{ props.row.suspeito.localNascimento }}
+            <q-popup-edit v-model="props.row.suspeito.localNascimento">
+              <q-input v-model="props.row.suspeito.localNascimento" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="estadoCivil" :props="props">
+            {{ props.row.suspeito.estadoCivil }}
+            <q-popup-edit v-model="props.row.suspeito.estadoCivil">
+              <q-input v-model="props.row.suspeito.estadoCivil" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="tipoDocumento" :props="props">
+            {{ props.row.suspeito.tipoDocumento.designacao }}
+            <q-popup-edit v-model="props.row.suspeito.tipoDocumento.designacao">
+              <q-input v-model="props.row.suspeito.tipoDocumento.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="numDocumentoIndentificacao" :props="props">
+            {{ props.row.suspeito.numDocumentoIndentificacao }}
+            <q-popup-edit v-model="props.row.suspeito.numDocumentoIndentificacao">
+              <q-input v-model="props.row.suspeito.numDocumentoIndentificacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="documentoValidade" :props="props">
+            {{ props.row.suspeito.documentoValidade }}
+            <q-popup-edit v-model="props.row.suspeito.documentoValidade">
+              <q-input v-model="props.row.suspeito.documentoValidade" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="morada" :props="props">
+            {{ props.row.suspeito.morada }}
+            <q-popup-edit v-model="props.row.suspeito.morada">
+              <q-input v-model="props.row.suspeito.morada" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <!--q-td key="profissao" :props="props">
+            {{ props.row.suspeito.profissao.designacao }}
+            <q-popup-edit v-model="props.row.suspeito.profissao.designacao">
+              <q-input v-model="props.row.suspeito.profissao.designacao" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td-->
+          <q-td key="situacaoPrisional" :props="props">
+            {{ props.row.situacaoPrisional.designacao }}
+            <q-popup-edit v-model="props.row.situacaoPrisional.designacao">
+              <q-input v-model="props.row.situacaoPrisional.designacao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <div class="q-pa-sm q-gutter-sm">
+      <q-dialog v-model="show_dialog" persistent>
+        <q-card style="width: 1100px; max-width: 90vw;">
+          <q-card-section>
+            <div class="text-h6">Adicionar Suspeito!</div>
+          </q-card-section>
         <q-card-section>
-            <div class="text-h6">Adicionar  Suspeito!</div>
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+            <ul class="list-group alert alert-danger">
+              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                  v-for="item in listErrors" :key="item">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
         </q-card-section>
-            <q-card-section>
-            <li v-for="item in listErrors" :key="item">
-            {{ item }}
-            </li>
-            </q-card-section>
-            <q-separator />
-            <q-card-section style="max-height: 70vh" class="scroll">
-                    <q-form @submit.prevent="createSuspeito" class="q-gutter-md">
-                      <individuo :nome.sync="suspeito.nome"
-                                :sexo.sync="suspeito.sexo"
-                                :telemovel2.sync="suspeito.telemovel2"
-                                :apelido.sync="suspeito.apelido"
-                                :telemovel1.sync="suspeito.telemovel1"
-                                :fotografia.sync="suspeito.fotografia"
-                                :idade.sync="suspeito.idade"
-                                :estadoCivil.sync="suspeito.estadoCivil"
-                                :naturalidade.sync="suspeito.naturalidade"
-                                :dataNascimento.sync="suspeito.dataNascimento"
-                                :localNascimento.sync="suspeito.localNascimento"
-                                :morada.sync="suspeito.morada"
-                                :documentoValidade.sync="suspeito.documentoValidade"
-                                :numDocumentoIndentificacao.sync="suspeito.numDocumentoIndentificacao"
-                                :pais.sync="pais"
-                                :provincia.sync="provincia"
-                                :tipoDocumento.sync="tipoDocumento"
-                                :paises.sync="allPaises"
-                                :tipoDocumentos.sync="allTipoDocumentos"
-                                :provincias.sync="allProvinciaFromPais"/>
-                        <create-edit-form :profissao.sync="profissao"
-                                          :situacaoPrisional.sync="situacaoPrisional"
-                                          :dataSituacaoPrisional.sync="suspeito.dataSituacaoPrisional"
-                                          :situacaoPrisionalList.sync="allSituacaoPrisional"
-                                          :profissaoList.sync="allProfissao"/>
-                      </q-form>
-            </q-card-section>
-            <q-separator />
-        <q-card-actions align="right">
-            <q-btn type="submit" :loading="submitting" @click.stop="createSuspeito" color="teal" label="Gravar" />
-            <q-btn label="Cancelar" type="reset" @click="close" color="negative" v-close-popup />
-        </q-card-actions>
+          <q-separator/>
+          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-form class="q-gutter-md" @submit.prevent="createSuspeito">
+              <individuo :apelido.sync="suspeito.apelido"
+                         :dataNascimento.sync="suspeito.dataNascimento"
+                         :documentoValidade.sync="suspeito.documentoValidade"
+                         :estadoCivil.sync="suspeito.estadoCivil"
+                         :fotografia.sync="suspeito.fotografia"
+                         :idade.sync="suspeito.idade"
+                         :localNascimento.sync="suspeito.localNascimento"
+                         :morada.sync="suspeito.morada"
+                         :naturalidade.sync="suspeito.naturalidade"
+                         :nome.sync="suspeito.nome"
+                         :numDocumentoIndentificacao.sync="suspeito.numDocumentoIndentificacao"
+                         :pais.sync="pais"
+                         :paises.sync="allPaises"
+                         :provincia.sync="provincia"
+                         :provincias.sync="allProvinciaFromPais"
+                         :sexo.sync="suspeito.sexo"
+                         :telemovel1.sync="suspeito.telemovel1"
+                         :telemovel2.sync="suspeito.telemovel2"
+                         :tipoDocumento.sync="tipoDocumento"
+                         :tipoDocumentos.sync="allTipoDocumentos"
+                         :onFileChange.sync="onFileChange"
+                         :image.sync="image"/>
+              <create-edit-form :dataSituacaoPrisional.sync="pecaProcessoSuspeito.dataSituacaoPrisional"
+                                :profissao.sync="profissao"
+                                :profissaoList.sync="allProfissao"
+                                :situacaoPrisional.sync="situacaoPrisional"
+                                :situacaoPrisionalList.sync="allSituacaoPrisional"/>
+            </q-form>
+          </q-card-section>
+          <q-separator/>
+          <q-card-actions align="right">
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createSuspeito"/>
+            <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
+          </q-card-actions>
         </q-card>
-    </q-dialog>
-   </div>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Pais from 'src/store/models/pais/pais'
+import TipoDocumentoIdentificacao from 'src/store/models/tipoDocumentoIdentificacao/tipoDocumentoIdentificacao'
+import Provincia from 'src/store/models/provincia/provincia'
+import Suspeito from 'src/store/models/suspeito/suspeito'
+import Profissao from 'src/store/models/profissao/profissao'
+import SituacaoPrisional from 'src/store/models/situacaoPrisional/situacaoPrisional'
+import PecaProcessoSuspeito from 'src/store/models/pecaProcesso/pecaProcessoSuspeito'
+import PecaProcesso from 'src/store/models/pecaProcesso/pecaProcesso'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -181,7 +195,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Suspeito',
-  data () {
+  data() {
     return {
       listErrors: [],
       suspeito_details_dialog: false,
@@ -190,6 +204,7 @@ export default {
       filter: '',
       show_dialog: false,
       show_filter: false,
+      image: '',
       suspeito: {
         nome: '',
         apelido: '',
@@ -210,12 +225,16 @@ export default {
         situacaoPrisional: {},
         dataSituacaoPrisional: '',
         pais: {},
-        provincia: {},
+        provincia: {}
+      },
+        pecaProcessoSuspeito: {
+        suspeito: {},
         pecaProcesso: {}
       },
       pais: {
         codigo: '',
-        designacao: ''
+        designacao: '',
+        nacionalidade: ''
       },
       provincia: {
         codigo: '',
@@ -232,28 +251,127 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'nome', required: true, label: 'Nome', align: 'left', field: row => row.nome, format: val => `${val}`, sortable: true },
-        { name: 'apelido', align: 'left', label: 'Apelido', field: row => row.apelido, format: val => `${val}`, sortable: true },
-        { name: 'sexo', align: 'left', label: 'Gênero', field: row => row.sexo, format: val => `${val}`, sortable: true },
-        { name: 'dataNascimento', align: 'left', label: 'Data de Nascimento', field: row => row.dataNascimento, format: val => `${val}`, sortable: true },
-        { name: 'naturalidade', align: 'left', label: 'Naturalidade', field: row => row.naturalidade, format: val => `${val}`, sortable: true },
-        { name: 'nacionalidade', align: 'left', label: 'Nacionalidade', field: row => row.nacionalidade, format: val => `${val}`, sortable: true },
-        { name: 'provincia', align: 'left', label: 'Província', field: row => row.provincia, format: val => `${val}`, sortable: true },
-        { name: 'localNascimento', align: 'left', label: 'Local de Nascimento', field: row => row.localNascimento, format: val => `${val}`, sortable: true },
-        { name: 'estadoCivil', align: 'left', label: 'Estado Civil', field: row => row.estadoCivil, format: val => `${val}`, sortable: true },
-        { name: 'tipoDocumento', align: 'left', label: 'Documento de Identificação', field: row => row.tipoDocumento, format: val => `${val}`, sortable: true },
-        { name: 'numDocumentoIndentificacao', align: 'left', label: 'Número do Documento', field: row => row.numDocumentoIndentificacao, format: val => `${val}`, sortable: true },
-        { name: 'documentoValidade', align: 'left', label: 'Validade do Documento', field: row => row.documentoValidade, format: val => `${val}`, sortable: true },
-        { name: 'morada', align: 'left', label: 'Morada', field: row => row.morada, format: val => `${val}`, sortable: true },
-        { name: 'profissao', align: 'left', label: 'Profissão', field: row => row.profissao, format: val => `${val}`, sortable: true },
-        { name: 'situacaoPrisional', align: 'left', label: 'Situação Prisional', field: row => row.situacaoPrisional, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'nome',
+          required: true,
+          label: 'Nome',
+          align: 'left',
+          field: row => row.nome,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'apelido',
+          align: 'left',
+          label: 'Apelido',
+          field: row => row.apelido,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'sexo', align: 'left', label: 'Gênero', field: row => row.sexo, format: val => `${val}`, sortable: true},
+        {
+          name: 'dataNascimento',
+          align: 'left',
+          label: 'Data de Nascimento',
+          field: row => row.dataNascimento,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'naturalidade',
+          align: 'left',
+          label: 'Naturalidade',
+          field: row => row.naturalidade,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'nacionalidade',
+          align: 'left',
+          label: 'Nacionalidade',
+          field: row => row.nacionalidade,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'provincia',
+          align: 'left',
+          label: 'Província',
+          field: row => row.provincia,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'localNascimento',
+          align: 'left',
+          label: 'Local de Nascimento',
+          field: row => row.localNascimento,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'estadoCivil',
+          align: 'left',
+          label: 'Estado Civil',
+          field: row => row.estadoCivil,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'tipoDocumento',
+          align: 'left',
+          label: 'Documento de Identificação',
+          field: row => row.tipoDocumento,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'numDocumentoIndentificacao',
+          align: 'left',
+          label: 'Número do Documento',
+          field: row => row.numDocumentoIndentificacao,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'documentoValidade',
+          align: 'left',
+          label: 'Validade do Documento',
+          field: row => row.documentoValidade,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'morada',
+          align: 'left',
+          label: 'Morada',
+          field: row => row.morada,
+          format: val => `${val}`,
+          sortable: true
+        },
+        // {
+        //   name: 'profissao',
+        //   align: 'left',
+        //   label: 'Profissão',
+        //   field: row => row.profissao,
+        //   format: val => `${val}`,
+        //   sortable: true
+        // },
+        {
+          name: 'situacaoPrisional',
+          align: 'left',
+          label: 'Situação Prisional',
+          field: row => row.situacaoPrisional,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -264,68 +382,83 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('suspeito/getAllSuspeito')
+    return this.getAllSuspeito()
   },
   props: [
-    'autoEntrada'
+    'pecaProcesso'
   ],
-  mounted () {
-    this.$store.dispatch('profissao/getAllProfissao')
-    this.$store.dispatch('situacaoPrisional/getAllSituacaoPrisional')
-    this.$store.dispatch('suspeito/getAllSuspeito')
-    this.$store.dispatch('provincia/getAllProvincia')
-    this.$store.dispatch('pais/getAllPais')
-    this.$store.dispatch('tipoDocumentoIdentificacao/getAllTipoDocumentoIdentificacao')
+  mounted() {
+    this.getAllProfissao()
+    this.getAllProfissaoPecaProcesso()
+    this.getAllSituacaoPrisional()
+    this.getAllSuspeito()
+    this.getAllProvincia()
+    this.getAllPais()
+    this.getAllTipoDocumentoIdentificacao()
   },
   components: {
     'create-edit-form': require('components/suspeito/createEditForm.vue').default,
     individuo: require('components/individuo/createEditForm.vue').default
   },
-  metaInfo: {
+  created() {
   },
+  metaInfo: {},
   computed: {
-    allSuspeitos () {
-      return this.$store.getters['suspeito/allSuspeito'].filter(suspeito => suspeito.pecaProcesso != null)
+   allSuspeitosFromPecaProcesso() {
+      return PecaProcesso.query().with('suspeitos')
+                                 .with('suspeitos.suspeito')
+                                 .with('suspeitos.suspeito.nacionalidade')
+                                 .with('suspeitos.suspeito.provincia')
+                                 .with('suspeitos.suspeito.tipoDocumento')
+                                 .with('suspeitos.profissao')
+                                 .with('suspeitos.situacaoPrisional')
+                                 .find(this.pecaProcesso.id).suspeitos
     },
-    allSuspeitosFromPecaProcesso () {
-      return this.allSuspeitos.filter(suspeito => suspeito.pecaProcesso.id === this.autoEntrada.id)
+    allPaises() {
+      return Pais.query().all()
     },
-    allPaises () {
-      return this.$store.getters['pais/allPais']
+    allTipoDocumentos() {
+      return TipoDocumentoIdentificacao.query().all()
     },
-    allTipoDocumentos () {
-      return this.$store.getters['tipoDocumentoIdentificacao/allTipoDocumentoIdentificacao']
+    allProvincias() {
+      return Provincia.query().all()
     },
-    allProvincias () {
-      return this.$store.getters['provincia/allProvincia']
+    allProvinciaFromPais() {
+      return Provincia.query().where('pais_id',this.pais.id).get()
     },
-    allProvinciaFromPais () {
-      return this.allProvincias.filter(provincia => provincia.pais.id === this.pais.id)
+    allProfissao() {
+      return Profissao.query().all()
     },
-    allProfissao () {
-      return this.$store.getters['profissao/allProfissao']
-    },
-    allSituacaoPrisional () {
-      return this.$store.getters['situacaoPrisional/allSituacaoPrisional']
+    allSituacaoPrisional() {
+      return SituacaoPrisional.query().all()
     }
   },
   methods: {
-    ...mapActions('suspeito', ['getAllSuspeito', 'addNewSuspeito', 'updateSuspeito', 'deleteSuspeito']),
-    createSuspeito () {
+    createSuspeito() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
+     this.provincia.pais = this.pais
+      this.suspeito.nacionalidade_id = this.pais.id
+      this.suspeito.provincia_id = this.provincia.id
+      this.suspeito.tipoDocumento_id = this.tipoDocumento.id
+      this.suspeito.pecaProcesso_id = this.pecaProcesso.id
       this.suspeito.nacionalidade = this.pais
       this.suspeito.provincia = this.provincia
       this.suspeito.tipoDocumento = this.tipoDocumento
       this.suspeito.profissao = this.profissao
-      this.suspeito.situacaoPrisional = this.situacaoPrisional
-      this.suspeito.pecaProcesso = this.autoEntrada
-      console.log('Suspeito' + this.suspeito[0])
+      this.suspeito.profissao_id = this.profissao.id
+
+      this.pecaProcessoSuspeito.profissao = this.profissao
+      this.pecaProcessoSuspeito.profissao_id = this.profissao.id
+      this.pecaProcessoSuspeito.situacaoPrisional = this.situacaoPrisional
+      this.pecaProcessoSuspeito.pecaProcesso = this.pecaProcesso
+      this.pecaProcessoSuspeito.suspeito = this.suspeito
+
       if (this.editedIndex > -1) {
-        this.updateSuspeito(this.suspeito).then(resp => {
+         PecaProcessoSuspeito.api().patch("/pecaProcessoSuspeito/" + this.pecaProcessoSuspeito.id, this.pecaProcessoSuspeito).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -335,7 +468,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [' + this.suspeito.nome + ' ]'
+            message: 'A informação foi actualizada com successo!! [' + this.pecaProcessoSuspeito.suspeito.nome + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -353,7 +486,7 @@ export default {
           }
         })
       } else {
-        this.addNewSuspeito(this.suspeito).then(resp => {
+        PecaProcessoSuspeito.api().post("/pecaProcessoSuspeito/", this.pecaProcessoSuspeito).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -364,7 +497,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.suspeito.nome + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.pecaProcessoSuspeito.suspeito.nome + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -383,11 +516,15 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('suspeito/getAllSuspeito')
-      this.$store.dispatch('provincia/getAllProvincia')
-      this.$store.dispatch('pais/getAllPais')
-      this.$store.dispatch('tipoDocumentoIdentificacao/getAllTipoDocumentoIdentificacao')
+    close() {
+      this.getAllProfissaoPecaProcesso()
+      this.getAllProfissao()
+      this.getAllSituacaoPrisional()
+      this.getAllSuspeito()
+      this.getAllProvincia()
+      this.getAllPais()
+      this.getAllTipoDocumentoIdentificacao()
+      this.listErrors = {}
       this.show_dialog = false
       this.suspeito = {}
       this.props = this.suspeito
@@ -395,7 +532,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removeSuspeito (suspeito) {
+    removeSuspeito(suspeito) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -413,41 +550,47 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + suspeito.nome + ' ]'
         })
-        this.deleteSuspeito(suspeito)
+        PecaProcessoSuspeito.api().delete("/pecaProcessoSuspeito/" + this.pecaProcessoSuspeito.suspeito.nome)
       })
     },
-    editaSuspeito (suspeito) {
-      this.editedIndex = this.allSuspeitos.indexOf(suspeito)
+    editaSuspeito(suspeito) {
+      this.editedIndex = 0
       this.suspeito = Object.assign({}, suspeito)
-      this.suspeito.nacionalidade = this.pais
-      this.suspeito.provincia = this.provincia
-      this.suspeito.tipoDocumento = this.tipoDocumento
-      this.suspeito.profissao = this.profissao
-      this.suspeito.situacaoPrisional = this.situacaoPrisional
-      this.suspeito.pecaProcesso = this.autoEntrada
+      this.pais = Pais.query().find(suspeito.nacionalidade_id)
+      this.provincia = Provincia.query().find(suspeito.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(suspeito.tipoDocumento_id)
+      this.profissao = Profissao.query().find(suspeito.profissao_id)
+      this.situacaoPrisional = SituacaoPrisional.query().find(suspeito.situacaoPrisional_id)
+      this.suspeito.pecaProcesso = this.pecaProcesso
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    getProvincia (id) {
-      const localProvincias = this.allProvincias.filter(provincia => provincia.id === id)
-      if (localProvincias.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProvincias[0] }
+   getAllProfissaoPecaProcesso() {
+      PecaProcessoSuspeito.api().get('/suspeito?offset=0&max=1000000')
     },
-    getPais (id) {
-      const localPais = this.allPaises.filter(pais => pais.id === id)
-      if (localPais.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localPais[0] }
+    getAllSuspeito() {
+      Suspeito.api().get('/suspeito?offset=0&max=1000000')
     },
-    getTipoDocumento (id) {
-      const localTipoDocumento = this.allTipoDocumentos.filter(tipoDocumento => tipoDocumento.id === id)
-      if (localTipoDocumento.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localTipoDocumento[0] }
+    getAllTipoDocumentoIdentificacao() {
+      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
     },
-    getProfissao (id) {
-      const localProfissao = this.allProfissao.filter(profissao => profissao.id === id)
-      if (localProfissao.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localProfissao[0] }
+    getAllProvincia() {
+      Provincia.api().get('/provincia?offset=0&max=1000000')
     },
-    getSituacaoPrisional (id) {
-      const localSituacaoPrisional = this.allSituacaoPrisional.filter(situacaoPrisional => situacaoPrisional.id === id)
-      if (localSituacaoPrisional.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localSituacaoPrisional[0] }
+    getAllPais() {
+      Pais.api().get('/pais?offset=0&max=1000000')
     },
-    exportTable () {
+    getAllProfissao() {
+      Profissao.api().get('/profissao?offset=0&max=1000000')
+    },
+    getAllSituacaoPrisional() {
+      SituacaoPrisional.api().get('/situacaoPrisional?offset=0&max=1000000')
+    },
+     onFileChange(event){
+      this.suspeito.fotografia = event.target.files[0];
+      this.image = URL.createObjectURL(event.target.files[0]);
+    },
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

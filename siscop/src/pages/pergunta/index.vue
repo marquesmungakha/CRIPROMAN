@@ -1,73 +1,76 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-  <q-table title="Auto de Perguntas" :data="allPerguntas" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allPerguntas" :filter="filter" binary-state-sort row-key="name"
+             title="Auto de Perguntas">
 
       <template v-slot:top-right>
-      <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-input>
 
-      <div class="q-pa-md q-gutter-sm">
-      <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-        <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-        <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
-      </div>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+        </div>
       </template>
       <template v-slot:body="props">
-          <q-tr :props="props">
-            <q-td key="numero" :props="props">
-              {{ props.row.numero }}
-              <q-popup-edit v-model="props.row.numero" title="Update numero">
-                <q-input v-model="props.row.numero" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="dataAbertura" :props="props">
-              {{ props.row.dataAbertura }}
-              <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
-                <q-input v-model="props.row.dataAbertura" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="inspector" :props="props">
-              <div class="text-pre-wrap">{{  getInspector(props.row.inspector.id).numero  }} - {{  getInspector(props.row.inspector.id).nome  }} {{  getInspector(props.row.inspector.id).apelido  }}</div>
-              <q-popup-edit v-model="props.row.inspector">
-                <q-input v-model="props.row.inspector" dense autofocus ></q-input>
-              </q-popup-edit>
-            </q-td>
-            <q-td key="actions" :props="props">
-             <div class="q-gutter-sm">
-              <router-link :to="`/pergunta/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
-               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaPergunta(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removePergunta(props.row)" size=sm no-caps/>
-             </div>
-            </q-td>
-          </q-tr>
-        </template>
-  </q-table>
-  <create-edit-form :show_dialog="show_dialog"
-                    :listErrors="listErrors"
-                    :numero.sync="pergunta.numero"
-                    :dataAbertura.sync="pergunta.dataAbertura"
-                    :descricao.sync="pergunta.descricao"
-                    :interrogatorio.sync="pergunta.interrogatorio"
-                    :inspector.sync="inspector"
-                    :anexo.sync="pergunta.anexo"
-                    :inspectors.sync="allInspectors"
-                    :submitting="submitting"
-                    :close="close"
-                    :createPergunta="createPergunta"
-                    :removePergunta="removePergunta"/>
+        <q-tr :props="props">
+          <q-td key="numero" :props="props">
+            {{ props.row.numero }}
+            <q-popup-edit v-model="props.row.numero" title="Update numero">
+              <q-input v-model="props.row.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="dataAbertura" :props="props">
+            {{ props.row.dataAbertura }}
+            <q-popup-edit v-model="props.row.dataAbertura" title="Update dataAbertura">
+              <q-input v-model="props.row.dataAbertura" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="inspector" :props="props">
+           <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+              {{ props.row.inspector.apelido }}
+            </div>
+            <q-popup-edit v-model="props.row.inspector.numero">
+              <q-input v-model="props.row.inspector.numero" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="actions" :props="props">
+            <div class="q-gutter-sm">
+              <router-link :to="`/pergunta/${props.row.id}`">
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+              </router-link>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaPergunta(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removePergunta(props.row)"/>
+            </div>
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <create-edit-form :anexo.sync="pergunta.anexo"
+                      :close="close"
+                      :createPergunta="createPergunta"
+                      :dataAbertura.sync="pergunta.dataAbertura"
+                      :descricao.sync="pergunta.descricao"
+                      :inspector.sync="inspector"
+                      :inspectors.sync="allInspectors"
+                      :interrogatorio.sync="pergunta.interrogatorio"
+                      :listErrors="listErrors"
+                      :numero.sync="pergunta.numero"
+                      :removePergunta="removePergunta"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { exportFile } from 'quasar'
+import {exportFile} from 'quasar'
+import Inspector from 'src/store/models/inspector/inspector'
+import Pergunta from 'src/store/models/pergunta/pergunta'
 
-function wrapCsvValue (val, formatFn) {
+function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
   formatted = formatted === undefined || formatted === null ? '' : String(formatted)
   formatted = formatted.split('"').join('""')
@@ -76,7 +79,7 @@ function wrapCsvValue (val, formatFn) {
 
 export default {
   name: 'Pergunta',
-  data () {
+  data() {
     return {
       listErrors: [],
       options: [],
@@ -104,16 +107,37 @@ export default {
         designacao: ''
       },
       columns: [
-        { name: 'numero', align: 'left', label: 'Número do Auto', field: row => row.numero, format: val => `${val}`, sortable: true },
-        { name: 'dataAbertura', align: 'left', label: 'Data de Abertura', field: row => row.dataAbertura, format: val => `${val}`, sortable: true },
-        { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector.id, format: val => `${val}`, sortable: true },
-        { name: 'actions', label: 'Movimento', field: 'actions' }
+        {
+          name: 'numero',
+          align: 'left',
+          label: 'Número do Auto',
+          field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataAbertura',
+          align: 'left',
+          label: 'Data de Abertura',
+          field: row => row.dataAbertura,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'inspector',
+          align: 'left',
+          label: 'Inspector',
+          field: row => row.inspector.id,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', label: 'Movimento', field: 'actions'}
       ],
       data: []
     }
   },
-  preFetch ({ store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath }) {
-  // urlPath and publicPath requires @quasar/app v2+
+  preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
+    // urlPath and publicPath requires @quasar/app v2+
 
     // fetch data, validate route and optionally redirect to some other route...
 
@@ -124,46 +148,40 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return store.dispatch('pergunta/getAllPergunta')
+    return this.getAllPergunta()
   },
-  props: ['processo'],
-  mounted () {
-    this.$store.dispatch('pergunta/getAllPergunta')
-    this.$store.dispatch('inspector/getAllInspector')
-    this.$store.dispatch('orgao/getAllOrgao')
+  props: ['processoInvestigacao'],
+  mounted() {
+    this.getAllPergunta()
+    this.getAllInspector()
   },
   components: {
     'create-edit-form': require('components/pergunta/createEditForm.vue').default
   },
-  metaInfo: {
-  },
+  metaInfo: {},
   computed: {
-    allInspectors () {
-      return this.$store.getters['inspector/allInspector']
+    allInspectors() {
+      return Inspector.query().all()
     },
-    allOrgaos () {
-      return this.$store.getters['orgao/allOrgao']
-    },
-    allPerguntas () {
-      return this.$store.getters['pergunta/allPergunta']
+    allPerguntas() {
+      return Pergunta.query().with('inspector').where('processo_id',this.processoInvestigacao.id).get()
     }
   },
   methods: {
-    ...mapActions('pergunta', ['getAllPergunta', 'addNewPergunta', 'updatePergunta', 'deletePergunta']),
-    createPergunta () {
+    createPergunta() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.pergunta.processo = this.processo
-      this.pergunta.descricaoOcorencia = this.descricao
+      this.pergunta.inspector_id = this.inspector
       this.pergunta.inspector = this.inspector
-      this.pergunta.orgao = this.$store.state.orgao.orgaos[0]
+      this.pergunta.processo_id = this.processoInvestigacao.id
+      this.pergunta.processo = this.processoInvestigacao
       //  const image = new Blob([this.pergunta.anexo])
       this.pergunta.anexo = null
       if (this.editedIndex > -1) {
-        this.updatePergunta(this.pergunta).then(resp => {
+        Pergunta.api().patch("/pergunta/" + this.pergunta.id, this.pergunta).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -173,7 +191,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [ ' + this.pergunta.designacao + ' ]'
+            message: 'A informação foi actualizada com successo!! [ ' + this.pergunta.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -191,7 +209,7 @@ export default {
           }
         })
       } else {
-        this.addNewPergunta(this.pergunta).then(resp => {
+       Pergunta.api().post("/pergunta/", this.pergunta).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -202,7 +220,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.pergunta.designacao + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.pergunta.numero + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -221,10 +239,10 @@ export default {
         })
       }
     },
-    close () {
-      this.$store.dispatch('pergunta/getAllPergunta')
-      this.$store.dispatch('inspector/getAllInspector')
-      this.$store.dispatch('orgao/getAllOrgao')
+    close() {
+      this.getAllPergunta()
+      this.getAllInspector()
+      this.listErrors = {}
       this.show_dialog = false
       this.pergunta = {}
       this.props = this.pergunta
@@ -232,7 +250,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    removePergunta (pergunta) {
+    removePergunta(pergunta) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -250,24 +268,25 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + pergunta.designacao + ' ]'
         })
-        this.deletePergunta(pergunta)
+        Pergunta.api().delete("/pergunta/" + this.pergunta.id)
       })
     },
-    editaPergunta (pergunta) {
+    editaPergunta(pergunta) {
       this.editedIndex = this.allPerguntas.indexOf(pergunta)
       this.pergunta = Object.assign({}, pergunta)
-      this.inspector = this.getInspector(pergunta.inspector.id)
-      this.orgao = this.$store.state.orgao.orgaos[0]
+      this.inspector = Inspector.query().find(pergunta.inspector.id)
       this.show_dialog = true
     },
-    getInspector (id) {
-      const localInspector = this.allInspectors.filter(inspector => inspector.id === id)
-      if (localInspector.length === 0) { return Object.assign({}, { designacao: 'Sem Info.' }) } else { return localInspector[0] }
+    getAllPergunta() {
+      Pergunta.api().get("/pergunta?offset=0&max=1000000")
     },
-    abortFilterFn () {
+    getAllInspector() {
+      Inspector.api().get("/inspector?offset=0&max=1000000")
+    },
+    abortFilterFn() {
       // console.log('delayed filter aborted')
     },
-    exportTable () {
+    exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(

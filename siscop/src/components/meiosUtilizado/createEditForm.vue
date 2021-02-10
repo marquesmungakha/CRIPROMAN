@@ -91,6 +91,26 @@
       </q-item>
       <q-item>
           <q-item-section>
+              <q-input :value="numeroMotor"
+              @input="$emit('update:numeroMotor', $event)"
+              ref="numeroMotor"
+              label="Número do Motor "
+              lazy-rules
+              />
+          </q-item-section>
+      </q-item>
+      <q-item>
+          <q-item-section>
+              <q-input :value="chassi"
+              @input="$emit('update:chassi', $event)"
+              ref="chassi"
+              label="Número do Chassi "
+              lazy-rules
+              />
+          </q-item-section>
+      </q-item>
+      <q-item>
+          <q-item-section>
               <q-input :value="cor"
               @input="$emit('update:cor', $event)"
               ref="cor"
@@ -104,9 +124,9 @@
               <q-input :value="calibre"
               @input="$emit('update:calibre', $event)"
               ref="calibre"
-              label="Calibre *"
+              label="Calibre "
               lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Introduza o Calibre']" />
+             />
           </q-item-section>
       </q-item>
         <q-item>
@@ -205,6 +225,8 @@ export default {
   props: [
     'matricula',
     'cor',
+    'numeroMotor',
+    'chassi',
     'calibre',
     'designacao',
     'marca',
