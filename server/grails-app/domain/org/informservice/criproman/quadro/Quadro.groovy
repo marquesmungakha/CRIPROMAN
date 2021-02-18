@@ -12,6 +12,7 @@ class Quadro implements Auditable{
     String apelido
     String sexo
     Integer idade
+    Date dataNascimento
     String telemovel1
     String telemovel2
     byte[] fotografia
@@ -30,5 +31,6 @@ class Quadro implements Auditable{
         idade(validator: { idade -> return idade >= 18 })
         fotografia(nullable: true)
         numero(unique: true)
+        dataNascimento nullable: true
     }
 }

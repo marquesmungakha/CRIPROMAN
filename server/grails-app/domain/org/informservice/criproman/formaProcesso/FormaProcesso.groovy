@@ -10,6 +10,11 @@ class FormaProcesso implements Auditable {
 
     String codigo
     String designacao
+    boolean activo = true
+
+    static mapping = {
+        version false
+    }
 
     static constraints = {
         codigo nullable: false, unique: true

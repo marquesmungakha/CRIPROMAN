@@ -127,8 +127,9 @@ export default {
     return this.getAllCrime()
   },
   mounted() {
-    this.getAllCrime()
-    this.getAllJurisdicao()
+    let offset = 0
+    this.getAllCrime(offset)
+    this.getAllJurisdicao(offset)
   },
   components: {
     'create-edit-form': require('components/crime/createEditForm.vue').default
@@ -259,11 +260,27 @@ export default {
       this.classeJudicial = ClasseJudicial.find(crime.classeJudicial_id)
       this.show_dialog = true
     },
-    getAllCrime() {
-      Crime.api().get('/crime?offset=0&max=1000000')
+    getAllCrime(offset) {
+      Crime.api().get("/crime?offset="+offset+"&max=1000").then(resp => {
+          console.log(resp)
+          offset = offset + 1
+          if(resp.response.data.items.length() > 0) 
+              setTimeout(this.getAllCrime, 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
     },
-    getAllJurisdicao() {
-      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+    getAllJurisdicao(offset) {
+      ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=1000").then(resp => {
+          console.log(resp)
+          offset = offset + 1
+          if(resp.response.data.items.length() > 0) 
+              setTimeout(this.getAllJurisdicao, 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
     },
     filterFn(val, update, abort) {
       const stringOptions = this.allJurisdicoes

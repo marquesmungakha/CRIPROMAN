@@ -295,7 +295,7 @@
                 <q-item-label>Dashboard</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item class="q-ml-xl" active-class="q-item-no-link-highlighting">
+            <q-item to="/modelo1" class="q-ml-xl" active-class="q-item-no-link-highlighting">
               <q-item-section avatar>
                 <q-icon name="receipt_long"/>
               </q-item-section>

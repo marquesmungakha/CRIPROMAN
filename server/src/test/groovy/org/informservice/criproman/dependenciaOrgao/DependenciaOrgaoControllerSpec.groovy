@@ -1,4 +1,4 @@
-package org.informservice.criproman.dependenciaunidadeorganica
+package org.informservice.criproman.dependenciaOrgao
 
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK

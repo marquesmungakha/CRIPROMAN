@@ -10,6 +10,7 @@ class SituacaoPrisional implements Auditable {
 
     String codigo
     String designacao
+    boolean activo = true
 
     static mapping = {
         version false

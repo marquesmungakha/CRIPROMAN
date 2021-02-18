@@ -154,8 +154,9 @@ export default {
     'processoInvestigacao'
   ],
   mounted() {
-    this.getAllAcarreacaos()
-    this.getAllInspector()
+    let offset = 0
+    this.getAllAcarreacaos(offset)
+    this.getAllInspector(offset)
   },
   components: {
     'create-edit-form': require('components/acarreacao/createEditForm.vue').default
@@ -285,11 +286,29 @@ export default {
       this.inspector = Inspector.query().find(acarreacao.inspector.id)
       this.show_dialog = true
     },
-    getAllAcarreacaos() {
-      Acarreacao.api().get("/acarreacao?offset=0&max=1000000")
+    getAllAcarreacaos(offset) {
+      Acarreacao.api().get("/acarreacao?offset="+offset+"&max=1000").then(resp => {
+          console.log(resp)
+          offset = offset + 1
+
+          if(resp.response.data.items.length() > 0) 
+              setTimeout(this.getAllAcarreacaos, 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
     },
-    getAllInspector() {
-      Inspector.api().get("/inspector?offset=0&max=1000000")
+    getAllInspector(offset) {
+      Inspector.api().get("/inspector?offset="+offset+"&max=1000").then(resp => {
+          console.log(resp)
+          offset = offset + 1
+
+          if(resp.response.data.items.length() > 0) 
+              setTimeout(this.getAllInspector, 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

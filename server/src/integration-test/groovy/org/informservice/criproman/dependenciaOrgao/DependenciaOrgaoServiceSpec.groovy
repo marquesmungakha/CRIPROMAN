@@ -1,4 +1,4 @@
-package org.informservice.criproman.dependenciaunidadeorganica
+package org.informservice.criproman.dependenciaOrgao
 
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback

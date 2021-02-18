@@ -3,7 +3,7 @@ package org.informservice.criproman.orgao
 import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
-import org.informservice.criproman.dependenciaunidadeorganica.DependenciaOrgao
+import org.informservice.criproman.dependenciaOrgao.DependenciaOrgao
 
 // import grails.plugins.orm.auditable.Auditable
 

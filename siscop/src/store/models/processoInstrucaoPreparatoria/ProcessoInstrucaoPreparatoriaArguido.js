@@ -6,7 +6,7 @@ export default class ProcessoInstrucaoPreparatoriaArguido extends Model {
 
   static  entity = 'processoInstrucaoPreparatoria_arguido'
 
-static primaryKey = ['processoInstrucaoPreparatoria_id','arguido_id']
+// static primaryKey = ['processoInstrucaoPreparatoria_id','arguido_id']
 
   static fields() {
     return {

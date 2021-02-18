@@ -9,16 +9,19 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.9.17",
     "@teamnovu/vue-responsive-image": "^0.0.1",
     "@vuex-orm/core": "^0.36.3",
     "@vuex-orm/plugin-axios": "^0.9.3",
+    "apex": "^0.1.2",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
-    "quasar": "^1.0.0",
+    "d3-scale": "^3.2.3",
+    "quasar": "^1.15.3",
     "vue": "^2.6.12",
     "vue-apexcharts": "^1.6.0",
     "vue-i18n": "^8.0.0",
+    "vue-pivottable": "^0.3.82",
     "vuex": "^3.6.0"
   },
   "devDependencies": {

@@ -74,10 +74,7 @@
                   </q-item-section>
                 </q-item>
                     </div>
-                   </div>
-                <q-separator/>
-                <div class="row">
-                     <div class="col">
+                    <div class="col">
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('magistrado') }}</q-item-label>
@@ -85,6 +82,9 @@
                   </q-item-section>
                 </q-item>
                 </div>
+                   </div>
+                <q-separator/>
+                <div class="row">
                 <div class="col">
                   <q-item class="full-width">
                   <q-item-section>
@@ -111,6 +111,7 @@
                     </q-item>
                   </div>
                 </div>
+                <q-separator/>
                 </q-card-section>
                  <div class="row">
                 <div class="col">
@@ -153,20 +154,20 @@
 
             <q-card>
               <q-tabs
-                v-model="tab1"
+                v-model="tab2"
                 class="bg-teal text-white shadow-2"
                 active-color="white"
                 indicator-color="white"
                 align="center"
                 narrow-indicator >
                 <q-tab name="denunciante" label="denunciante" />
-                <q-tab name="vitima" label="Vítma" />
+                <q-tab name="vitima" label="Vítima" />
                 <q-tab name="arguido" label="Arguido" />
               </q-tabs>
 
               <q-separator />
 
-              <q-tab-panels v-model="tab1" animated transition-prev="scale"  transition-next="scale">
+              <q-tab-panels v-model="tab2" animated transition-prev="scale"  transition-next="scale">
                <q-tab-panel name="denunciante">
                   <list-denunciante :processoInstrucaoPreparatoria.sync="processoInstrucaoPreparatoria"/>
                 </q-tab-panel>
@@ -224,6 +225,8 @@ export default {
       tab: 'denunciantes',
       tab1: 'despacho',
       tab2: 'comments',
+      selectedFile: "",
+      progress: 0,
       splitterModel: 20,
       localProcesso: {
        numeroProcesso: '',
@@ -323,7 +326,8 @@ export default {
     'create-edit-form': require('components/processoInstrucaoPreparatoria/createEditForm.vue').default,
     'list-denunciante': require('pages/denuncianteProcesso/index.vue').default,
     'list-vitima': require('pages/vitimaProcesso/index.vue').default,
-    'list-arguido': require('pages/arguidoProcesso/index.vue').default
+    'list-arguido': require('pages/arguidoProcesso/index.vue').default,
+    'list-despacho': require('pages/parecerProcesso/index.vue').default
   },
   methods: {
     removeProcesso (processoInstrucaoPreparatoria) {

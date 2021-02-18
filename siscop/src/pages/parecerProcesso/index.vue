@@ -1,5 +1,5 @@
 <template>
-<q-page style="min-height: 200px;">
+<q-page style="min-height: 300px;">
 <q-table :columns="columns" :data="allParecerProcessos" :filter="filter" binary-state-sort row-key="name" title="Despacho">
 
       <template v-slot:top-right>
@@ -18,13 +18,13 @@
         <q-tr :props="props">
           <q-td key="parecer" :props="props">
             {{ props.row.parecer }}
-            <q-popup-edit v-model="props.row.parecer" title="Update numero">
+            <q-popup-edit v-model="props.row.parecer">
               <q-input v-model="props.row.parecer" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="dataRegisto" :props="props">
             {{ props.row.dataRegisto }}
-            <q-popup-edit v-model="props.row.dataRegisto" title="Update dataRegisto">
+            <q-popup-edit v-model="props.row.dataRegisto" >
               <q-input v-model="props.row.dataRegisto" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
@@ -130,18 +130,18 @@ export default {
       },
       columns: [
         {
-          name: 'dataRegisto',
-          align: 'left',
-          label: 'Data de Registo',
-          field: row => row.dataRegisto,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
           name: 'parecer',
           align: 'left',
           label: 'Parecer',
           field: row => row.numero,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {
+          name: 'dataRegisto',
+          align: 'left',
+          label: 'Data de Registo',
+          field: row => row.dataRegisto,
           format: val => `${val}`,
           sortable: true
         },

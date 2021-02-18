@@ -73,7 +73,6 @@ import ProcessoInstrucaoPreparatoriaPossuidor from "./models/processoInstrucaoPr
 import ProcessoInstrucaoPreparatoriaSuspeito from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaSuspeito"
 import ProcessoInstrucaoPreparatoriaTestemunha from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaTestemunha"
 import ProcessoInstrucaoPreparatoriaVitima from "./models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaVitima"
-
 import ProcessoInvestigacao from "./models/processoInvestigacao/processoInvestigacao"
 import Profissao from "./models/profissao/profissao"
 import Quadro from "./models/quadro/quadro"

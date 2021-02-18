@@ -19,6 +19,7 @@ class Individuo implements Auditable {
     String apelido
     String sexo
     Date dataNascimento
+    Integer idade
     String naturalidade
     Pais nacionalidade
     Provincia provincia
@@ -61,6 +62,7 @@ class Individuo implements Auditable {
         dataNascimento(nullable: false, blank: false, validator: { datanascimento, urc ->
             return ((datanascimento <= new Date()))
         })
+        idade nullable: true
         localNascimento(nullable: true)
         fotografia(nullable: true)
     }
