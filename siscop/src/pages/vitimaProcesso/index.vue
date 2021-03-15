@@ -115,7 +115,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Vitima!</div>
+            <div class="text-h6">Adicionar/Actualizar Vitima!</div>
           </q-card-section>
           <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -130,6 +130,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createVitima">
+             <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Vitima Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="vitima.apelido"
+                            :nome.sync="vitima.nome"
+                            :numDocumentoIndentificacao.sync="vitima.numDocumentoIndentificacao"
+                            :sexo.sync="vitima.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="vitima.apelido"
                          :dataNascimento.sync="vitima.dataNascimento"
                          :documentoValidade.sync="vitima.documentoValidade"
@@ -152,17 +178,40 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
-      <create-edit-form :declaracao.sync="processoInstrucaoPreparatoriaVitima.declaracao"/>
+                          </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
+                      <create-edit-form :declaracao.sync="processoInstrucaoPreparatoriaVitima.declaracao"/>
+                    </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createVitima"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createVitima" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+     <details-vitima :vitima.sync="vitima" 
+                       :image.sync="image" 
+                       :pecaProcessoVitima.sync="processoInstrucaoPreparatoriaVitima" 
+                       :tipoDocumento.sync="tipoDocumento"
+                       :pais.sync="pais"
+                       :vitima_details_dialog.sync="vitima_details_dialog"
+                       :close.sync="close"/>
   </q-page>
 </template>
 
@@ -186,6 +235,8 @@ export default {
   name: 'Vitima',
   data() {
     return {
+       step: 1,
+      offset:0,
       listErrors: [],
       vitima_details_dialog: false,
       editedIndex: -1,
@@ -369,7 +420,9 @@ export default {
   },
   components: {
     'create-edit-form': require('components/vitima/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-vitima': require('components/vitima/detailsForm.vue').default
   },
   created() {
   },
@@ -398,6 +451,72 @@ export default {
     }
   },
   methods: {
+     findIndividuo() {
+      let results = undefined
+      if (this.vitima.nome === undefined || this.vitima.apelido === undefined || 
+          this.vitima.sexo === undefined || this.vitima.numDocumentoIndentificacao === undefined ||
+          this.vitima.nome === "" || this.vitima.apelido === "" || 
+          this.vitima.sexo === "" || this.vitima.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Vitima.api().get("/vitima?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Vitima.query().where((vitima) => {
+                return vitima.nome === this.vitima.nome && 
+                       vitima.apelido === this.vitima.apelido && 
+                       vitima.sexo === this.vitima.sexo &&
+                       vitima.numDocumentoIndentificacao === this.vitima.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.vitima = results
+                this.pais = Pais.query().find(this.vitima.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.vitima.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.vitima.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.vitima.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Vitima encontrado com successo!! [' + this.vitima.nome + ' ' + this.vitima.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Vitima foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
     createVitima() {
       this.listErrors = []
       this.submitting = true
@@ -484,6 +603,8 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+       this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.vitima = {}

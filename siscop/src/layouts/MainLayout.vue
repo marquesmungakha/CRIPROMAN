@@ -7,7 +7,7 @@
           <q-btn flat dense round icon="menu" aria-label="Menu" @click="leftDrawerOpen = !leftDrawerOpen" />
           <q-toolbar-title>
             <q-space/>
-            <div class="text-h6 text-weight- q-mt-md qmr-sr">SISTEMA DE GESTÃO PROCESSUAL PGR e SERNIC </div>
+            <div class="text-h6 text-weight- q-mt-md qmr-sr">SISTEMA DE GESTÃO PROCESSUAL </div>
             <q-space/>
             <div class="text-weight-thin"> Procuradoria Geral da República - PGR </div>
             <q-space/>
@@ -184,6 +184,16 @@
                     <q-item-label>Forma Processo</q-item-label>
                   </q-item-section>
             </q-item>
+            <q-item to="/jurisdicao" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
+                  <q-item-section>
+                    <q-item-label>Jurisdição/Famílias Delitivas </q-item-label>
+                  </q-item-section>
+            </q-item>
+            <q-item to="/crime" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
+                  <q-item-section>
+                    <q-item-label>Acções/Tipo Legal de Crime</q-item-label>
+                  </q-item-section>
+            </q-item>
             <q-item to="/tipoParecer" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
                   <q-item-section>
                     <q-item-label> Estágio do Processo </q-item-label>
@@ -224,7 +234,7 @@
                   </q-item-section>
             </q-item>
                    </q-expansion-item>
-                     <q-expansion-item icon="plagiarism" :header-inset-level="0.85" label="Meios Utilizados" >
+            <q-expansion-item icon="plagiarism" :header-inset-level="0.85" label="Meios Utilizados" >
             <q-item to="/tipoMeio" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
                   <q-item-section>
                     <q-item-label>Tipo de Meio de Crime</q-item-label>
@@ -300,7 +310,7 @@
                 <q-icon name="receipt_long"/>
               </q-item-section>
               <q-item-section>
-                <q-item-label>Modelo 1</q-item-label>
+                <q-item-label>Modelo 1, 2 e 8</q-item-label>
               </q-item-section>
             </q-item>
             <q-item class="q-ml-xl" active-class="q-item-no-link-highlighting">

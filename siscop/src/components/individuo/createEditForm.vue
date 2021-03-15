@@ -125,9 +125,9 @@
                 <q-input :value="localNascimento"
                 @input="$emit('update:localNascimento', $event)"
                 ref="localNascimento"
-                label="Local de Nascimento *"
+                label="Local de Nascimento "
                 lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Introduza o Local de Nascimento']" />
+                />
             </q-item-section>
         </q-item>
           <q-item>
@@ -135,9 +135,9 @@
                 <q-input :value="naturalidade"
                 @input="$emit('update:naturalidade', $event)"
                 ref="naturalidade"
-                label="Naturalidade *"
+                label="Naturalidade "
                 lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Introduza a Naturalidade']" />
+                />
             </q-item-section>
         </q-item>
           <q-item>
@@ -153,8 +153,9 @@
                 <q-select :value="tipoDocumento"
                           :options="tipoDocumentos"
                            option-label="designacao"
-                            option-value="id"
+                           option-value="id"
                           label="Tipo de Documento de Identificação *"
+                           lazy-rules
                           @input="$emit('update:tipoDocumento', $event)"/>
             </q-item-section>
         </q-item>
@@ -190,9 +191,9 @@
                     <q-input :value="telemovel1"
                     @input="$emit('update:telemovel1', $event)"
                     ref="telemovel1"
-                    label="Telefone Principal *"
+                    label="Telefone Principal "
                     lazy-rules
-                    :rules="[ val => val && val.length > 0 || 'Introduza o Telefone Principal']" />
+                    />
                 </q-item-section>
             </q-item>
             <q-item>
@@ -200,7 +201,7 @@
                     <q-input :value="telemovel2"
                     @input="$emit('update:telemovel2', $event)"
                     ref="telemovel2"
-                    label="Telefone Alternativo *"
+                    label="Telefone Alternativo "
                     lazy-rules />
                 </q-item-section>
             </q-item>
@@ -230,8 +231,7 @@ export default {
       optionsTipoDocumento: [],
       optionsEstadoCivil: ['Casado(a)', 'Solteiro(a)', 'Viúvo(a)', 'Disvorciado(a)', 'Vive Maritalmente(a)', 'Outro(a)'],
       optionsGenero: ['Masculino', 'Femenino'],
-      hasImage: false,
-      image: null
+      hasImage: false
     }
   },
   computed: {

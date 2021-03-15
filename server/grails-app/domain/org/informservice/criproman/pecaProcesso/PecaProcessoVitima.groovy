@@ -10,10 +10,12 @@ class PecaProcessoVitima {
 
     PecaProcesso pecaProcesso
     Vitima vitima
+    String declaracao
 
     static belongsTo = PecaProcesso
 
     static constraints = {
+        declaracao maxSize: 1500, nullable: false
     }
 
     static mapping = {

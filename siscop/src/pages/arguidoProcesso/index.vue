@@ -103,9 +103,9 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraArguido(props.row)"/>
               <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaArguido(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeArguido(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeArguido(props.row)"/>
             </div>
           </q-td>
         </q-tr>
@@ -115,7 +115,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Arguido!</div>
+            <div class="text-h6">Adicionar/Actualizar Arguido!</div>
           </q-card-section>
           <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -130,6 +130,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createArguido">
+             <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Arguido Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="arguido.apelido"
+                            :nome.sync="arguido.nome"
+                            :numDocumentoIndentificacao.sync="arguido.numDocumentoIndentificacao"
+                            :sexo.sync="arguido.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="arguido.apelido"
                          :dataNascimento.sync="arguido.dataNascimento"
                          :documentoValidade.sync="arguido.documentoValidade"
@@ -152,19 +178,45 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
+                          </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
       <create-edit-form :localTrabalho.sync="processoInstrucaoPreparatoriaArguido.localTrabalho"
                         :declaracao.sync="processoInstrucaoPreparatoriaArguido.declaracao"
-                        :ocupacao.sync="processoInstrucaoPreparatoriaArguido.ocupacao"/>
+                        :ocupacao.sync="processoInstrucaoPreparatoriaArguido.ocupacao"
+                        :dataSituacaoPrisional.sync="processoInstrucaoPreparatoriaArguido.dataSituacaoPrisional"
+                        :situacaoPrisional.sync="situacaoPrisional"
+                        :situacaoPrisionalList.sync="allSituacaoPrisional"/>
+                          </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createArguido"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createArguido" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+    <details-arguido :arguido.sync="arguido" 
+                       :image.sync="image" 
+                       :pecaProcessoArguido.sync="pecaProcessoArguido" 
+                       :tipoDocumento.sync="tipoDocumento"
+                       :pais.sync="pais"
+                       :arguido_details_dialog.sync="arguido_details_dialog"
+                       :close.sync="close"/>
   </q-page>
 </template>
 
@@ -176,6 +228,7 @@ import TipoDocumentoIdentificacao from 'src/store/models/tipoDocumentoIdentifica
 import Provincia from 'src/store/models/provincia/provincia'
 import ProcessoInstrucaoPreparatoriaArguido from 'src/store/models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoriaArguido'
 import ProcessoInstrucaoPreparatoria from 'src/store/models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoria'
+import SituacaoPrisional from 'src/store/models/situacaoPrisional/situacaoPrisional'
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -188,6 +241,8 @@ export default {
   name: 'Arguido',
   data() {
     return {
+       step: 1,
+      offset:0,
       listErrors: [],
       arguido_details_dialog: false,
       editedIndex: -1,
@@ -212,8 +267,7 @@ export default {
         tipoDocumento: {},
         documentoValidade: '',
         pais: {},
-        provincia: {},
-        processoInstrucaoPreparatoria: {}
+        provincia: {}
       },
       pais: {
         codigo: '',
@@ -228,11 +282,16 @@ export default {
         codigo: '',
         designacao: ''
       },
+       situacaoPrisional: {
+        designacao: ''
+      },
       processoInstrucaoPreparatoriaArguido: {
         localTrabalho: '',
         ocupacao: '',
+        dataSituacaoPrisional: '',
+        situacaoPrisional: {},
         arguido: {},
-        processoInstrucaoPreparatoria: {}
+        processo: {}
       },
       columns: [
         {
@@ -374,13 +433,16 @@ export default {
   mounted() {
     this.getAllArguido()
     this.getAllArguidoProcesso()
+    this.getAllSituacaoPrisional()
     this.getAllProvincia()
     this.getAllPais()
     this.getAllTipoDocumentoIdentificacao()
   },
   components: {
     'create-edit-form': require('components/arguido/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-arguido': require('components/arguido/detailsForm.vue').default
   },
   created() {
   },
@@ -406,9 +468,78 @@ export default {
     },
     allProvinciaFromPais() {
       return Provincia.query().where('pais_id',this.pais.id).get()
+    },
+    allSituacaoPrisional() {
+      return SituacaoPrisional.query().all()
     }
   },
   methods: {
+     findIndividuo() {
+      let results = undefined
+      if (this.arguido.nome === undefined || this.arguido.apelido === undefined || 
+          this.arguido.sexo === undefined || this.arguido.numDocumentoIndentificacao === undefined ||
+          this.arguido.nome === "" || this.arguido.apelido === "" || 
+          this.arguido.sexo === "" || this.arguido.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Arguido.api().get("/arguido?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Arguido.query().where((arguido) => {
+                return arguido.nome === this.arguido.nome && 
+                       arguido.apelido === this.arguido.apelido && 
+                       arguido.sexo === this.arguido.sexo &&
+                       arguido.numDocumentoIndentificacao === this.arguido.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.arguido = results
+                this.pais = Pais.query().find(this.arguido.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.arguido.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.arguido.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.arguido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Arguido encontrado com successo!! [' + this.arguido.nome + ' ' + this.arguido.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Arguido foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
     createArguido() {
       this.listErrors = []
       this.submitting = true
@@ -425,8 +556,9 @@ export default {
       this.arguido.tipoDocumento = this.tipoDocumento
       this.arguido.processoInstrucaoPreparatoria = this.processoInstrucaoPreparatoria
 
+      this.processoInstrucaoPreparatoriaArguido.situacaoPrisional = this.situacaoPrisional
       this.processoInstrucaoPreparatoriaArguido.arguido =  this.arguido
-      this.processoInstrucaoPreparatoriaArguido.processoInstrucaoPreparatoria = this.processoInstrucaoPreparatoria
+      this.processoInstrucaoPreparatoriaArguido.processo = this.processoInstrucaoPreparatoria
      
      console.log(this.processoInstrucaoPreparatoriaArguido)
 
@@ -491,10 +623,14 @@ export default {
     },
     close() {
       this.getAllArguidoProcesso()
+      this.getAllSituacaoPrisional()
       this.getAllArguido()
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.arguido_details_dialog = false
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.arguido = {}
@@ -525,14 +661,28 @@ export default {
       })
     },
     editaArguido(arguido) {
+      this.step = 2
       this.editedIndex = 0
       this.processoInstrucaoPreparatoriaArguido = Object.assign({}, arguido)
       this.arguido =  this.processoInstrucaoPreparatoriaArguido.arguido
       this.pais = Pais.query().find(this.arguido.nacionalidade_id)
       this.provincia = Provincia.query().find(this.arguido.provincia_id)
       this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.arguido.tipoDocumento_id)
+      this.situacaoPrisional = SituacaoPrisional.query().find(arguido.situacaoPrisional_id)
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.arguido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
+    },
+    mostraArguido(arguido) {
+      this.step = 2
+      this.editedIndex = 0
+      this.processoInstrucaoPreparatoriaArguido = Object.assign({}, arguido)
+      this.arguido =  this.processoInstrucaoPreparatoriaArguido.arguido
+      this.pais = Pais.query().find(this.arguido.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.arguido.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.arguido.tipoDocumento_id)
+      this.situacaoPrisional = SituacaoPrisional.query().find(arguido.situacaoPrisional_id)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.arguido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.arguido_details_dialog = true
     },
     getAllArguido() {
       Arguido.api().get('/arguido?offset=0&max=1000000')
@@ -548,6 +698,9 @@ export default {
     },
     getAllPais() {
       Pais.api().get('/pais?offset=0&max=1000000')
+    },
+    getAllSituacaoPrisional() {
+      SituacaoPrisional.api().get('/situacaoPrisional?offset=0&max=1000000')
     },
     onFileChange(event){
       this.arguido.fotografia = event.target.files[0];

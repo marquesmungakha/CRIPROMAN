@@ -24,6 +24,16 @@
                   </q-item-section>
                 </q-item>
                 <q-separator/>
+                <q-item class="full-width">
+                  <q-item-section>
+                    <q-item-label caption lines="1">{{ $t('activo') }}</q-item-label>
+                    <q-item-label class="text-grey-9">
+                      <span v-if="situacaoPrisional.activo == true">Activo</span>
+                      <span v-else>Desactivo</span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-separator/>
               </div>
             </div>
           </q-card-section>
@@ -49,6 +59,7 @@
                       :codigo.sync="localSituacaoPrisional.codigo"
                       :createSituacaoPrisional="createSituacaoPrisional"
                       :designacao.sync="localSituacaoPrisional.designacao"
+                      :activo.sync="localSituacaoPrisional.activo"
                       :listErrors="listErrors"
                       :removeSituacaoPrisional="removeSituacaoPrisional"
                       :show_dialog="show_dialog"

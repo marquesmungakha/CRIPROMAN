@@ -291,7 +291,7 @@ export default {
           console.log(resp)
           offset = offset + 1
 
-          if(resp.response.data.items.length() > 0) 
+          if(resp.response.data.length() > 0) 
               setTimeout(this.getAllAcarreacaos, 2)
 
           }).catch(error => {
@@ -303,7 +303,7 @@ export default {
           console.log(resp)
           offset = offset + 1
 
-          if(resp.response.data.items.length() > 0) 
+          if(resp.response.data.length() > 0) 
               setTimeout(this.getAllInspector, 2)
 
           }).catch(error => {

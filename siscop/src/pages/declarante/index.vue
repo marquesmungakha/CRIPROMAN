@@ -41,12 +41,6 @@
               <q-input v-model="props.row.declarante.dataNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="naturalidade" :props="props">
-            {{ props.row.declarante.naturalidade }}
-            <q-popup-edit v-model="props.row.declarante.naturalidade">
-              <q-input v-model="props.row.declarante.naturalidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
           <q-td key="nacionalidade" :props="props">
             {{ props.row.declarante.nacionalidade.nacionalidade }}
             <q-popup-edit v-model="props.row.declarante.nacionalidade.nacionalidade">
@@ -57,12 +51,6 @@
             {{ props.row.declarante.provincia.designacao }}
             <q-popup-edit v-model="props.row.declarante.provincia.designacao">
               <q-input v-model="props.row.declarante.provincia.designacao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="localNascimento" :props="props">
-            {{ props.row.declarante.localNascimento }}
-            <q-popup-edit v-model="props.row.declarante.localNascimento">
-              <q-input v-model="props.row.declarante.localNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="estadoCivil" :props="props">
@@ -83,29 +71,11 @@
               <q-input v-model="props.row.declarante.numDocumentoIndentificacao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="documentoValidade" :props="props">
-            {{ props.row.declarante.documentoValidade }}
-            <q-popup-edit v-model="props.row.declarante.documentoValidade">
-              <q-input v-model="props.row.declarante.documentoValidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="morada" :props="props">
-            {{ props.row.declarante.morada }}
-            <q-popup-edit v-model="props.row.declarante.morada">
-              <q-input v-model="props.row.declarante.morada" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="declaracao" :props="props">
-            {{ props.row.declaracao }}
-            <q-popup-edit v-model="props.row.declaracao">
-              <q-input v-model="props.row.declaracao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraDeclarante(props.row)"/>
               <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDeclarante(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeDeclarante(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDeclarante(props.row)"/>
             </div>
           </q-td>
         </q-tr>
@@ -115,7 +85,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Declarante!</div>
+            <div class="text-h6">Adicionar/Actualizar Declarante!</div>
           </q-card-section>
           <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -130,6 +100,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createDeclarante">
+             <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Declarante Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="declarante.apelido"
+                            :nome.sync="declarante.nome"
+                            :numDocumentoIndentificacao.sync="declarante.numDocumentoIndentificacao"
+                            :sexo.sync="declarante.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="declarante.apelido"
                          :dataNascimento.sync="declarante.dataNascimento"
                          :documentoValidade.sync="declarante.documentoValidade"
@@ -152,17 +148,41 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
+                          </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
       <create-edit-form :declaracao.sync="pecaProcessoDeclarante.declaracao"/>
+        </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createDeclarante"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createDeclarante" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+ <details-declarante :declarante.sync="declarante" 
+                       :image.sync="image" 
+                       :pecaProcessoDeclarante.sync="pecaProcessoDeclarante" 
+                       :tipoDocumento.sync="tipoDocumento"
+                       :pais.sync="pais"
+                       :declarante_details_dialog.sync="declarante_details_dialog"
+                       :close.sync="close"/>
+
   </q-page>
 </template>
 
@@ -186,6 +206,8 @@ export default {
   name: 'Declarante',
   data() {
     return {
+       step: 1,
+      offset:0,
       listErrors: [],
       declarante_details_dialog: false,
       editedIndex: -1,
@@ -259,14 +281,6 @@ export default {
           sortable: true
         },
         {
-          name: 'naturalidade',
-          align: 'left',
-          label: 'Naturalidade',
-          field: row => row.naturalidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
           name: 'nacionalidade',
           align: 'left',
           label: 'Nacionalidade',
@@ -279,14 +293,6 @@ export default {
           align: 'left',
           label: 'Província',
           field: row => row.provincia,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'localNascimento',
-          align: 'left',
-          label: 'Local de Nascimento',
-          field: row => row.localNascimento,
           format: val => `${val}`,
           sortable: true
         },
@@ -311,30 +317,6 @@ export default {
           align: 'left',
           label: 'Número do Documento',
           field: row => row.numDocumentoIndentificacao,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'documentoValidade',
-          align: 'left',
-          label: 'Validade do Documento',
-          field: row => row.documentoValidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'morada',
-          align: 'left',
-          label: 'Morada',
-          field: row => row.morada,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'declaracao',
-          align: 'left',
-          label: 'Declaração',
-          field: row => row.declaracao,
           format: val => `${val}`,
           sortable: true
         },
@@ -369,7 +351,9 @@ export default {
   },
   components: {
     'create-edit-form': require('components/declarante/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-declarante': require('components/declarante/detailsForm.vue').default
   },
   created() {
   },
@@ -398,6 +382,72 @@ export default {
     }
   },
   methods: {
+     findIndividuo() {
+      let results = undefined
+      if (this.declarante.nome === undefined || this.declarante.apelido === undefined || 
+          this.declarante.sexo === undefined || this.declarante.numDocumentoIndentificacao === undefined ||
+          this.declarante.nome === "" || this.declarante.apelido === "" || 
+          this.declarante.sexo === "" || this.declarante.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Declarante.api().get("/declarante?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Declarante.query().where((declarante) => {
+                return declarante.nome === this.declarante.nome && 
+                       declarante.apelido === this.declarante.apelido && 
+                       declarante.sexo === this.declarante.sexo &&
+                       declarante.numDocumentoIndentificacao === this.declarante.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.declarante = results
+                this.pais = Pais.query().find(this.declarante.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.declarante.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.declarante.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.declarante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Declarante encontrado com successo!! [' + this.declarante.nome + ' ' + this.declarante.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Declarante foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
     createDeclarante() {
       this.listErrors = []
       this.submitting = true
@@ -484,6 +534,9 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.declarante_details_dialog = false
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.declarante = {}
@@ -514,6 +567,7 @@ export default {
       })
     },
     editaDeclarante(declarante) {
+      this.step = 2
       this.editedIndex = 0
       this.pecaProcessoDeclarante = Object.assign({}, declarante)
       this.declarante =  this.pecaProcessoDeclarante.declarante
@@ -522,6 +576,16 @@ export default {
       this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.declarante.tipoDocumento_id)
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.declarante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
+    },
+    mostraDeclarante(declarante) {
+      this.editedIndex = 0
+      this.pecaProcessoDeclarante = Object.assign({}, declarante)
+      this.declarante =  this.pecaProcessoDeclarante.declarante
+      this.pais = Pais.query().find(this.declarante.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.declarante.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.declarante.tipoDocumento_id)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.declarante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.declarante_details_dialog = true
     },
     getAllDeclarante() {
       Declarante.api().get('/declarante?offset=0&max=1000000')

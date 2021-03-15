@@ -168,6 +168,32 @@
                             </q-select>
                             </q-item-section>
                         </q-item>
+                        <q-item>
+                            <q-item-section>
+                            <q-select
+                              :value="orgao"
+                              use-input
+                              fill-input
+                              hide-selected
+                              label="Orgão *"
+                              input-debounce="0"
+                              :options="optionsMagistrado"
+                              option-label="designacao"
+                              option-value="id"
+                              @filter="filterFnOrgao"
+                              @input="$emit('update:orgao', $event)"
+                              abort="abortFilterFn"
+                              hint="Autocompleta o Texto">
+                              <template v-slot:no-option>
+                                <q-item>
+                                  <q-item-section class="text-grey">
+                                    No results
+                                  </q-item-section>
+                                </q-item>
+                              </template>
+                            </q-select>
+                            </q-item-section>
+                        </q-item>
                     </q-list>
                 </q-form>
         </q-card-section>
@@ -189,7 +215,8 @@ export default {
       optionsFormaProcesso: [],
       optionsClasseJudicials: [],
       optionsCrime: [],
-      optionsMagistrado: []
+      optionsMagistrado: [],
+      optionsOrgao: []
     }
   },
   computed: {
@@ -279,6 +306,27 @@ export default {
         })
       }
     },
+    filterFnOrgao (val, update, abort) {
+      const stringOptions = this.orgaos
+      if (val === '') {
+        update(() => {
+          this.optionsOrgao = stringOptions.map(orgao => orgao)
+        })
+      } else if (stringOptions.length === 0) {
+        update(() => {
+          this.optionsOrgao = []
+        })
+      } else {
+        update(() => {
+          this.optionsOrgao = stringOptions
+            .map(orgao => orgao)
+            .filter(orgao => {
+              return orgao &&
+                   orgao.designacao.toLowerCase().indexOf(val.toLowerCase()) !== -1
+            })
+        })
+      }
+    },
     abortFilterFn () {
       // console.log('delayed filter aborted')
     },
@@ -306,7 +354,9 @@ export default {
       'classeJudicial',
       'close',
       'submitting',
-      'createProcesso'
+      'createProcesso',
+      'orgao',
+      'orgaos',
     ]
 
 }

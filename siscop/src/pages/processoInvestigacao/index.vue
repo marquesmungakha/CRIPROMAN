@@ -289,6 +289,7 @@ export default {
             message: 'A informação foi inserida com successo! [ ' + this.processoInvestigacao.designacao + ' ]'
           })
           this.close()
+           this.$router.push({path: '/processoInvestigacao/' + resp.response.data.id })
         }).catch(error => {
           console.log('Erro no code ' + error)
           if (error.request.status !== 0) {

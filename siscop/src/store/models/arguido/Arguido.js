@@ -29,8 +29,9 @@ export default class Arguido extends Model {
       documentoValidade: this.attr(''),
       // pecaProcesso_id: this.attr(''),
       profissao_id: this.attr(''),
-      localTrabalho: this.attr(''),
-      ocupacao: this.attr(''),
+      // localTrabalho: this.attr(''),
+      // ocupacao: this.attr(''),
+     
 
       // Relationshiops
       nacionalidade: this.belongsTo(Pais, 'nacionalidade_id'),
@@ -38,6 +39,7 @@ export default class Arguido extends Model {
       tipoDocumento: this.belongsTo(TipoDocumentoIdentificacao, 'tipoDocumento_id'),
       profissao: this.belongsTo(Profissao, 'profissao_id'),
       // pecaProcesso: this.belongsTo(PecaProcesso, 'pecaProcesso_id')
+      // situacaoPrisional: this.belongsTo(SituacaoPrisional, 'situacaoPrisional_id')
     }
   }
 

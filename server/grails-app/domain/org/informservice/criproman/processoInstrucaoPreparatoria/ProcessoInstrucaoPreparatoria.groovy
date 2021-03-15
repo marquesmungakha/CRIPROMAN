@@ -26,6 +26,10 @@ class ProcessoInstrucaoPreparatoria implements Auditable {
     ProcessoInvestigacao processoInvestigacao
     String uuid = UUID.randomUUID().toString()
 
+    static mapping = {
+        version false
+    }
+
     static belongsTo = [orgao: Orgao]
     static hasMany = [
             arguidos: ProcessoInstrucaoPreparatoriaArguido,

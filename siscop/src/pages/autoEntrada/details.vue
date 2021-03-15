@@ -140,7 +140,7 @@
                     <div class="file-upload">
                         <input type="file" @change="onFileChange" accept=".pdf"/> 
                          <q-btn flat color="primary" label="ANEXAR" no-caps :disabled="!this.selectedFile" @click.stop="onUploadFile(autoEntrada)"/>
-                         <q-btn flat color="primary" label="VER DOCUMENTO" no-caps :disabled="!autoEntrada.anexo" @click.stop="forceFileDownload(autoEntrada,'Anexo.pdf')"/>
+                         <q-btn flat color="primary" label="VER DOCUMENTO" no-caps :disabled="autoEntrada.anexo === null ? false : true" @click.stop="forceFileDownload(autoEntrada,'Anexo.pdf')"/>
                         <div v-if="progress" class="progess-bar">
                               <div
                                 class="progress-bar progress-bar-info progress-bar-striped"
@@ -183,7 +183,8 @@
           indicator-color="white"
           narrow-indicator>
           <q-tab label="Denunciante" name="denunciantes"/>
-          <q-tab label="Ofendido/Vítima" name="ofendidos"/>
+          <q-tab label="Ofendido" name="ofendidos"/>
+          <q-tab label="Vítima" name="vitimas"/>
           <q-tab label="Suspeito" name="suspeitos"/>
           <q-tab label="Meio Empregue" name="meiosUtilizados"/>
           <q-tab label="Prejuízos Causados" name="bensSubtraidos"/>
@@ -198,6 +199,9 @@
           </q-tab-panel>
           <q-tab-panel name="ofendidos">
             <list-ofendidos :pecaProcesso.sync="pecaProcesso"/>
+          </q-tab-panel>
+           <q-tab-panel name="vitimas">
+            <list-vitimas :pecaProcesso.sync="pecaProcesso"/>
           </q-tab-panel>
           <q-tab-panel name="suspeitos">
             <list-suspeitos :pecaProcesso.sync="pecaProcesso"/>
@@ -358,6 +362,7 @@ export default {
     'create-edit-form': require('components/autoEntrada/createEditForm.vue').default,
     'list-denunciante': require('pages/denunciante/index.vue').default,
     'list-ofendidos': require('pages/ofendido/index.vue').default,
+    'list-vitimas': require('pages/vitima/index.vue').default,
     'list-suspeitos': require('pages/suspeito/index.vue').default,
     'list-meiosUtilizados': require('pages/meiosUtilizado/index.vue').default,
     'list-bensSubtraidos': require('pages/bemSubtraido/index.vue').default,

@@ -256,12 +256,8 @@ export default {
       this.provincia.pais = Pais.query().find(this.provincia.pais_id)
       this.orgao.tipoOrgao_id = this.tipoOrgao.id
       this.orgao.tipoOrgao = this.tipoOrgao
-      if (this.distrito == null) {
-        this.distrito = {}
-      } else {
-        this.orgao.distrito_id = this.distrito.id
-        this.distrito.provincia = this.provincia
-      }
+      this.orgao.distrito_id = this.distrito.id
+      this.distrito.provincia = this.provincia
       this.orgao.distrito = this.distrito
       if (this.editedIndex > -1) {
         Orgao.api().patch("/orgao/" + this.orgao.id, this.orgao).then(resp => {

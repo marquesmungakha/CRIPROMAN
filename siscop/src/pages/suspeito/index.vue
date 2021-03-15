@@ -41,12 +41,6 @@
               <q-input v-model="props.row.suspeito.dataNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="naturalidade" :props="props">
-            {{ props.row.suspeito.naturalidade }}
-            <q-popup-edit v-model="props.row.suspeito.naturalidade">
-              <q-input v-model="props.row.suspeito.naturalidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
           <q-td key="nacionalidade" :props="props">
             {{ props.row.suspeito.nacionalidade.nacionalidade }}
             <q-popup-edit v-model="props.row.suspeito.nacionalidade.nacionalidade">
@@ -57,12 +51,6 @@
             {{ props.row.suspeito.provincia.designacao }}
             <q-popup-edit v-model="props.row.suspeito.provincia.designacao">
               <q-input v-model="props.row.suspeito.provincia.designacao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="localNascimento" :props="props">
-            {{ props.row.suspeito.localNascimento }}
-            <q-popup-edit v-model="props.row.suspeito.localNascimento">
-              <q-input v-model="props.row.suspeito.localNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="estadoCivil" :props="props">
@@ -83,24 +71,6 @@
               <q-input v-model="props.row.suspeito.numDocumentoIndentificacao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="documentoValidade" :props="props">
-            {{ props.row.suspeito.documentoValidade }}
-            <q-popup-edit v-model="props.row.suspeito.documentoValidade">
-              <q-input v-model="props.row.suspeito.documentoValidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="morada" :props="props">
-            {{ props.row.suspeito.morada }}
-            <q-popup-edit v-model="props.row.suspeito.morada">
-              <q-input v-model="props.row.suspeito.morada" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <!--q-td key="profissao" :props="props">
-            {{ props.row.suspeito.profissao.designacao }}
-            <q-popup-edit v-model="props.row.suspeito.profissao.designacao">
-              <q-input v-model="props.row.suspeito.profissao.designacao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td-->
           <q-td key="situacaoPrisional" :props="props">
             {{ props.row.situacaoPrisional.designacao }}
             <q-popup-edit v-model="props.row.situacaoPrisional.designacao">
@@ -109,8 +79,9 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row)"/>
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraSuspeito(props.row.suspeito)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row.suspeito)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row.suspeito)"/>
             </div>
           </q-td>
         </q-tr>
@@ -120,7 +91,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Suspeito!</div>
+            <div class="text-h6">Adicionar/Actualizar Suspeito!</div>
           </q-card-section>
         <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -135,6 +106,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createSuspeito">
+             <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Suspeito Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="suspeito.apelido"
+                            :nome.sync="suspeito.nome"
+                            :numDocumentoIndentificacao.sync="suspeito.numDocumentoIndentificacao"
+                            :sexo.sync="suspeito.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="suspeito.apelido"
                          :dataNascimento.sync="suspeito.dataNascimento"
                          :documentoValidade.sync="suspeito.documentoValidade"
@@ -157,21 +154,48 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
+                          </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
               <create-edit-form :dataSituacaoPrisional.sync="pecaProcessoSuspeito.dataSituacaoPrisional"
                                 :profissao.sync="profissao"
                                 :profissaoList.sync="allProfissao"
                                 :situacaoPrisional.sync="situacaoPrisional"
                                 :situacaoPrisionalList.sync="allSituacaoPrisional"/>
+                                  </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createSuspeito"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createSuspeito" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+
+ <details-suspeito :suspeito.sync="suspeito" 
+                       :image.sync="image" 
+                       :pecaProcessoSuspeito.sync="pecaProcessoSuspeito" 
+                       :tipoDocumento.sync="tipoDocumento"
+                       :situacaoPrisional.sync="pecaProcessoSuspeito.situacaoPrisional"
+                       :profissao.sync="pecaProcessoSuspeito.profissao"
+                       :pais.sync="pais"
+                       :suspeito_details_dialog.sync="suspeito_details_dialog"
+                       :close.sync="close"/>
+
   </q-page>
 </template>
 
@@ -197,6 +221,8 @@ export default {
   name: 'Suspeito',
   data() {
     return {
+      step: 1,
+      offset:0,
       listErrors: [],
       suspeito_details_dialog: false,
       editedIndex: -1,
@@ -278,14 +304,6 @@ export default {
           sortable: true
         },
         {
-          name: 'naturalidade',
-          align: 'left',
-          label: 'Naturalidade',
-          field: row => row.naturalidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
           name: 'nacionalidade',
           align: 'left',
           label: 'Nacionalidade',
@@ -298,14 +316,6 @@ export default {
           align: 'left',
           label: 'Província',
           field: row => row.provincia,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'localNascimento',
-          align: 'left',
-          label: 'Local de Nascimento',
-          field: row => row.localNascimento,
           format: val => `${val}`,
           sortable: true
         },
@@ -333,30 +343,6 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {
-          name: 'documentoValidade',
-          align: 'left',
-          label: 'Validade do Documento',
-          field: row => row.documentoValidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'morada',
-          align: 'left',
-          label: 'Morada',
-          field: row => row.morada,
-          format: val => `${val}`,
-          sortable: true
-        },
-        // {
-        //   name: 'profissao',
-        //   align: 'left',
-        //   label: 'Profissão',
-        //   field: row => row.profissao,
-        //   format: val => `${val}`,
-        //   sortable: true
-        // },
         {
           name: 'situacaoPrisional',
           align: 'left',
@@ -398,7 +384,9 @@ export default {
   },
   components: {
     'create-edit-form': require('components/suspeito/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-suspeito': require('components/suspeito/detailsForm.vue').default
   },
   created() {
   },
@@ -434,6 +422,74 @@ export default {
     }
   },
   methods: {
+
+     findIndividuo() {
+      let results = undefined
+      if (this.suspeito.nome === undefined || this.suspeito.apelido === undefined || 
+          this.suspeito.sexo === undefined || this.suspeito.numDocumentoIndentificacao === undefined ||
+          this.suspeito.nome === "" || this.suspeito.apelido === "" || 
+          this.suspeito.sexo === "" || this.suspeito.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Suspeito.api().get("/suspeito?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Suspeito.query().where((suspeito) => {
+                return suspeito.nome === this.suspeito.nome && 
+                       suspeito.apelido === this.suspeito.apelido && 
+                       suspeito.sexo === this.suspeito.sexo &&
+                       suspeito.numDocumentoIndentificacao === this.suspeito.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.suspeito = results
+                this.pais = Pais.query().find(this.suspeito.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.suspeito.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.suspeito.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Suspeito encontrado com successo!! [' + this.suspeito.nome + ' ' + this.suspeito.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Suspeito foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
+
     createSuspeito() {
       this.listErrors = []
       this.submitting = true
@@ -524,6 +580,9 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.suspeito_details_dialog = false
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.suspeito = {}
@@ -554,6 +613,7 @@ export default {
       })
     },
     editaSuspeito(suspeito) {
+      this.step = 2
       this.editedIndex = 0
       this.suspeito = Object.assign({}, suspeito)
       this.pais = Pais.query().find(suspeito.nacionalidade_id)
@@ -564,6 +624,17 @@ export default {
       this.suspeito.pecaProcesso = this.pecaProcesso
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
+    },
+     mostraSuspeito(suspeito) {
+      this.suspeito = Object.assign({}, suspeito)
+      this.pais = Pais.query().find(suspeito.nacionalidade_id)
+      this.provincia = Provincia.query().find(suspeito.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(suspeito.tipoDocumento_id)
+      this.profissao = Profissao.query().find(suspeito.profissao_id)
+      this.situacaoPrisional = SituacaoPrisional.query().find(suspeito.situacaoPrisional_id)
+      this.suspeito.pecaProcesso = this.pecaProcesso
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.suspeito_details_dialog = true
     },
    getAllProfissaoPecaProcesso() {
       PecaProcessoSuspeito.api().get('/suspeito?offset=0&max=1000000')

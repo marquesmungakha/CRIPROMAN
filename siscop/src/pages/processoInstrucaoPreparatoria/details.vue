@@ -304,7 +304,7 @@ export default {
       }
     },
     allFormaProcessos () {
-      return FormaProcesso.query().all()
+      return FormaProcesso.query().where('activo', true).all()
     },
     allMagistrados () {
       return Magistrado.query().all()
@@ -406,7 +406,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/processoInstrucaoPreparatoria/" + processoInstrucaoPreparatoria.id, formData, {
+        ProcessoInstrucaoPreparatoria.api().patch("/processoInstrucaoPreparatoria/" + processoInstrucaoPreparatoria.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;

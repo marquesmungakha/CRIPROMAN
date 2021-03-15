@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
     <q-table :columns="columns" :data="allOfendidosFromPecaProcesso" :filter="filter" binary-state-sort row-key="name"
-             title="Ofendido/Vítima">
+             title="Ofendido">
 
       <template v-slot:top-right>
         <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
@@ -41,12 +41,7 @@
               <q-input v-model="props.row.ofendido.dataNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="naturalidade" :props="props">
-            {{ props.row.ofendido.naturalidade }}
-            <q-popup-edit v-model="props.row.ofendido.naturalidade">
-              <q-input v-model="props.row.ofendido.naturalidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
+      
           <q-td key="nacionalidade" :props="props">
             {{ props.row.ofendido.nacionalidade.nacionalidade }}
             <q-popup-edit v-model="props.row.ofendido.nacionalidade.nacionalidade">
@@ -59,12 +54,7 @@
               <q-input v-model="props.row.ofendido.provincia.designacao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="localNascimento" :props="props">
-            {{ props.row.ofendido.localNascimento }}
-            <q-popup-edit v-model="props.row.ofendido.localNascimento">
-              <q-input v-model="props.row.ofendido.localNascimento" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
+         
           <q-td key="estadoCivil" :props="props">
             {{ props.row.ofendido.estadoCivil }}
             <q-popup-edit v-model="props.row.ofendido.estadoCivil">
@@ -83,20 +73,10 @@
               <q-input v-model="props.row.ofendido.numDocumentoIndentificacao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="documentoValidade" :props="props">
-            {{ props.row.ofendido.documentoValidade }}
-            <q-popup-edit v-model="props.row.ofendido.documentoValidade">
-              <q-input v-model="props.row.ofendido.documentoValidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="morada" :props="props">
-            {{ props.row.ofendido.morada }}
-            <q-popup-edit v-model="props.row.ofendido.morada">
-              <q-input v-model="props.row.ofendido.morada" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
+          
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
+             <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraOfendido(props.row)"/>
               <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaOfendido(props.row)"/>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeOfendido(props.row)"/>
             </div>
@@ -108,7 +88,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Ofendido/Vítima!</div>
+            <div class="text-h6">Adicionar/Actualizar Ofendido!</div>
           </q-card-section>
            <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -123,6 +103,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createOfendido">
+             <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Ofendido Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="ofendido.apelido"
+                            :nome.sync="ofendido.nome"
+                            :numDocumentoIndentificacao.sync="ofendido.numDocumentoIndentificacao"
+                            :sexo.sync="ofendido.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="ofendido.apelido"
                          :dataNascimento.sync="ofendido.dataNascimento"
                          :documentoValidade.sync="ofendido.documentoValidade"
@@ -145,16 +151,34 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
+                </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 2 ? 'Terminou' : 'Próximo'" :disable="step === 2 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createOfendido"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createOfendido" :disable="step === 2 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+ <details-ofendido :ofendido.sync="ofendido" 
+                       :image.sync="image" 
+                       :pecaProcessoOfendido.sync="pecaProcessoOfendido" 
+                       :tipoDocumento.sync="tipoDocumento"
+                       :pais.sync="pais"
+                       :ofendido_details_dialog.sync="ofendido_details_dialog"
+                       :close.sync="close"/>
+
   </q-page>
 </template>
 
@@ -178,6 +202,8 @@ export default {
   name: 'Ofendido',
   data() {
     return {
+       step: 1,
+      offset:0,
       listErrors: [],
       ofendido_details_dialog: false,
       editedIndex: -1,
@@ -253,14 +279,6 @@ export default {
           sortable: true
         },
         {
-          name: 'naturalidade',
-          align: 'left',
-          label: 'Naturalidade',
-          field: row => row.naturalidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
           name: 'nacionalidade',
           align: 'left',
           label: 'Nacionalidade',
@@ -273,14 +291,6 @@ export default {
           align: 'left',
           label: 'Província',
           field: row => row.provincia,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'localNascimento',
-          align: 'left',
-          label: 'Local de Nascimento',
-          field: row => row.localNascimento,
           format: val => `${val}`,
           sortable: true
         },
@@ -305,22 +315,6 @@ export default {
           align: 'left',
           label: 'Número do Documento',
           field: row => row.numDocumentoIndentificacao,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'documentoValidade',
-          align: 'left',
-          label: 'Validade do Documento',
-          field: row => row.documentoValidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'morada',
-          align: 'left',
-          label: 'Morada',
-          field: row => row.morada,
           format: val => `${val}`,
           sortable: true
         },
@@ -354,7 +348,9 @@ export default {
     this.getAllTipoDocumentoIdentificacao()
   },
   components: {
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-ofendido': require('components/ofendido/detailsForm.vue').default
   },
     created() {
   },
@@ -385,6 +381,72 @@ export default {
     }
   },
   methods: {
+     findIndividuo() {
+      let results = undefined
+      if (this.ofendido.nome === undefined || this.ofendido.apelido === undefined || 
+          this.ofendido.sexo === undefined || this.ofendido.numDocumentoIndentificacao === undefined ||
+          this.ofendido.nome === "" || this.ofendido.apelido === "" || 
+          this.ofendido.sexo === "" || this.ofendido.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Ofendido.api().get("/ofendido?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Ofendido.query().where((ofendido) => {
+                return ofendido.nome === this.ofendido.nome && 
+                       ofendido.apelido === this.ofendido.apelido && 
+                       ofendido.sexo === this.ofendido.sexo &&
+                       ofendido.numDocumentoIndentificacao === this.ofendido.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.ofendido = results
+                this.pais = Pais.query().find(this.ofendido.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.ofendido.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.ofendido.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.ofendido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Ofendido encontrado com successo!! [' + this.ofendido.nome + ' ' + this.ofendido.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Ofendido foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
     createOfendido() {
       this.listErrors = []
       this.submitting = true
@@ -468,6 +530,9 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.ofendido_details_dialog = false
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.ofendido = {}
@@ -498,6 +563,7 @@ export default {
       })
     },
     editaOfendido(ofendido) {
+      this.step = 2
       this.editedIndex = 0
       this.pecaProcessoOfendido = Object.assign({}, ofendido)
       this.ofendido =  this.pecaProcessoOfendido.ofendido
@@ -506,6 +572,15 @@ export default {
       this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.ofendido.tipoDocumento_id)
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.ofendido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
+    },
+    mostraOfendido(ofendido) {
+      this.pecaProcessoOfendido = Object.assign({}, ofendido)
+      this.ofendido =  this.pecaProcessoOfendido.ofendido
+      this.pais = Pais.query().find(this.ofendido.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.ofendido.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.ofendido.tipoDocumento_id)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.ofendido.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.ofendido_details_dialog = true
     },
     getAllOfendido() {
       Ofendido.api().get('/ofendido?offset=0&max=1000000')

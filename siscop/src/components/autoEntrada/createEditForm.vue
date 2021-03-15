@@ -179,9 +179,7 @@
                                 <q-input :value="responsavelLocal"
                                 @input="$emit('update:responsavelLocal', $event)"
                                 ref="responsavelLocal"
-                                label="Responsável do Local *"
-                                lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza o Nome do responsável']" />
+                                label="Responsável do Local " />
                             </q-item-section>
                         </q-item>
                          <q-item>
@@ -189,9 +187,7 @@
                                 <q-input :value="contacto"
                                 @input="$emit('update:contacto', $event)"
                                 ref="contacto"
-                                label="Contacto do Responsável *"
-                                lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza o Contacto']" />
+                                label="Contacto do Responsável "/>
                             </q-item-section>
                         </q-item>
                         <q-item>
@@ -201,7 +197,7 @@
                               use-input
                               fill-input
                               hide-selected
-                              label="Inspector Responsável "
+                              label="Inspector Responsável *"
                               input-debounce="0"
                               :options="optionsInspector"
                               option-label="numero"

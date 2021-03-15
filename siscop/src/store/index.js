@@ -46,6 +46,7 @@ import ObjectoApreendido from "./models/objectoApreendido/objectoApreendido"
 import ObjectoDetido from "./models/objectoDetido/objectoDetido"
 import Ofendido from "./models/ofendido/ofendido"
 import Orgao from "./models/orgao/orgao"
+import DependenciaOrgao from "./models/dependenciaOrgao/dependenciaOrgao"
 import PecaProcesso from "./models/pecaProcesso/pecaProcesso"
 import PecaProcessoAcusado from "./models/pecaProcesso/pecaProcessoAcusado"
 import PecaProcessoArguido from "./models/pecaProcesso/pecaProcessoArguido"
@@ -96,7 +97,7 @@ VuexORM.use(VuexORMAxios, {
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },
-  baseURL: 'http://192.168.8.105:8080/api'
+  baseURL: 'http://localhost:8080/api'
 })
 
 
@@ -215,6 +216,7 @@ database.register(ObjectoApreendido)
 database.register(ObjectoDetido)
 database.register(Ofendido)
 database.register(Orgao)
+database.register(DependenciaOrgao)
 database.register(ParecerProcesso)
 database.register(PecaProcesso)
 database.register(PecaProcessoAcusado)

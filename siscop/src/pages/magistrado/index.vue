@@ -71,7 +71,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Magistrado!</div>
+            <div class="text-h6">Adicionar/Actualizar Magistrado!</div>
           </q-card-section>
           <q-card-section>
             <li v-for="item in listErrors" :key="item">
@@ -205,7 +205,8 @@ export default {
     return this.getAllMagistrado()
   },
   mounted() {
-    this.getAllMagistrado()
+    let offset = 0
+    this.getAllMagistrado(offset)
   },
   components: {
     'create-edit-form': require('components/magistrado/createEditForm.vue').default,
@@ -345,8 +346,16 @@ export default {
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(magistrado.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    getAllMagistrado() {
-      Magistrado.api().get('/magistrado?offset=0&max=1000000')
+    getAllMagistrado(offset) {
+      Magistrado.api().get("/magistrado?offset="+offset+"&max=1000").then(resp => {
+          console.log(resp)
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllMagistrado, 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
     },
     onFileChange(event){
       this.magistrado.fotografia = event.target.files[0];

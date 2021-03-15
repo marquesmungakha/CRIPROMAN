@@ -197,7 +197,6 @@ export default {
   created() {
   },
   mounted() {
-     this.getInfo()
   },
   computed: {
     agente: {

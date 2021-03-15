@@ -59,6 +59,19 @@
                 <q-input v-model="props.row.magistrado" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
+
+          <q-td key="estado" :props="props">
+          <q-chip :color="(props.row.pareceresProcesso.length > 0 )?'green': (props.row.pareceresProcesso.length === 0 || props.row.pareceresProcesso.length === null || props.row.pareceresProcesso.length === undefined ? 'red':'grey')"
+              text-color="white" dense class="text-weight-bolder" square
+              style="width: 120px" :icon="(props.row.pareceresProcesso.length > 0)?'published_with_changes':(props.row.pareceresProcesso.length == null || props.row.pareceresProcesso.length == undefined ?'unpublished':'do_disturb_on')">
+              <span v-if="props.row.pareceresProcesso.length > 0 ">Despachado</span>
+              <span v-else>Pendente</span>
+            </q-chip>
+            <!--q-popup-edit v-model="props.row.activo" title="Update estado">
+              <q-input v-model="props.row.activo" autofocus dense></q-input>
+            </q-popup-edit-->
+          </q-td>
+
             <q-td key="actions" :props="props">
              <div class="q-gutter-sm">
               <router-link :to="`/processoInstrucaoPreparatoria/${props.row.id}`" >
@@ -86,6 +99,8 @@
                     :anexo.sync="processoInstrucaoPreparatoria.anexo"
                     :formaProcessos.sync="allFormaProcessos"
                     :magistrados.sync="allMagistrados"
+                    :orgao.sync="orgao"
+                    :orgaos.sync="allOrgaos"
                     :submitting="submitting"
                     :close="close"
                     :createProcesso="createProcesso"
@@ -149,7 +164,7 @@ export default {
         numero: ''
       },
       orgao: {
-        codigo: '',
+        sigla: '',
         designacao: ''
       },
       columns: [
@@ -160,6 +175,7 @@ export default {
         { name: 'classeJudicial', align: 'left', label: 'Jurisdição/Famílias Diletivas', field: row => row.classeJudicial, format: val => `${val}`, sortable: true },
         { name: 'accoesCrimes', align: 'left', label: 'Accções/Crimes', field: row => row.accoesCrimes, format: val => `${val}`, sortable: true },
         { name: 'magistrado', align: 'left', label: 'Magistrado', field: row => row.magistrado, format: val => `${val}`, sortable: true },
+        { name: "estado", align: "left", label: "Estado", field: row => row.estado, sortable: true  },
         { name: 'actions', label: 'Movimento', field: 'actions' }
       ],
       data: []
@@ -180,7 +196,8 @@ export default {
     return this.getAllProcesso()
   },
   mounted () {
-      this.getAllProcesso()
+    let offset = 0
+      this.getAllProcesso(offset)
       this.getAllFormaProcesso()
       this.getAllJurisdicao()
       this.getAllCrime()
@@ -210,7 +227,7 @@ export default {
   },
   computed: {
     allFormaProcessos () {
-      return FormaProcesso.query().all()
+      return FormaProcesso.query().where('activo', true).all()
     },
     allMagistrados () {
       return Magistrado.query().all()
@@ -228,7 +245,7 @@ export default {
       return Orgao.query().all()
     },
     allProcessos () {
-      return ProcessoInstrucaoPreparatoria.query().with('magistrado').with('formaProcesso').with('classeJudicial').with('accoesCrimes').all()
+      return ProcessoInstrucaoPreparatoria.query().with('magistrado').with('formaProcesso').with('classeJudicial').with('accoesCrimes').with('pareceresProcesso').all()
     }
   },
   methods: {
@@ -246,9 +263,8 @@ export default {
       this.processoInstrucaoPreparatoria.accoesCrimes_id = this.crime.id
       this.processoInstrucaoPreparatoria.formaProcesso = this.formaProcesso
       this.processoInstrucaoPreparatoria.magistrado = this.magistrado
-      this.processoInstrucaoPreparatoria.orgao = Orgao.query().with('provincia.pais').with('tipoOrgao').first()
-      this.processoInstrucaoPreparatoria.orgao_id = Orgao.query().first().id
-      //  const image = new Blob([this.processoInstrucaoPreparatoria.anexo])
+      this.processoInstrucaoPreparatoria.orgao = Orgao.query().with('provincia.pais').with('tipoOrgao').find(this.orgao.id)
+      this.processoInstrucaoPreparatoria.orgao_id = this.orgao.id //Orgao.query().first().id
       this.processoInstrucaoPreparatoria.anexo = null
       if (this.editedIndex > -1) {
          ProcessoInstrucaoPreparatoria.api().patch("/processoInstrucaoPreparatoria/" + this.processoInstrucaoPreparatoria.id, this.processoInstrucaoPreparatoria).then(resp => {
@@ -293,6 +309,7 @@ export default {
             message: 'A informação foi inserida com successo! [ ' + this.processoInstrucaoPreparatoria.designacao + ' ]'
           })
           this.close()
+           this.$router.push({path: '/processoInstrucaoPreparatoria/' + resp.response.data.id })
         }).catch(error => {
           console.log('Erro no code ' + error)
           if (error.request.status !== 0) {
@@ -357,8 +374,17 @@ export default {
       this.classeJudicial =  ClasseJudicial.query().find(processoInstrucaoPreparatoria.classeJudicial_id)
       this.show_dialog = true
     },
-    getAllProcesso() {
-      ProcessoInstrucaoPreparatoria.api().get('/processoInstrucaoPreparatoria?offset=0&max=1000000')
+    getAllProcesso(offset) {
+      ProcessoInstrucaoPreparatoria.api().get("/processoInstrucaoPreparatoria?offset="+offset+"&max=100").then(resp => {
+          console.log(resp)
+          console.log(offset)
+           offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProcesso(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
     },
     getAllFormaProcesso() {
       FormaProcesso.api().get('/formaProcesso?offset=0&max=1000000')

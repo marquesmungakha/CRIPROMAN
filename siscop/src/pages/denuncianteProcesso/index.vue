@@ -121,7 +121,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Denunciante!</div>
+            <div class="text-h6">Adicionar/Actualizar Denunciante!</div>
           </q-card-section>
           <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -136,6 +136,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createDenunciante">
+            <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Denunciante Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="denunciante.apelido"
+                            :nome.sync="denunciante.nome"
+                            :numDocumentoIndentificacao.sync="denunciante.numDocumentoIndentificacao"
+                            :sexo.sync="denunciante.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="denunciante.apelido"
                          :dataNascimento.sync="denunciante.dataNascimento"
                          :documentoValidade.sync="denunciante.documentoValidade"
@@ -158,20 +184,43 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
+                          </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
       <create-edit-form :descricaoOcorrencia.sync="processoInstrucaoPreparatoriaDenunciante.descricaoOcorrencia"
                         :localTrabalho.sync="processoInstrucaoPreparatoriaDenunciante.localTrabalho"
                         :ocupacao.sync="processoInstrucaoPreparatoriaDenunciante.ocupacao"
                         :qualidadeDe.sync="processoInstrucaoPreparatoriaDenunciante.qualidadeDe"/>
+                         </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createDenunciante"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createDenunciante" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+     <details-denunciante :denunciante.sync="denunciante" 
+                       :image.sync="image" 
+                       :pecaProcessoDenunciante.sync="pecaProcessoDenunciante"
+                       :tipoDocumento.sync="tipoDocumento"
+                       :pais.sync="pais" 
+                       :denunciante_details_dialog.sync="denunciante_details_dialog"
+                       :close.sync="close"/>
   </q-page>
 </template>
 
@@ -195,6 +244,8 @@ export default {
   name: 'Denunciante',
   data() {
     return {
+      step: 1,
+      offset:0,
       listErrors: [],
       denunciante_details_dialog: false,
       editedIndex: -1,
@@ -393,7 +444,9 @@ export default {
   },
   components: {
     'create-edit-form': require('components/denunciante/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-denunciante': require('components/denunciante/detailsForm.vue').default
   },
   created() {
   },
@@ -422,6 +475,72 @@ export default {
     }
   },
   methods: {
+     findIndividuo() {
+      let results = undefined
+      if (this.denunciante.nome === undefined || this.denunciante.apelido === undefined || 
+          this.denunciante.sexo === undefined || this.denunciante.numDocumentoIndentificacao === undefined ||
+          this.denunciante.nome === "" || this.denunciante.apelido === "" || 
+          this.denunciante.sexo === "" || this.denunciante.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Denunciante.api().get("/denunciante?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Denunciante.query().where((denunciante) => {
+                return denunciante.nome === this.denunciante.nome && 
+                       denunciante.apelido === this.denunciante.apelido && 
+                       denunciante.sexo === this.denunciante.sexo &&
+                       denunciante.numDocumentoIndentificacao === this.denunciante.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.denunciante = results
+                this.pais = Pais.query().find(this.denunciante.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.denunciante.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.denunciante.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.denunciante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Denunciante encontrado com successo!! [' + this.denunciante.nome + ' ' + this.denunciante.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Denunciante foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
     createDenunciante() {
       this.listErrors = []
       this.submitting = true
@@ -508,6 +627,8 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.denunciante = {}

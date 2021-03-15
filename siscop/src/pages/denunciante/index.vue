@@ -41,12 +41,6 @@
               <q-input v-model="props.row.denunciante.dataNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="naturalidade" :props="props">
-            {{ props.row.denunciante.naturalidade }}
-            <q-popup-edit v-model="props.row.denunciante.naturalidade">
-              <q-input v-model="props.row.denunciante.naturalidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
           <q-td key="nacionalidade" :props="props">
             {{ props.row.denunciante.nacionalidade.nacionalidade }}
             <q-popup-edit v-model="props.row.denunciante.nacionalidade.nacionalidade">
@@ -57,12 +51,6 @@
             {{ props.row.denunciante.provincia.designacao }}
             <q-popup-edit v-model="props.row.denunciante.provincia.designacao">
               <q-input v-model="props.row.denunciante.provincia.designacao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="localNascimento" :props="props">
-            {{ props.row.denunciante.localNascimento }}
-            <q-popup-edit v-model="props.row.denunciante.localNascimento">
-              <q-input v-model="props.row.denunciante.localNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="estadoCivil" :props="props">
@@ -83,95 +71,138 @@
               <q-input v-model="props.row.denunciante.numDocumentoIndentificacao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="documentoValidade" :props="props">
-            {{ props.row.denunciante.documentoValidade }}
-            <q-popup-edit v-model="props.row.denunciante.documentoValidade">
-              <q-input v-model="props.row.denunciante.documentoValidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="morada" :props="props">
-            {{ props.row.denunciante.morada }}
-            <q-popup-edit v-model="props.row.denunciante.morada">
-              <q-input v-model="props.row.denunciante.morada" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="descricaoOcorrencia" :props="props">
-            {{ props.row.descricaoOcorrencia }}
-            <q-popup-edit v-model="props.row.descricaoOcorrencia">
-              <q-input v-model="props.row.descricaoOcorrencia" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
           <q-td key="qualidadeDe" :props="props">
             {{ props.row.qualidadeDe }}
             <q-popup-edit v-model="props.row.qualidadeDe">
               <q-input v-model="props.row.qualidadeDe" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
+
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraDenunciante(props.row)"/>
               <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDenunciante(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeDenunciante(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDenunciante(props.row)"/>
             </div>
           </q-td>
         </q-tr>
-      </template>
+     </template>
     </q-table>
     <div class="q-pa-sm q-gutter-sm">
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Denunciante!</div>
+            <div class="text-h6">Adicionar/Actualizar Denunciante!</div>
           </q-card-section>
-          <q-card-section>
-          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
-            <ul class="list-group alert alert-danger">
-              <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
-                  v-for="item in listErrors" :key="item">
-                {{ item }}
-              </li>
-            </ul>
-          </div>
-        </q-card-section>
+            <q-card-section>
+              <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+                <ul class="list-group alert alert-danger">
+                  <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
+                      v-for="item in listErrors" :key="item">
+                    {{ item }}
+                  </li>
+                </ul>
+              </div>
+            </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+            <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createDenunciante">
-              <individuo :apelido.sync="denunciante.apelido"
-                         :dataNascimento.sync="denunciante.dataNascimento"
-                         :documentoValidade.sync="denunciante.documentoValidade"
-                         :estadoCivil.sync="denunciante.estadoCivil"
-                         :fotografia.sync="denunciante.fotografia"
-                         :idade.sync="denunciante.idade"
-                         :localNascimento.sync="denunciante.localNascimento"
-                         :morada.sync="denunciante.morada"
-                         :naturalidade.sync="denunciante.naturalidade"
-                         :nome.sync="denunciante.nome"
-                         :numDocumentoIndentificacao.sync="denunciante.numDocumentoIndentificacao"
-                         :pais.sync="pais"
-                         :paises.sync="allPaises"
-                         :provincia.sync="provincia"
-                         :provincias.sync="allProvinciaFromPais"
-                         :sexo.sync="denunciante.sexo"
-                         :telemovel1.sync="denunciante.telemovel1"
-                         :telemovel2.sync="denunciante.telemovel2"
-                         :tipoDocumento.sync="tipoDocumento"
-                         :tipoDocumentos.sync="allTipoDocumentos"
-                         :onFileChange.sync="onFileChange"
-                         :image.sync="image"/>
-      <create-edit-form :descricaoOcorrencia.sync="pecaProcessoDenunciante.descricaoOcorrencia"
-                        :localTrabalho.sync="pecaProcessoDenunciante.localTrabalho"
-                        :ocupacao.sync="pecaProcessoDenunciante.ocupacao"
-                        :qualidadeDe.sync="pecaProcessoDenunciante.qualidadeDe"/>
+            <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Denunciante Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="denunciante.apelido"
+                            :nome.sync="denunciante.nome"
+                            :numDocumentoIndentificacao.sync="denunciante.numDocumentoIndentificacao"
+                            :sexo.sync="denunciante.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
+                        <individuo :apelido.sync="denunciante.apelido"
+                              :dataNascimento.sync="denunciante.dataNascimento"
+                              :documentoValidade.sync="denunciante.documentoValidade"
+                              :estadoCivil.sync="denunciante.estadoCivil"
+                              :fotografia.sync="denunciante.fotografia"
+                              :idade.sync="denunciante.idade"
+                              :localNascimento.sync="denunciante.localNascimento"
+                              :morada.sync="denunciante.morada"
+                              :naturalidade.sync="denunciante.naturalidade"
+                              :nome.sync="denunciante.nome"
+                              :numDocumentoIndentificacao.sync="denunciante.numDocumentoIndentificacao"
+                              :pais.sync="pais"
+                              :paises.sync="allPaises"
+                              :provincia.sync="provincia"
+                              :provincias.sync="allProvinciaFromPais"
+                              :sexo.sync="denunciante.sexo"
+                              :telemovel1.sync="denunciante.telemovel1"
+                              :telemovel2.sync="denunciante.telemovel2"
+                              :tipoDocumento.sync="tipoDocumento"
+                              :tipoDocumentos.sync="allTipoDocumentos"
+                              :onFileChange.sync="onFileChange"
+                              :image.sync="image"/>
+                    </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
+                        <create-edit-form :descricaoOcorrencia.sync="pecaProcessoDenunciante.descricaoOcorrencia"
+                              :localTrabalho.sync="pecaProcessoDenunciante.localTrabalho"
+                              :ocupacao.sync="pecaProcessoDenunciante.ocupacao"
+                              :qualidadeDe.sync="pecaProcessoDenunciante.qualidadeDe"/>
+                    </q-step>
+
+                  <!--q-step
+                    :name="4"
+                    title="Create an ad"
+                    caption="Optional"
+                    icon="add_comment"
+                    disable
+                  >
+                  </q-step-->
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createDenunciante"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createDenunciante" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+
+    <details-denunciante :denunciante.sync="denunciante" 
+                         :image.sync="image" 
+                         :pecaProcessoDenunciante.sync="pecaProcessoDenunciante" 
+                         :tipoDocumento.sync="tipoDocumento"
+                         :pais.sync="pais"
+                         :denunciante_details_dialog.sync="denunciante_details_dialog"
+                         :close.sync="close"/>
+
   </q-page>
 </template>
 
@@ -195,6 +226,8 @@ export default {
   name: 'Denunciante',
   data() {
     return {
+      step: 1,
+      offset:0,
       listErrors: [],
       denunciante_details_dialog: false,
       editedIndex: -1,
@@ -275,14 +308,6 @@ export default {
           sortable: true
         },
         {
-          name: 'naturalidade',
-          align: 'left',
-          label: 'Naturalidade',
-          field: row => row.naturalidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
           name: 'nacionalidade',
           align: 'left',
           label: 'Nacionalidade',
@@ -295,14 +320,6 @@ export default {
           align: 'left',
           label: 'Província',
           field: row => row.provincia,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'localNascimento',
-          align: 'left',
-          label: 'Local de Nascimento',
-          field: row => row.localNascimento,
           format: val => `${val}`,
           sortable: true
         },
@@ -327,30 +344,6 @@ export default {
           align: 'left',
           label: 'Número do Documento',
           field: row => row.numDocumentoIndentificacao,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'documentoValidade',
-          align: 'left',
-          label: 'Validade do Documento',
-          field: row => row.documentoValidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'morada',
-          align: 'left',
-          label: 'Morada',
-          field: row => row.morada,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'descricaoOcorrencia',
-          align: 'left',
-          label: 'Descrição da Ocorrencia',
-          field: row => row.descricao,
           format: val => `${val}`,
           sortable: true
         },
@@ -385,6 +378,7 @@ export default {
     'pecaProcesso'
   ],
   mounted() {
+    let offset = 0
     this.getAllDenunciante()
     this.getAllDenuncianteProcesso()
     this.getAllProvincia()
@@ -393,7 +387,9 @@ export default {
   },
   components: {
     'create-edit-form': require('components/denunciante/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-denunciante': require('components/denunciante/detailsForm.vue').default
   },
   created() {
   },
@@ -422,6 +418,76 @@ export default {
     }
   },
   methods: {
+  update(denunciante_details_dialog) {
+    this.denunciante_details_dialog = denunciante_details_dialog;
+  },
+  findIndividuo() {
+      let results = undefined
+      if (this.denunciante.nome === undefined || this.denunciante.apelido === undefined || 
+          this.denunciante.sexo === undefined || this.denunciante.numDocumentoIndentificacao === undefined ||
+          this.denunciante.nome === "" || this.denunciante.apelido === "" || 
+          this.denunciante.sexo === "" || this.denunciante.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Denunciante.api().get("/denunciante?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Denunciante.query().where((denunciante) => {
+                return denunciante.nome === this.denunciante.nome && 
+                       denunciante.apelido === this.denunciante.apelido && 
+                       denunciante.sexo === this.denunciante.sexo &&
+                       denunciante.numDocumentoIndentificacao === this.denunciante.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.denunciante = results
+                this.pais = Pais.query().find(this.denunciante.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.denunciante.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.denunciante.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.denunciante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Denunciante encontrado com successo!! [' + this.denunciante.nome + ' ' + this.denunciante.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Denunciante foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
+
     createDenunciante() {
       this.listErrors = []
       this.submitting = true
@@ -438,13 +504,18 @@ export default {
       this.denunciante.tipoDocumento = this.tipoDocumento
       this.denunciante.pecaProcesso = this.pecaProcesso
 
+      // var reader = new FileReader()
+      // reader.readAsArrayBuffer(this.denunciante.fotografia)
+      // reader.onload = ()=> { 
+      //   this.denunciante.fotografia = reader.result
+      //   console.log(reader.result);  
+      
+      // };
       this.pecaProcessoDenunciante.denunciante =  this.denunciante
       this.pecaProcessoDenunciante.pecaProcesso = this.pecaProcesso
-     
-     console.log(this.pecaProcessoDenunciante)
 
       if (this.editedIndex > -1) {
-         PecaProcessoDenunciante.api().patch("/pecaProcessoDenunciante/" + this.pecaProcessoDenunciante.id, this.pecaProcessoDenunciante).then(resp => {
+         PecaProcessoDenunciante.api().put("/pecaProcessoDenunciante/" + this.pecaProcessoDenunciante.id, this.pecaProcessoDenunciante).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -508,6 +579,9 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.denunciante_details_dialog = false
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.denunciante = {}
@@ -538,15 +612,32 @@ export default {
       })
     },
     editaDenunciante(denunciante) {
+      this.step = 2
       this.editedIndex = 0
       this.pecaProcessoDenunciante = Object.assign({}, denunciante)
       this.denunciante =  this.pecaProcessoDenunciante.denunciante
       this.pais = Pais.query().find(this.denunciante.nacionalidade_id)
       this.provincia = Provincia.query().find(this.denunciante.provincia_id)
       this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.denunciante.tipoDocumento_id)
-      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.denunciante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.image = 'data:image/jpeg;base64,' + btoa(new Uint8Array(this.denunciante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
+      this.denunciante_details_dialog = false
     },
+    mostraDenunciante(denunciante) {
+
+console.log(denunciante)
+
+      this.pecaProcessoDenunciante = Object.assign({}, denunciante)
+      this.denunciante =  this.pecaProcessoDenunciante.denunciante
+      this.pais = Pais.query().find(this.denunciante.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.denunciante.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.denunciante.tipoDocumento_id)
+      this.denunciante.tipoDocumento = this.tipoDocumento
+      this.denunciante.nacionalidade = this.pais
+      this.image = 'data:image/jpeg;base64,' + btoa(new Uint8Array(this.denunciante.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.denunciante_details_dialog = true
+    },
+
     getAllDenunciante() {
       Denunciante.api().get('/denunciante?offset=0&max=1000000')
     },

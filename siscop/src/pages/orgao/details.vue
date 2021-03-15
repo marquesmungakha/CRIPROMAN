@@ -46,7 +46,7 @@
             <q-item class="full-width">
               <q-item-section>
                 <q-item-label caption lines="1">{{ $t('distrito') }}</q-item-label>
-                <q-item-label class="text-grey-9">{{ orgao.distrito.designacao }}</q-item-label>
+                <q-item-label class="text-grey-9">{{ orgao.distrito.designacao }} </q-item-label>
               </q-item-section>
             </q-item>
           </div>
@@ -55,7 +55,10 @@
       <div class="row">
         <div class="col">
           <q-card-actions align="left">
+            <q-btn @click="$router.go(-1)" class="glossy" color="primary" label="Voltar" no-caps/>
+           <!--div v-else>
             <q-btn v-go-back=" '/orgao' " class="glossy" color="primary" label="Voltar" no-caps/>
+          </div-->
           </q-card-actions>
         </div>
         <div class="col">
@@ -71,11 +74,12 @@
       <q-tabs
         v-model="tab"
         active-color="white"
-        align="left"
+        align="center"
         class="bg-teal text-white shadow-2"
         indicator-color="white"
         narrow-indicator>
         <q-tab label="Alocação" name="alocacao"/>
+        <q-tab label="Sub Orgão" name="suborgao"/>
       </q-tabs>
 
       <q-separator/>
@@ -83,6 +87,9 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="alocacao">
           <list-alocacao :orgao.sync="orgao"/>
+        </q-tab-panel>
+        <q-tab-panel name="suborgao">
+          <list-suborgao :orgao.sync="orgao"/>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -208,7 +215,8 @@ export default {
   },
   components: {
     'create-edit-form': require('components/orgao/createEditForm.vue').default,
-    'list-alocacao': require('pages/alocacao/index.vue').default
+    'list-alocacao': require('pages/alocacao/index.vue').default,
+    'list-suborgao': require('pages/dependenciaOrgao/index.vue').default
   },
   methods: {
     removeOrgao(orgao) {

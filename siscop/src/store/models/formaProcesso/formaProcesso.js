@@ -12,6 +12,7 @@ export default class FormaProcesso extends Model {
       id: this.attr(null),
       designacao: this.attr(''),
       codigo: this.attr(''),
+      activo: this.attr(''),
       //Relationships
       processosInvestigacao: this.hasMany(ProcessoInvestigacao, 'formaProcesso_id'),
       processosInstrucaoPreparatoria: this.hasMany(ProcessoInstrucaoPreparatoria, 'formaProcesso_id')

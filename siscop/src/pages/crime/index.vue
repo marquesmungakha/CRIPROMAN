@@ -261,21 +261,21 @@ export default {
       this.show_dialog = true
     },
     getAllCrime(offset) {
-      Crime.api().get("/crime?offset="+offset+"&max=1000").then(resp => {
+      Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
           console.log(resp)
-          offset = offset + 1
-          if(resp.response.data.items.length() > 0) 
-              setTimeout(this.getAllCrime, 2)
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllCrime(offset), 2)
 
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
     },
     getAllJurisdicao(offset) {
-      ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=1000").then(resp => {
+      ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
           console.log(resp)
-          offset = offset + 1
-          if(resp.response.data.items.length() > 0) 
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao, 2)
 
           }).catch(error => {

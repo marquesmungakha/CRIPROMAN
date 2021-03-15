@@ -41,28 +41,16 @@
               <q-input v-model="props.row.testemunha.dataNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="naturalidade" :props="props">
-            {{ props.row.testemunha.naturalidade }}
-            <q-popup-edit v-model="props.row.testemunha.naturalidade">
-              <q-input v-model="props.row.testemunha.naturalidade" autofocus counter dense></q-input>
+          <q-td key="nacionalidade" :props="props">
+            {{ props.row.testemunha.nacionalidade.nacionalidade }}
+            <q-popup-edit v-model="props.row.testemunha.nacionalidade.nacionalidade">
+              <q-input v-model="props.row.testemunha.nacionalidade.nacionalidade" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <!--q-td key="nacionalidade" :props="props">
-            {{ props.row.testemunha.nacionalidade }}
-            <q-popup-edit v-model="props.row.testemunha.nacionalidade">
-              <q-input v-model="props.row.testemunha.nacionalidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td-->
           <q-td key="provincia" :props="props">
             {{ props.row.testemunha.provincia.designacao }}
             <q-popup-edit v-model="props.row.testemunha.provincia.designacao">
               <q-input v-model="props.row.testemunha.provincia.designacao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="localNascimento" :props="props">
-            {{ props.row.testemunha.localNascimento }}
-            <q-popup-edit v-model="props.row.testemunha.localNascimento">
-              <q-input v-model="props.row.testemunha.localNascimento" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="estadoCivil" :props="props">
@@ -83,41 +71,18 @@
               <q-input v-model="props.row.testemunha.numDocumentoIndentificacao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="documentoValidade" :props="props">
-            {{ props.row.testemunha.documentoValidade }}
-            <q-popup-edit v-model="props.row.testemunha.documentoValidade">
-              <q-input v-model="props.row.testemunha.documentoValidade" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <q-td key="morada" :props="props">
-            {{ props.row.testemunha.morada }}
-            <q-popup-edit v-model="props.row.testemunha.morada">
-              <q-input v-model="props.row.testemunha.morada" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td>
-          <!--q-td key="profissao" :props="props">
-            {{ props.row.profissao.designacao }}
-            <q-popup-edit v-model="props.row.profissao.designacao">
-              <q-input v-model="props.row.profissao.designacao" autofocus counter dense></q-input>
-            </q-popup-edit>
-          </q-td-->
           <q-td key="ocupacao" :props="props">
             {{ props.row.ocupacao }}
             <q-popup-edit v-model="props.row.ocupacao">
               <q-input v-model="props.row.ocupacao" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="depoimento" :props="props">
-            {{ props.row.depoimento }}
-            <q-popup-edit v-model="props.row.depoimento">
-              <q-input v-model="props.row.depoimento" autofocus dense></q-input>
-            </q-popup-edit>
-          </q-td>
+         
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraTestemunha(props.row)"/>
               <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaTestemunha(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeTestemunha(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeTestemunha(props.row)"/>
             </div>
           </q-td>
         </q-tr>
@@ -127,7 +92,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Testemunha!</div>
+            <div class="text-h6">Adicionar/Actualizar Testemunha!</div>
           </q-card-section>
            <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -142,6 +107,32 @@
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 70vh">
             <q-form class="q-gutter-md" @submit.prevent="createTestemunha">
+             <div class="q-pa-md">
+                <q-stepper
+                  v-model="step"
+                  ref="stepper"
+                  color="primary"
+                  header-class="text-bold"
+                  animated >
+                    <q-step
+                      :name="1"
+                      title="Verificar Testemunha Existente"
+                      icon="settings"
+                      :done="step > 1" >
+                      <search-individuo :apelido.sync="testemunha.apelido"
+                            :nome.sync="testemunha.nome"
+                            :numDocumentoIndentificacao.sync="testemunha.numDocumentoIndentificacao"
+                            :sexo.sync="testemunha.sexo"
+                            :tipoDocumento.sync="tipoDocumento"
+                            :tipoDocumentos.sync="allTipoDocumentos"
+                            :findIndividuo.sync="findIndividuo"/>
+                    </q-step>
+
+                    <q-step
+                      :name="2"
+                      title="Criar/Actualizar Dados"
+                      icon="create_new_folder"
+                      :done="step > 2" >
               <individuo :apelido.sync="testemunha.apelido"
                          :dataNascimento.sync="testemunha.dataNascimento"
                          :documentoValidade.sync="testemunha.documentoValidade"
@@ -164,20 +155,43 @@
                          :tipoDocumentos.sync="allTipoDocumentos"
                          :onFileChange.sync="onFileChange"
                          :image.sync="image"/>
+                          </q-step>
+
+                    <q-step
+                      :name="3"
+                      title="Dados Adicionais"
+                      icon="assignment">
               <create-edit-form :depoimento.sync="pecaProcessoTestemunha.depoimento"
                                 :ocupacao.sync="pecaProcessoTestemunha.ocupacao"
                                 :profissao.sync="profissao"
                                 :profissaoList.sync="allProfissao"/>
+                                  </q-step>
+
+                  <template v-slot:navigation>
+                    <q-stepper-navigation>
+                      <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Terminou' : 'Próximo'" :disable="step === 3 ? true : false"/>
+                      <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+                    </q-stepper-navigation>
+                  </template>
+                </q-stepper>
+              </div>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createTestemunha"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createTestemunha" :disable="step === 3 ? false : true"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
       </q-dialog>
     </div>
+     <details-testemunha :testemunha.sync="testemunha" 
+                       :image.sync="image" 
+                       :pecaProcessoTestemunha.sync="pecaProcessoTestemunha" 
+                       :tipoDocumento.sync="tipoDocumento"
+                       :pais.sync="pais"
+                       :testemunha_details_dialog.sync="testemunha_details_dialog"
+                       :close.sync="close"/>
   </q-page>
 </template>
 
@@ -202,6 +216,8 @@ export default {
   name: 'Testemunha',
   data() {
     return {
+       step: 1,
+      offset:0,
       listErrors: [],
       testemunha_details_dialog: false,
       editedIndex: -1,
@@ -279,14 +295,6 @@ export default {
           sortable: true
         },
         {
-          name: 'naturalidade',
-          align: 'left',
-          label: 'Naturalidade',
-          field: row => row.naturalidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
           name: 'nacionalidade',
           align: 'left',
           label: 'Nacionalidade',
@@ -299,14 +307,6 @@ export default {
           align: 'left',
           label: 'Província',
           field: row => row.provincia,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'localNascimento',
-          align: 'left',
-          label: 'Local de Nascimento',
-          field: row => row.localNascimento,
           format: val => `${val}`,
           sortable: true
         },
@@ -331,38 +331,6 @@ export default {
           align: 'left',
           label: 'Número do Documento',
           field: row => row.numDocumentoIndentificacao,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'documentoValidade',
-          align: 'left',
-          label: 'Validade do Documento',
-          field: row => row.documentoValidade,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'morada',
-          align: 'left',
-          label: 'Morada',
-          field: row => row.morada,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'profissao',
-          align: 'left',
-          label: 'Profissão',
-          field: row => row.profissao,
-          format: val => `${val}`,
-          sortable: true
-        },
-        {
-          name: 'depoimento',
-          align: 'left',
-          label: 'Depoimento',
-          field: row => row.depoimento,
           format: val => `${val}`,
           sortable: true
         },
@@ -406,7 +374,9 @@ export default {
   },
   components: {
     'create-edit-form': require('components/testemunha/createEditForm.vue').default,
-    individuo: require('components/individuo/createEditForm.vue').default
+    individuo: require('components/individuo/createEditForm.vue').default,
+    'search-individuo': require('components/individuo/searchForm.vue').default,
+    'details-testemunha': require('components/testemunha/detailsForm.vue').default
   },
   metaInfo: {},
   computed: {
@@ -437,6 +407,72 @@ export default {
     }
   },
   methods: {
+     findIndividuo() {
+      let results = undefined
+      if (this.testemunnha.nome === undefined || this.testemunnha.apelido === undefined || 
+          this.testemunnha.sexo === undefined || this.testemunnha.numDocumentoIndentificacao === undefined ||
+          this.testemunnha.nome === "" || this.testemunnha.apelido === "" || 
+          this.testemunnha.sexo === "" || this.testemunnha.numDocumentoIndentificacao === ""  
+          ) {
+          this.$q.notify({
+          color: 'negative',
+          classes: 'glossy',
+          message: 'Todos os campos marcados com (*) são obrigatórios!'
+        })
+      }else{
+
+          Testemunnha.api().get("/testemunnha?offset="+this.offset+"&max=100").then(resp => {
+          console.log(resp)
+          this.offset = this.offset + 100
+          if(resp.response.data.length > 0){
+                results = Testemunnha.query().where((testemunnha) => {
+                return testemunnha.nome === this.testemunnha.nome && 
+                       testemunnha.apelido === this.testemunnha.apelido && 
+                       testemunnha.sexo === this.testemunnha.sexo &&
+                       testemunnha.numDocumentoIndentificacao === this.testemunnha.numDocumentoIndentificacao 
+                       }).first()
+              if(results === undefined){
+                    setTimeout(this.findIndividuo, 2)
+              }else{
+                this.testemunnha = results
+                this.pais = Pais.query().find(this.testemunnha.nacionalidade_id)
+                this.provincia = Provincia.query().find(this.testemunnha.provincia_id)
+                this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.testemunnha.tipoDocumento_id)
+                this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.testemunnha.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+                this.$q.notify({
+                    type: 'positive',
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Testemunnha encontrado com successo!! [' + this.testemunnha.nome + ' ' + this.testemunnha.apelido +' ]'
+                  })
+                this.$refs.stepper.next()
+              }
+          }else{
+            this.offset = 0
+              this.$q.notify({
+                    type: 'negative',
+                    color: 'negative',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    timeout: 2000,
+                    position: 'bottom',
+                    classes: 'glossy',
+                    progress: true,
+                    message: 'Nenhum Testemunnha foi encontrado !!'
+                  })
+          } 
+              
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+
+      }
+    },
     createTestemunha() {
       this.listErrors = []
       this.submitting = true
@@ -458,7 +494,7 @@ export default {
       this.pecaProcessoTestemunha.testemunha = this.testemunha
 
       if (this.editedIndex > -1) {
-         PecaProcessoTestemunha.api().patch("/pecaProcessoTestemunha/" + this.pecaProcessoTestemunha.id, this.pecaProcessoTestemunha).then(resp => {
+         PecaProcessoTestemunha.api().put("/pecaProcessoTestemunha/" + this.pecaProcessoTestemunha.id, this.pecaProcessoTestemunha).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -523,6 +559,9 @@ export default {
       this.getAllProvincia()
       this.getAllPais()
       this.getAllTipoDocumentoIdentificacao()
+      this.testemunha_details_dialog  = false
+      this.step = 1
+      this.offset = 0
       this.listErrors = {}
       this.show_dialog = false
       this.testemunha = {}
@@ -553,6 +592,7 @@ export default {
       })
     },
     editaTestemunha(testemunha) {
+      this.step = 2
       this.editedIndex = 0
       this.pecaProcessoTestemunha = Object.assign({}, testemunha)
       this.testemunha =  this.pecaProcessoTestemunha.testemunha
@@ -562,6 +602,17 @@ export default {
       this.profissao = Profissao.query().find(testemunha.profissao_id)
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.testemunha.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
+    },
+    mostraTestemunha(testemunha) {
+      this.step = 2
+      this.pecaProcessoTestemunha = Object.assign({}, testemunha)
+      this.testemunha =  this.pecaProcessoTestemunha.testemunha
+      this.pais = Pais.query().find(this.testemunha.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.testemunha.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.testemunha.tipoDocumento_id)
+      this.profissao = Profissao.query().find(testemunha.profissao_id)
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.testemunha.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.testemunha_details_dialog = true
     },
     getAllTestemunhaPecaProcesso() {
       PecaProcessoTestemunha.api().get('/pecaProcessoTestemunha?offset=0&max=1000000')

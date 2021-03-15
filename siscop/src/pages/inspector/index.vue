@@ -71,7 +71,7 @@
       <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 1100px; max-width: 90vw;">
           <q-card-section>
-            <div class="text-h6">Adicionar Inspector!</div>
+            <div class="text-h6">Adicionar/Actualizar Inspector!</div>
           </q-card-section>
           <q-card-section>
             <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm"

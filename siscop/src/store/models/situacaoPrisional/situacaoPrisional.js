@@ -11,6 +11,7 @@ export default class SituacaoPrisional extends Model {
       id: this.attr(null),
       designacao: this.attr(''),
       codigo: this.attr(''),
+      activo: this.attr(''),
       // Relationship
       suspeitos: this.hasMany(Suspeito, "situacaoPrisional_id")
 

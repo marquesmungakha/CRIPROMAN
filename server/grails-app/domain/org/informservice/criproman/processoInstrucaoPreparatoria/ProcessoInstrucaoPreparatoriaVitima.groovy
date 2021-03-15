@@ -11,10 +11,12 @@ class ProcessoInstrucaoPreparatoriaVitima {
 
     ProcessoInstrucaoPreparatoria processo
     Vitima vitima
+    String declaracao
 
     static belongsTo = ProcessoInstrucaoPreparatoria
 
     static constraints = {
+        declaracao maxSize: 1500, nullable: false
     }
 
     static mapping = {

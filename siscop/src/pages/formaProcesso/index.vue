@@ -30,6 +30,17 @@
               <q-input v-model="props.row.designacao" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
+           <q-td key="activo" :props="props">
+          <q-chip :color="(props.row.activo == true)?'green':(props.row.activo == false?'grey':'red')"
+              text-color="white" dense class="text-weight-bolder" square
+              style="width: 100px" :icon="(props.row.activo == true)?'published_with_changes':(props.row.activo == false?'unpublished':'do_disturb_on')">
+              <span v-if="props.row.activo == true">Activo</span>
+              <span v-else>Desactivo</span>
+            </q-chip>
+            <q-popup-edit v-model="props.row.activo" title="Update estado">
+              <q-input v-model="props.row.activo" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/formaProcesso/${props.row.id}`">
@@ -47,6 +58,7 @@
                       :codigo.sync="formaProcesso.codigo"
                       :createFormaProcesso="createFormaProcesso"
                       :designacao.sync="formaProcesso.designacao"
+                      :activo.sync="formaProcesso.activo"
                       :listErrors="listErrors"
                       :removeFormaProcesso="removeFormaProcesso"
                       :show_dialog="show_dialog"
@@ -78,7 +90,8 @@ export default {
       show_filter: false,
       formaProcesso: {
         codigo: '',
-        designacao: ''
+        designacao: '',
+        activo: false
       },
       columns: [
         {
@@ -96,6 +109,13 @@ export default {
           label: 'Designação',
           field: row => row.designacao,
           format: val => `${val}`,
+          sortable: true
+        },
+         {
+          name: "activo",
+          align: "left",
+          label: "Estado",
+          field: row => row.activo,
           sortable: true
         },
         {name: 'actions', label: 'Movimento', field: 'actions'}

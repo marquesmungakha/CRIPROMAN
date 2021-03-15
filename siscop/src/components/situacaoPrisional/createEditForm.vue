@@ -39,6 +39,14 @@
                                 :rules="[ val => val && val.length > 0 || 'Introduza a Designacao']" />
                             </q-item-section>
                         </q-item>
+                        <q-item>
+                            <q-item-section>
+                             <q-checkbox :value="activo" 
+                                         label="Activo" 
+                                         @input="$emit('update:activo', $event)"
+                                         color="teal" />
+                            </q-item-section>
+                        </q-item>
                     </q-list>
                 </q-form>
         </q-card-section>
@@ -59,6 +67,9 @@ export default {
     },
     designacao: {
       type: String
+    },
+    activo: {
+      type: Boolean
     },
     show_dialog: {
       type: Boolean
