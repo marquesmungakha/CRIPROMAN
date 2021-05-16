@@ -1,7 +1,6 @@
 <template>
   <q-page>
-    <div class="row q-col-gutter-sm q-ma-xs">
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    <div class="q-ma-xs">
         <q-card bordered class="my-card" flat>
           <q-card-section class="bg-secondary text-white">
             <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -48,73 +47,6 @@
             </div>
           </div>
         </q-card>
-      </div>
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-        <q-card>
-          <q-tabs
-            v-model="tab"
-            active-color="white"
-            align="left"
-            class="bg-teal text-white shadow-2"
-            indicator-color="white"
-            narrow-indicator>
-            <q-tab label="Distritos" name="distritos"/>
-          </q-tabs>
-
-          <q-separator/>
-
-          <q-tab-panels v-model="tab" animated>
-            <q-tab-panel name="distritos">
-              <div class="text-h6">{{ $t('distritos') }}</div>
-              Component List Distritos
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-
-        <q-card>
-          <q-tabs
-            v-model="tab1"
-            active-color="white"
-            align="left"
-            class="bg-teal text-white shadow-2"
-            indicator-color="white"
-            narrow-indicator>
-            <q-tab label="Coments" name="comments"/>
-          </q-tabs>
-
-          <q-separator/>
-
-          <q-tab-panels v-model="tab1" animated>
-            <q-tab-panel name="comments">
-              <div class="text-h6">{{ $t('comments') }}</div>
-              Component List 1
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-
-        <q-card>
-          <q-tabs
-            v-model="tab2"
-            active-color="white"
-            align="left"
-            class="bg-teal text-white shadow-2"
-            indicator-color="white"
-            narrow-indicator>
-            <q-tab label="Coments" name="comments"/>
-          </q-tabs>
-
-          <q-separator/>
-
-          <q-tab-panels v-model="tab2" animated>
-            <q-tab-panel name="comments">
-              <div class="text-h6">{{ $t('comments') }}</div>
-              Component List 2
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-
-      </div>
-    </div>
     <create-edit-form :close="close"
                       :codigo.sync="localModelo.codigo"
                       :createModelo="createModelo"
@@ -125,6 +57,8 @@
                       :removeModelo="removeModelo"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+      </div>
+
   </q-page>
 </template>
 

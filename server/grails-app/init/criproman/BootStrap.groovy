@@ -34,9 +34,10 @@ class BootStrap {
             it.clear()
         }
 
-        assert SecUser.count() == 2
-        assert SecRole.count() == 2
-        assert SecUserSecRole.count() == 2
+
+//        assert SecUser.count() == 2
+//        assert SecRole.count() == 2
+//        assert SecUserSecRole.count() == 2
 
         println SecRole.findByAuthority('ROLE_ADMIN')
         println SecRole.findByAuthority('ROLE_USER')

@@ -188,12 +188,17 @@ export default {
     return this.getAllBairro()
   },
   mounted() {
-    this.getAllPais()
-    this.getAllPostoAdministrativo()
-    this.getAllProvincia()
-    this.getAllDistrito()
-    this.getAllLocalidade()
-    this.getAllBairro()
+    let offset = 0
+    this.distrito = this.localDistrito
+    this.provincia = this.localProvincia
+    this.postoAdministrativo = this.localPostoAdministrativo
+    this.localidade = this.localLocalidade
+    this.getAllPais(offset)
+    this.getAllPostoAdministrativo(offset)
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
+    this.getAllLocalidade(offset)
+    this.getAllBairro(offset)
   },
   components: {
     'create-edit-form': require('components/bairro/createEditForm.vue').default
@@ -239,7 +244,13 @@ export default {
       }
     },
     allBairros() {
-      return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').all()
+
+        if(this.$route.params.id !== undefined){
+            return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').where('localidade_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return Bairro.query().with('distrito.provincia').with('postoAdministrativo').with('localidade').all()
+        }
     }
   },
   methods: {
@@ -314,12 +325,13 @@ export default {
       }
     },
     close() {
-      this.getAllBairro()
-      this.getAllLocalidade()
-      this.getAllPostoAdministrativo()
-      this.getAllPais()
-      this.getAllProvincia()
-      this.getAllDistrito()
+      let offset = 0
+      this.getAllPais(offset)
+      this.getAllPostoAdministrativo(offset)
+      this.getAllProvincia(offset)
+      this.getAllDistrito(offset)
+      this.getAllLocalidade(offset)
+      this.getAllBairro(offset)
       this.show_dialog = false
       this.listErrors = {}
       this.bairro = {}
@@ -362,27 +374,71 @@ export default {
       this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    getAllBairro() {
-      Bairro.api().get('/bairro?offset=0&max=1000000')
+    getAllBairro(offset) {
+          if(offset >= 0){
+          Bairro.api().get("/bairro?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllBairro(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllLocalidade() {
-      Localidade.api().get('/localidade?offset=0&max=1000000')
+    getAllLocalidade(offset) {
+          if(offset >= 0){
+          Localidade.api().get("/localidade?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllLocalidade(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      return Provincia.api().get('/provincia?offset=0&max=1000000', {
-        persistOptions: {
-          insert: ['pais']
-        }
-      })
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllDistrito() {
-      Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllDistrito(offset) {
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllPostoAdministrativo() {
-      PostoAdministrativo.api().get('/postoAdministrativo?offset=0&max=1000000')
+    getAllPostoAdministrativo(offset) {
+      if(offset >= 0){
+          PostoAdministrativo.api().get("/postoAdministrativo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPostoAdministrativo(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')
@@ -417,6 +473,12 @@ export default {
         })
       }
     }
-  }
+  }, props:
+    [
+      'localDistrito',
+      'localProvincia',
+      'localPostoAdministrativo',
+      'localLocalidade'
+    ]
 }
 </script>

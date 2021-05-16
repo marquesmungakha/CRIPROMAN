@@ -233,10 +233,11 @@ export default {
     'pecaProcesso'
   ],
   mounted() {
-    this.getAllMeioUtilizado()
-    this.getAllTipoMeio()
-    this.getAllMarca()
-    this.getAllModelo()
+    let offset = 0
+    this.getAllMeioUtilizado(offset)
+    this.getAllTipoMeio(offset)
+    this.getAllMarca(offset)
+    this.getAllModelo(offset)
   },
   components: {
     'create-edit-form': require('components/meiosUtilizado/createEditForm.vue').default
@@ -341,10 +342,11 @@ export default {
       }
     },
     close() {
-      this.getAllMeioUtilizado()
-    this.getAllTipoMeio()
-    this.getAllMarca()
-    this.getAllModelo()
+     let offset = 0
+    this.getAllMeioUtilizado(offset)
+    this.getAllTipoMeio(offset)
+    this.getAllMarca(offset)
+    this.getAllModelo(offset)
       this.show_dialog = false
       this.meioUtilizado = {}
       this.props = this.meioUtilizado
@@ -382,16 +384,52 @@ export default {
       this.show_dialog = true
     },
     getAllMeioUtilizado() {
-      MeiosUtilizado.api().get('/meioUtilizado?offset=0&max=1000000')
+      if(offset >=0){
+        MeiosUtilizado.api().get("/meioUtilizado?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllMeioUtilizado(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoMeio() {
-      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
+   getAllMarca(offset) {
+       if(offset >=0){
+      Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllMarca(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllMarca() {
-      Marca.api().get('/marca?offset=0&max=1000000')
+    getAllTipoMeio(offset) {
+       if(offset >=0){
+      TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllTipoMeio(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllModelo() {
-      Modelo.api().get('/modelo?offset=0&max=1000000')
+    getAllModelo(offset) {
+      if(offset >=0){
+      Modelo.api().get("/modelo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllModelo(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format

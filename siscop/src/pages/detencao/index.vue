@@ -186,9 +186,10 @@ export default {
   },
   props: ['processoInvestigacao'],
   mounted() {
-    this.getAllDetencao()
-    this.getAllMotivoDetencao()
-    this.getAllInspector()
+    let offset = 0
+    this.getAllDetencao(offset)
+    this.getAllMotivoDetencao(offset)
+    this.getAllInspector(offset)
   },
   components: {
     'create-edit-form': require('components/detencao/createEditForm.vue').default
@@ -280,9 +281,10 @@ export default {
       }
     },
     close() {
-      this.getAllDetencao()
-      this.getAllMotivoDetencao()
-      this.getAllInspector()
+      let offset = 0
+    this.getAllDetencao(offset)
+    this.getAllMotivoDetencao(offset)
+    this.getAllInspector(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.detencao = {}
@@ -319,14 +321,38 @@ export default {
       this.inspector = Inspector.query().find(detencao.inspector.id) 
       this.show_dialog = true
     },
-    getAllDetencao() {
-      Detencao.api().get("/detencao?offset=0&max=1000000")
+    getAllDetencao(offset) {
+       if(offset >= 0){
+          Detencao.api().get("/detencao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDetencao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllMotivoDetencao() {
-      MotivoDetencao.api().get("/motivoDetencao?offset=0&max=1000000")
+    getAllMotivoDetencao(offset) {
+      if(offset >= 0){
+          MotivoDetencao.api().get("/motivoDetencao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllMotivoDetencao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllInspector() {
-      Inspector.api().get("/inspector?offset=0&max=1000000")
+    getAllInspector(offset) {
+       if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

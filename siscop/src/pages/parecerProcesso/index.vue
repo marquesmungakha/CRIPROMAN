@@ -190,13 +190,14 @@ export default {
   },
   props: ['processoInstrucaoPreparatoria'],
   mounted() {
-    this.getAllParecerProcesso()
-    this.getAllTipoParecer()
-    this.getAllDestino()
-    this.getAllMagistrado()
-    this.getAllPais()
-    this.getAllProvincia()
-    this.getAllTipoOrgao()
+    let offset = 0
+    this.getAllParecerProcesso(offset)
+    this.getAllTipoParecer(offset)
+    this.getAllDestino(offset)
+    this.getAllMagistrado(offset)
+    this.getAllPais(offset)
+    this.getAllProvincia(offset)
+    this.getAllTipoOrgao(offset)
   },
   components: {
     'create-edit-form': require('components/parecerProcesso/createEditForm.vue').default
@@ -294,13 +295,14 @@ export default {
       }
     },
     close() {
-    this.getAllParecerProcesso()
-    this.getAllTipoParecer()
-    this.getAllDestino()
-    this.getAllMagistrado()
-    this.getAllPais()
-    this.getAllProvincia()
-    this.getAllTipoOrgao()
+   let offset = 0
+    this.getAllParecerProcesso(offset)
+    this.getAllTipoParecer(offset)
+    this.getAllDestino(offset)
+    this.getAllMagistrado(offset)
+    this.getAllPais(offset)
+    this.getAllProvincia(offset)
+    this.getAllTipoOrgao(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.parecerProcesso = {}
@@ -338,26 +340,82 @@ export default {
       this.destino = Orgao.query().find(parecerProcesso.destino_id) 
       this.show_dialog = true
     },
-    getAllParecerProcesso() {
-      ParecerProcesso.api().get("/parecerProcesso?offset=0&max=1000000")
+    getAllParecerProcesso(offset) {
+      if(offset >= 0){
+          ParecerProcesso.api().get("/parecerProcesso?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllParecerProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoParecer() {
-      TipoParecer.api().get("/tipoParecer?offset=0&max=1000000")
+    getAllTipoParecer(offset) {
+      if(offset >= 0){
+          TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoParecer(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     getAllDestino() {
-      Orgao.api().get("/orgao?offset=0&max=1000000")
+      if(offset >= 0){
+          Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDestino(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllMagistrado() {
-      Magistrado.api().get("/magistrado?offset=0&max=1000000")
+    getAllMagistrado(offset) {
+      if(offset >= 0){
+          Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllMagistrado(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+  getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoOrgao() {
-      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+   getAllTipoOrgao(offset) {
+        if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllTipoOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-     getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+   getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

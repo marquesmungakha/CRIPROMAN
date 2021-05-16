@@ -137,8 +137,10 @@ export default {
     return this.getAllMarca()
   },
   mounted() {
-    this.getAllMarca()
-    this.getAllTipoMeio()
+    this.tipoMeio = this.localTipoMeio
+    let offset = 0
+    this.getAllMarca(offset)
+    this.getAllTipoMeio(offset)
   },
   components: {
     'create-edit-form': require('components/marca/createEditForm.vue').default
@@ -162,7 +164,13 @@ export default {
       return TipoMeio.query().all()
     },
     allMarcas() {
-      return Marca.query().with('tipoMeio').all()
+
+       if(this.$route.params.id !== undefined){
+            return Marca.query().with('tipoMeio').where('tipoMeio_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return Marca.query().with('tipoMeio').all()
+        }
     }
   },
   methods: {
@@ -234,8 +242,9 @@ export default {
       }
     },
     close() {
-      this.getAllMarca()
-      this.getAllTipoMeio()
+    let offset = 0
+    this.getAllMarca(offset)
+    this.getAllTipoMeio(offset)
       this.show_dialog = false
       this.marca = {}
       this.props = this.marca
@@ -276,11 +285,29 @@ export default {
     setModel(val) {
       this.marca.tipoMeio = val
     },
-    getAllMarca() {
-      Marca.api().get('/marca?offset=0&max=1000000')
+    getAllMarca(offset) {
+       if(offset >=0){
+      Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllMarca(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoMeio() {
-      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
+    getAllTipoMeio(offset) {
+       if(offset >=0){
+      TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllTipoMeio(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format
@@ -309,6 +336,9 @@ export default {
         })
       }
     }
-  }
+  }, props:
+    [
+      'localTipoMeio'
+    ]
 }
 </script>

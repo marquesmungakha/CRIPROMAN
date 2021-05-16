@@ -118,7 +118,8 @@ export default {
     return this.getAllTipoOrgao()
   },
   mounted() {
-    this.getAllTipoOrgao()
+    let offset = 0
+    this.getAllTipoOrgao(offset)
   },
   components: {
     'create-edit-form': require('components/tipoOrgao/createEditForm.vue').default
@@ -209,7 +210,8 @@ export default {
       }
     },
     close() {
-      this.getAllTipoOrgao()
+     let offset = 0
+    this.getAllTipoOrgao(offset)
       this.show_dialog = false
       this.tipoOrgao = {}
       this.props = this.tipoOrgao
@@ -244,8 +246,15 @@ export default {
       this.tipoOrgao = Object.assign({}, tipoOrgao)
       this.show_dialog = true
     },
-    getAllTipoOrgao() {
-      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+    getAllTipoOrgao(offset) {
+       if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoOrgao(offset), 2)
+          }).catch(error => {
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

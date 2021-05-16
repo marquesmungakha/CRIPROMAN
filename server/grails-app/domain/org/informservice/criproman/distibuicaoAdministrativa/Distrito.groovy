@@ -17,8 +17,8 @@ class Distrito implements Auditable {
 
 
     static constraints = {
-        codigo(maxSize: 20)
-        designacao(blank: false, maxSize: 200, unique: true)
+        codigo(maxSize: 20, unique: ["provincia"])
+        designacao(blank: false, maxSize: 200)
     }
 
     static belongsTo = [provincia: Provincia]

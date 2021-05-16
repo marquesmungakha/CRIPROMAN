@@ -178,15 +178,16 @@ export default {
     return this.getAllProcesso()
   },
   mounted () {
-      this.getAllProcesso()
-      this.getAllAutoEntrada()
-      this.getAllFormaProcesso()
-      this.getAllTipoAuto()
-      this.getAllJurisdicao()
-      this.getAllCrime()
-      this.getAllMagistrado()
-      this.getAllInspector()
-      this.getAllOrgao()
+    let offset = 0
+      this.getAllProcesso(offset)
+      this.getAllAutoEntrada(offset)
+      this.getAllFormaProcesso(offset)
+      this.getAllTipoAuto(offset)
+      this.getAllJurisdicao(offset)
+      this.getAllCrime(offset)
+      this.getAllMagistrado(offset)
+      this.getAllInspector(offset)
+      this.getAllOrgao(offset)
   },
   components: {
     'create-edit-form': require('components/processoInvestigacao/createEditForm.vue').default
@@ -307,15 +308,16 @@ export default {
       }
     },
     close () {
-      this.getAllProcesso()
-      this.getAllAutoEntrada()
-      this.getAllFormaProcesso()
-      this.getAllTipoAuto()
-      this.getAllJurisdicao()
-      this.getAllCrime()
-      this.getAllMagistrado()
-      this.getAllInspector()
-      this.getAllOrgao()
+     let offset = 0
+      this.getAllProcesso(offset)
+      this.getAllAutoEntrada(offset)
+      this.getAllFormaProcesso(offset)
+      this.getAllTipoAuto(offset)
+      this.getAllJurisdicao(offset)
+      this.getAllCrime(offset)
+      this.getAllMagistrado(offset)
+      this.getAllInspector(offset)
+      this.getAllOrgao(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.processoInvestigacao = {}
@@ -354,32 +356,104 @@ export default {
       this.inspector = Inspector.query().find(processoInvestigacao.inspector_id)
       this.show_dialog = true
     },
-     getAllAutoEntrada() {
-      AutoEntrada.api().get('/autoEntrada?offset=0&max=1000000')
+     getAllAutoEntrada(offset) {
+       if(offset >= 0) {
+         AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllAutoEntrada(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllProcesso() {
-      ProcessoInvestigacao.api().get('/processoInvestigacao?offset=0&max=1000000')
+    getAllProcesso(offset) {
+      if(offset >= 0) {
+         ProcessoInvestigacao.api().get("/processoInvestigacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllFormaProcesso() {
-      FormaProcesso.api().get('/formaProcesso?offset=0&max=1000000')
+    getAllFormaProcesso(offset) {
+       if(offset >= 0) {
+         FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllFormaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllTipoAuto() {
-      TipoAuto.api().get('/tipoAuto?offset=0&max=1000000')
+    getAllTipoAuto(offset) {
+       if(offset >= 0) {
+         TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllTipoAuto(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllJurisdicao() {
-      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+   getAllInspector(offset) {
+       if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllCrime() {
-      Crime.api().get('/crime?offset=0&max=1000000')
+    getAllOrgao(offset) {
+        if(offset >= 0){
+           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllMagistrado() {
-      Magistrado.api().get('/magistrado?offset=0&max=1000000')
+     getAllJurisdicao(offset) {
+       if(offset >= 0) {
+         ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllJurisdicao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllInspector() {
-      Inspector.api().get('/inspector?offset=0&max=1000000')
+    getAllCrime(offset) {
+       if(offset >= 0) {
+         Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllCrime(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllOrgao() {
-      Orgao.api().get('/orgao?offset=0&max=1000000')
+    getAllMagistrado(offset) {
+      if(offset >= 0){
+           Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllMagistrado(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
     abortFilterFn () {
       // console.log('delayed filter aborted')

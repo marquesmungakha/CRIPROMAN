@@ -102,7 +102,8 @@ export default {
     return this.getAllMotivoDetencao()
   },
   mounted() {
-    this.getAllMotivoDetencao()
+    let offset = 0
+    this.getAllMotivoDetencao(offset)
   },
   components: {
     'create-edit-form': require('components/motivoDetencao/createEditForm.vue').default
@@ -193,7 +194,8 @@ export default {
       }
     },
     close() {
-      this.getAllMotivoDetencao()
+     let offset = 0
+      this.getAllMotivoDetencao(offset)
       this.show_dialog = false
       this.motivoDetencao = {}
       this.props = this.motivoDetencao
@@ -228,8 +230,17 @@ export default {
       this.motivoDetencao = Object.assign({}, motivoDetencao)
       this.show_dialog = true
     },
-    getAllMotivoDetencao() {
-      MotivoDetencao.api().get('/motivoDetencao?offset=0&max=1000000')
+    getAllMotivoDetencao(offset) {
+      if(offset >=0){
+          MotivoDetencao.api().get("/motivoDetencao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllMotivoDetencao(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format

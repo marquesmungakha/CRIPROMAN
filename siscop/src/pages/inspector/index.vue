@@ -211,7 +211,8 @@ export default {
     return this.getAllInspector()
   },
   mounted() {
-    this.getAllInspector()
+    let offset = 0
+    this.getAllInspector(offset)
   },
   components: {
     'create-edit-form': require('components/inspector/createEditForm.vue').default,
@@ -315,7 +316,8 @@ export default {
       }
     },
     close() {
-      this.getAllInspector()
+    let offset = 0
+    this.getAllInspector(offset)
       this.image = ''
       this.show_dialog = false
       this.inspector = {}
@@ -351,8 +353,16 @@ export default {
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(inspector.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    getAllInspector() {
-      Inspector.api().get('/inspector?offset=0&max=1000000')
+     getAllInspector(offset) {
+       if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
      onFileChange(event){
       this.inspector.fotografia = event.target.files[0];

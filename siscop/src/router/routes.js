@@ -1,8 +1,16 @@
 
 const routes = [
+  
+  {
+    path: '/mainPage',
+    name:'mainPage',
+    component: () => import('layouts/OrgaoEntrada.vue'),
+    meta: { requiresAuth:true, roles: 'ROLE_ADMIN'}
+  },
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    // component: () => import('layouts/OrgaoEntrada.vue'),
+     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/dashboard', component: () => import('pages/dashboard/dashboard') },

@@ -347,15 +347,16 @@ export default {
       this.show_dialog = true
     },
     getAllMagistrado(offset) {
-      Magistrado.api().get("/magistrado?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
+      if(offset >=0){
+      Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
           offset = offset + 1
           if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllMagistrado, 2)
+              setTimeout(this.getAllMagistrado(offset), 2)
 
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+      }
     },
     onFileChange(event){
       this.magistrado.fotografia = event.target.files[0];

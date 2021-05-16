@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-    <q-table :columns="columns" :data="allCrimes" :filter="filter" binary-state-sort row-key="name" title="Crime">
+    <q-table :columns="columns" :data="allCrimes" :filter="filter" binary-state-sort row-key="name" title="Tipos Legais de Crime">
 
       <template v-slot:top-right>
         <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
@@ -127,6 +127,7 @@ export default {
     return this.getAllCrime()
   },
   mounted() {
+    this.classeJudicial = this.localJurisdicao
     let offset = 0
     this.getAllCrime(offset)
     this.getAllJurisdicao(offset)
@@ -153,7 +154,13 @@ export default {
       return ClasseJudicial.query().all()
     },
     allCrimes() {
-      return Crime.query().with('classeJudicial').all()
+
+        if(this.$route.params.id !== undefined){
+            return Crime.query().with('classeJudicial').where('classeJudicial_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return Crime.query().with('classeJudicial').all()
+        }
     }
   },
   methods: {
@@ -225,6 +232,9 @@ export default {
       }
     },
     close() {
+    let offset = 0
+    this.getAllCrime(offset)
+    this.getAllJurisdicao(offset)
       this.show_dialog = false
       this.crime = {}
       this.classeJudicial = {}
@@ -261,8 +271,8 @@ export default {
       this.show_dialog = true
     },
     getAllCrime(offset) {
+  if(offset >= 0){
       Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
-          console.log(resp)
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCrime(offset), 2)
@@ -270,10 +280,11 @@ export default {
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+      }
     },
     getAllJurisdicao(offset) {
-      ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
-          console.log(resp)
+      if(offset >= 0){
+        ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao, 2)
@@ -281,7 +292,9 @@ export default {
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
-    },
+        }
+      },
+    
     filterFn(val, update, abort) {
       const stringOptions = this.allJurisdicoes
       if (val === '') {
@@ -313,7 +326,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.crime.crimes.map(row =>
+          this.allCrimes.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(
@@ -336,6 +349,9 @@ export default {
         })
       }
     }
-  }
+  },
+  props:[
+    'localJurisdicao'
+  ]
 }
 </script>

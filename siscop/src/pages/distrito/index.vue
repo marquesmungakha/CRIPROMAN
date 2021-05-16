@@ -139,8 +139,10 @@ export default {
     return this.allDistritos()
   },
   mounted() {
-    this.getAllProvincia()
-    this.getAllDistrito()
+    this.provincia = this.localProvincia
+    let offset = 0
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
   },
   components: {
     'create-edit-form': require('components/distrito/createEditForm.vue').default
@@ -164,7 +166,13 @@ export default {
       return Provincia.query().all()
     },
     allDistritos() {
-      return Distrito.query().with('provincia').all()
+
+       if(this.$route.params.id !== undefined){
+            return Distrito.query().with('provincia').where('provincia_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return Distrito.query().with('provincia').all()
+        }
     }
   },
   methods: {
@@ -236,7 +244,9 @@ export default {
       }
     },
     close() {
-      this.getAllDistrito()
+      let offset = 0
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
       this.show_dialog = false
       this.distrito = {}
       this.props = this.distrito
@@ -274,26 +284,27 @@ export default {
       this.distrito.provincia = this.provincia
       this.show_dialog = true
     },
-    getAllDistrito() {
-      Distrito.api().get('/distrito?offset=0&max=1000000').then(resp => {
-        console.log(resp)
-      }).catch(error => {
-        console.log(error)
-        if (error.request.response != null) {
-          const arrayErrors = JSON.parse(error.request.response)
-          if (arrayErrors.total == null) {
-            this.listErrors.push(arrayErrors.message)
-          } else {
-            arrayErrors._embedded.errors.forEach(element => {
-              this.listErrors.push(element.message)
-            })
-          }
-          console.log(this.listErrors)
-        }
-      })
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllProvincia() {
-      return Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllDistrito(offset) {
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     filterFn(val, update, abort) {
       const stringOptions = this.allProvincias
@@ -349,6 +360,10 @@ export default {
         })
       }
     }
-  }
+  },
+   props:
+    [
+      'localProvincia',
+    ]
 }
 </script>

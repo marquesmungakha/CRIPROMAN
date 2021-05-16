@@ -9,12 +9,14 @@ import org.informservice.criproman.processoInstrucaoPreparatoria.ProcessoInstruc
 @Resource(uri='/api/processoInstrucaoPreparatoriaPossuidor')
 class ProcessoInstrucaoPreparatoriaPossuidor {
 
+    String declaracao
     ProcessoInstrucaoPreparatoria processo
     Possuidor possuidor
 
     static belongsTo = ProcessoInstrucaoPreparatoria
 
     static constraints = {
+        declaracao maxSize: 15000
     }
 
     static mapping = {

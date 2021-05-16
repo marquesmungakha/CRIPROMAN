@@ -40,31 +40,30 @@
           <q-tabs
             v-model="tab"
             active-color="white"
-            align="left"
+            align="center"
             class="bg-teal text-white shadow-2"
             indicator-color="white"
             narrow-indicator>
-            <q-tab label="crimes" name="crimes"/>
+            <q-tab label="Tipos Legais de Crime" name="crimes"/>
           </q-tabs>
 
           <q-separator/>
 
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="crimes">
-              <div class="text-h6">{{ $t('crimes') }}</div>
-              Component List Crimes
+              <list-crimes :localJurisdicao.sync="jurisdicao"/>
             </q-tab-panel>
           </q-tab-panels>
         </q-card>
       </div>
-    </div>
-    <create-edit-form :close="close"
+       <create-edit-form :close="close"
                       :createJurisdicao="createJurisdicao"
                       :designacao.sync="localJurisdicao.designacao"
                       :listErrors="listErrors"
                       :removeJurisdicao="removeJurisdicao"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+    </div>
   </q-page>
 </template>
 
@@ -103,7 +102,8 @@ export default {
     }
   },
   components: {
-    'create-edit-form': require('components/jurisdicao/createEditForm.vue').default
+    'create-edit-form': require('components/jurisdicao/createEditForm.vue').default,
+    'list-crimes': require('pages/crime/index.vue').default
   },
   methods: {
     removeJurisdicao(jurisdicao) {
@@ -186,7 +186,7 @@ export default {
       splitterModel: 20,
       tab: 'crimes',
       localJurisdicao: {
-        designacao: ''
+      designacao: ''
       }
     }
   },
@@ -196,13 +196,13 @@ export default {
         title: 'Detalhes da Família Delitiva',
         basicInformation: 'Informacção da Família Delitiva',
         designacao: 'Designação',
-        crimes: 'Crimes'
+        crimes: 'Tipos Legais de Crimes'
       },
       en: {
         title: 'Detalhes da Família Delitiva',
         basicInformation: 'Informacção da Família Delitiva',
         designacao: 'Designação',
-        crimes: 'Crimes'
+        crimes: 'Tipos Legais de Crimes'
       }
     }
   }

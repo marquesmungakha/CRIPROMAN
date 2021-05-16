@@ -164,10 +164,13 @@ export default {
     return this.getAllPostoAdministrativo()
   },
   mounted() {
-    this.getAllPais()
-    this.getAllPostoAdministrativo()
-    this.getAllProvincia()
-    this.getAllDistrito()
+   this.distrito = this.localDistrito
+   this.provincia = this.localProvincia
+   let offset = 0
+    this.getAllPais(offset)
+    this.getAllPostoAdministrativo(offset)
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
   },
   components: {
     'create-edit-form': require('components/postoAdministrativo/createEditForm.vue').default
@@ -197,7 +200,14 @@ export default {
       return Distrito.query().all()
     },
     allPostoAdministrativos() {
-      return PostoAdministrativo.query().with('distrito.provincia').all()
+
+      if(this.$route.params.id !== undefined){
+            return PostoAdministrativo.query().with('distrito.provincia').where('distrito_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return PostoAdministrativo.query().with('distrito.provincia').all()
+        }
+
     }
   },
   methods: {
@@ -271,10 +281,11 @@ export default {
       }
     },
     close() {
-      this.getAllPostoAdministrativo()
-      this.getAllPais()
-      this.getAllProvincia()
-      this.getAllDistrito()
+      let offset = 0
+    this.getAllPais(offset)
+    this.getAllPostoAdministrativo(offset)
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
       this.show_dialog = false
       this.postoAdministrativo = {}
       this.props = this.postoAdministrativo
@@ -310,36 +321,49 @@ export default {
       this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    getAllPostoAdministrativo() {
-      PostoAdministrativo.api().get('/postoAdministrativo?offset=0&max=1000000').then(resp => {
-        console.log(resp)
-      }).catch(error => {
-        console.log(error)
-        if (error.request.response != null) {
-          const arrayErrors = JSON.parse(error.request.response)
-          if (arrayErrors.total == null) {
-            this.listErrors.push(arrayErrors.message)
-          } else {
-            arrayErrors._embedded.errors.forEach(element => {
-              this.listErrors.push(element.message)
-            })
-          }
-          console.log(this.listErrors)
-        }
-      })
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllProvincia() {
-      return Provincia.api().get('/provincia?offset=0&max=1000000', {
-        persistOptions: {
-          insert: ['pais']
-        }
-      })
+    getAllDistrito(offset) {
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllDistrito() {
-      Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllPostoAdministrativo(offset) {
+      if(offset >= 0){
+          PostoAdministrativo.api().get("/postoAdministrativo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPostoAdministrativo(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format
@@ -368,6 +392,10 @@ export default {
         })
       }
     }
-  }
+  }, props:
+    [
+      'localDistrito',
+      'localProvincia'
+    ]
 }
 </script>

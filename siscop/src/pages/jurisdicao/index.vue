@@ -101,7 +101,8 @@ export default {
     return this.getAllJurisdicao()
   },
   mounted() {
-    this.getAllJurisdicao()
+    let offset = 0
+    this.getAllJurisdicao(offset)
   },
   components: {
     'create-edit-form': require('components/jurisdicao/createEditForm.vue').default
@@ -192,7 +193,8 @@ export default {
       }
     },
     close() {
-      this.getAllJurisdicao()
+     let offset = 0
+    this.getAllJurisdicao(offset)
       this.show_dialog = false
       this.jurisdicao = {}
       this.props = this.jurisdicao
@@ -228,7 +230,15 @@ export default {
       this.show_dialog = true
     },
     getAllJurisdicao() {
-      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+      if(offset >= 0){
+          ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllJurisdicao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

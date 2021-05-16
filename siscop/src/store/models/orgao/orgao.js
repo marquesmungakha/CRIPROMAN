@@ -2,6 +2,7 @@ import {Model} from "@vuex-orm/core";
 import Provincia from "src/store/models/provincia/provincia";
 import Alocacao from "../alocacao/alocacao";
 import AutoEntrada from "../autoEntrada/autoEntrada";
+import DependenciaOrgao from "../dependenciaOrgao/dependenciaOrgao";
 import Distrito from "../distrito/distrito"
 import ProcessoInstrucaoPreparatoria from "../processoInstrucaoPreparatoria/processoInstrucaoPreparatoria";
 import ResponsavelOrgao from "../responsavelOrgao/responsavelOrgao";
@@ -32,6 +33,7 @@ export default class Orgao extends Model {
       autosEntrada: this.hasMany(AutoEntrada, "orgao_id"),
       processosInstrucaoPreparatoria: this.hasMany(ProcessoInstrucaoPreparatoria, "orgao_id"),
       responsaveisOrgao: this.hasMany(ResponsavelOrgao, "orgao_id"),
+      dependenciasOrgao: this.hasMany(DependenciaOrgao, "orgao_id")
     }
   }
 

@@ -1,5 +1,7 @@
 <template>
   <q-page>
+   <div class="row q-col-gutter-sm q-ma-xs">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
     <q-card bordered class="my-card" flat>
       <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -46,6 +48,28 @@
         </div>
       </div>
     </q-card>
+     </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card>
+          <q-tabs
+            v-model="tab1"
+            active-color="white"
+            align="center"
+            class="bg-teal text-white shadow-2"
+            indicator-color="white"
+            narrow-indicator>
+            <q-tab label="postosAdministrativo" name="postosAdministrativo"/>
+          </q-tabs>
+
+          <q-separator/>
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="postosAdministrativo">
+            <list-postoAdministrativo :localDistrito.sync="distrito" :localProvincia.sync="distrito.provincia"/>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </div>
+
     <create-edit-form :close="close"
                       :codigo.sync="localDistrito.codigo"
                       :createDistrito="createDistrito"
@@ -56,6 +80,7 @@
                       :removeDistrito="removeDistrito"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+    </div>
   </q-page>
 </template>
 
@@ -71,7 +96,7 @@ export default {
       options: [],
       submitting: false,
       show_dialog: false,
-      tab: 'cidades',
+      tab: 'postosAdministrativo',
       tab1: 'comments',
       tab2: 'comments',
       splitterModel: 20,
@@ -119,7 +144,8 @@ export default {
     }
   },
   components: {
-    'create-edit-form': require('components/distrito/createEditForm.vue').default
+    'create-edit-form': require('components/distrito/createEditForm.vue').default,
+    'list-postoAdministrativo': require('pages/postoAdministrativo/index.vue').default
   },
   methods: {
     removeDistrito(distrito) {
@@ -232,7 +258,7 @@ export default {
         codigo: 'Código',
         designacao: 'Designação',
         provincia: 'Província',
-        cidades: 'Cidades',
+        postosAdministrativo: 'Postos Administrativos',
         comments: 'Comentários'
       },
       en: {
@@ -241,7 +267,7 @@ export default {
         codigo: 'Código',
         designacao: 'Designação',
         provincia: 'Província',
-        cidades: 'Cidades',
+        postosAdministrativo: 'Postos Administrativos',
         comments: 'Comentários'
       }
     }

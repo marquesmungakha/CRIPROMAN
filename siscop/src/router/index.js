@@ -30,31 +30,50 @@ export default function (/* { store, ssrContext } */) {
   })
 
   Router.beforeEach((to, from, next) => {
-       const authUser = Login.query().first()
+       const authUser = Login.query()
     //  if(!to.meta.requiresAuth && !authUser) {
-    //   return next()
+    //   // return next()
+    //   // console.log("entra 1")
+    //   return next({path:'/login'})
     //  }
 
-    // if(!authUser) {
-    //   return next({path:'/Login'})
-    // }
-
-    // if (findOne(to.meta.roles,authUser.auth.isAuthenticated.roles)) {
-    //   console.log(' yes >'+to.meta.roles+ " <> "+authUser.auth.isAuthenticated.roles);
+    // authUser.auth.isAuthenticated.roles findOne(to.meta.roles, authUser.roles
+   // console.log(authUser.first())
+    // if(authUser.first() === null) {
+    //   // console.log("entra 2")
+    //   return next({path:'/login'})
+    //   //return next()
+    // }else{
     //   return next()
-    // } else {
-    //   console.log('NO'+to.meta.roles.includes(authUser.auth.isAuthenticated.roles)+' '+to.meta.roles+' >> '+authUser.auth.isAuthenticated.roles)
-    //   return next({name:'Home'})
     // }
+    
+  //   else{
+  //       if (authUser.roles.find(element => element > to.meta.roles)) {
+  //         console.log("entra 3")
+  //         // console.log(' yes >'+to.meta.roles+ " <> "+authUser.roles);
+  //         return next()
+  //       } else {
+  //         console.log("entra 4")
+  //         console.log('NO'+to.meta.roles.includes(authUser.roles)+' '+to.meta.roles+' >> '+authUser.roles)
+  //         return next()
+  //       }
+  // }
 
-    console.log('beforeEach', to.path + ' - Auth: ' + authUser)
+    // console.log("entra 5")
+    // next()
+    // console.log('beforeEach', to.path + ' - Auth: ' + authUser)
+
     if ((to.path !== '/login' && to.path !== 'login') && authUser === null) {
+      // console.log("entra 1")
       next({ path: '/login' })
     } else if ((to.path === '/login' || to.path === 'login') && authUser !== null) {
+      console.log("entra 2")
+      console.log(authUser.username)
       next({ path: '/' })
     } else {
-      next()
-    }
+        next()
+      }
+    
   })
 
 // axios.interceptors.response.use((response) => {

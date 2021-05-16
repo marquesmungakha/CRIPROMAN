@@ -151,8 +151,9 @@ export default {
   },
   props: ['processoInvestigacao'],
   mounted() {
-    this.getAllCorpoDelito()
-    this.getAllInspector()
+    let offset = 0
+    this.getAllCorpoDelito(offset)
+    this.getAllInspector(offset)
   },
   components: {
     'create-edit-form': require('components/corpoDelito/createEditForm.vue').default
@@ -239,8 +240,9 @@ export default {
       }
     },
     close() {
-      this.getAllCorpoDelito()
-      this.getAllInspector()
+      let offset = 0
+    this.getAllCorpoDelito(offset)
+    this.getAllInspector(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.corpoDelito = {}
@@ -276,11 +278,27 @@ export default {
       this.inspector = Inspector.query().find(corpoDelito.inspector.id)
       this.show_dialog = true
     },
-    getAllCorpoDelito() {
-      CorpoDelito.api().get("/corpoDelito?offset=0&max=1000000")
+    getAllCorpoDelito(offset) {
+       if(offset >= 0){
+          CorpoDelito.api().get("/corpoDelito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllCorpoDelito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllInspector() {
-      Inspector.api().get("/inspector?offset=0&max=1000000")
+    getAllInspector(offset) {
+       if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

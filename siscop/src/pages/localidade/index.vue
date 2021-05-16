@@ -185,6 +185,9 @@ export default {
     return this.getAllLocalidade()
   },
   mounted() {
+    this.distrito = this.localDistrito
+    this.provincia = this.localProvincia
+    this.postoAdministrativo = this.localPostoAdministrativo
     this.getAllPais()
     this.getAllPostoAdministrativo()
     this.getAllProvincia()
@@ -225,7 +228,14 @@ export default {
       return PostoAdministrativo.query().with('distrito').where('distrito_id', this.distrito.id).get()
     },
     allLocalidades() {
-      return Localidade.query().with('distrito.provincia').with('postoAdministrativo').all()
+
+        if(this.$route.params.id !== undefined){
+            return Localidade.query().with('distrito.provincia').with('postoAdministrativo').where('postoAdministrativo_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return Localidade.query().with('distrito.provincia').with('postoAdministrativo').all()
+        }
+
     }
   },
   methods: {
@@ -343,39 +353,60 @@ export default {
       this.provincia = Provincia.query().find(this.distrito.provincia_id)
       this.show_dialog = true
     },
-    getAllLocalidade() {
-      Localidade.api().get('/localidade?offset=0&max=1000000').then(resp => {
-        console.log(resp)
-      }).catch(error => {
-        console.log(error)
-        if (error.request.response != null) {
-          const arrayErrors = JSON.parse(error.request.response)
-          if (arrayErrors.total == null) {
-            this.listErrors.push(arrayErrors.message)
-          } else {
-            arrayErrors._embedded.errors.forEach(element => {
-              this.listErrors.push(element.message)
-            })
-          }
-          console.log(this.listErrors)
-        }
-      })
+  getAllLocalidade(offset) {
+          if(offset >= 0){
+          Localidade.api().get("/localidade?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllLocalidade(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      return Provincia.api().get('/provincia?offset=0&max=1000000', {
-        persistOptions: {
-          insert: ['pais']
-        }
-      })
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllDistrito() {
-      Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllDistrito(offset) {
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllPostoAdministrativo() {
-      PostoAdministrativo.api().get('/postoAdministrativo?offset=0&max=1000000')
+    getAllPostoAdministrativo(offset) {
+      if(offset >= 0){
+          PostoAdministrativo.api().get("/postoAdministrativo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPostoAdministrativo(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     filterFn(val, update, abort) {
       const stringOptions = this.allDistritos
@@ -431,6 +462,11 @@ export default {
         })
       }
     }
-  }
+  }, props:
+    [
+      'localDistrito',
+      'localProvincia',
+      'localPostoAdministrativo'
+    ]
 }
 </script>

@@ -152,8 +152,9 @@ export default {
   },
   props: ['processoInvestigacao'],
   mounted() {
-    this.getAllPergunta()
-    this.getAllInspector()
+    let offset = 0
+    this.getAllPergunta(offset)
+    this.getAllInspector(offset)
   },
   components: {
     'create-edit-form': require('components/pergunta/createEditForm.vue').default
@@ -240,8 +241,9 @@ export default {
       }
     },
     close() {
-      this.getAllPergunta()
-      this.getAllInspector()
+      let offset = 0
+    this.getAllPergunta(offset)
+    this.getAllInspector(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.pergunta = {}
@@ -277,11 +279,27 @@ export default {
       this.inspector = Inspector.query().find(pergunta.inspector.id)
       this.show_dialog = true
     },
-    getAllPergunta() {
-      Pergunta.api().get("/pergunta?offset=0&max=1000000")
+    getAllPergunta(offset) {
+       if(offset >= 0){
+          Pergunta.api().get("/pergunta?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPergunta(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllInspector() {
-      Inspector.api().get("/inspector?offset=0&max=1000000")
+  getAllInspector(offset) {
+       if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

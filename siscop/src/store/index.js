@@ -131,8 +131,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use((response) => {
   return response
 }, async function (error) {
-  console.log(localStorage.getItem('refresh_token'))
-  console.log(Login.query().all())
+//  console.log(localStorage.getItem('refresh_token'))
+ // console.log(Login.query().all())
 
   const originalRequest = error.config;
   if ((error.response.status === 403 || error.response.status === 401) && !originalRequest._retry) {

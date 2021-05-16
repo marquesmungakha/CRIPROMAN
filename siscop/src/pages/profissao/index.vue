@@ -101,7 +101,8 @@ export default {
     return this.getAllProfissao()
   },
   mounted() {
-    this.getAllProfissao()
+    let offset = 0
+    this.getAllProfissao(offset)
   },
   components: {
     'create-edit-form': require('components/profissao/createEditForm.vue').default
@@ -192,7 +193,8 @@ export default {
       }
     },
     close() {
-      this.getAllProfissao()
+     let offset = 0
+    this.getAllProfissao(offset)
       this.show_dialog = false
       this.profissao = {}
       this.props = this.profissao
@@ -228,7 +230,15 @@ export default {
       this.show_dialog = true
     },
     getAllProfissao() {
-      Profissao.api().get('/profissao?offset=0&max=1000000')
+       if(offset >= 0) {
+         Profissao.api().get("/profissao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllProfissao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
     exportTable() {
       // naive encoding to csv format

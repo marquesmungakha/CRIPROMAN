@@ -11,7 +11,8 @@ import org.informservice.criproman.processoInvestigacao.ProcessoInvestigacao
 class Detencao extends PecaProcesso {
 
     String localDetencao
-    MotivoDetencao motivoDetencao
+    String motivoDetencao
+    // MotivoDetencao motivoDetencao
 
     static belongsTo = [processo: ProcessoInvestigacao]
 

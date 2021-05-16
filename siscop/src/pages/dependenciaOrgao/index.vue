@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-    <q-table :columns="columns" :data="allOrgaos" :filter="filter" binary-state-sort row-key="name" title="Orgao">
+    <q-table :columns="columns" :data="allOrgaos" :filter="filter" binary-state-sort row-key="name" title="Sub-Orgao">
 
       <template v-slot:top-right>
         <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
@@ -48,7 +48,7 @@
             </q-popup-edit>
           </q-td>
           <q-td key="distrito" :props="props">
-            <div class="text-pre-wrap">{{ props.row.distrito.designacao }}</div>
+            <div class="text-pre-wrap">{{ props.row.distrito.designaca }}</div>
             <q-popup-edit v-model="props.row.distrito.designacao">
               <q-input v-model="props.row.distrito.designacao" autofocus dense></q-input>
             </q-popup-edit>
@@ -122,11 +122,13 @@ export default {
       },
       provincia: {
         codigo: '',
-        designacao: ''
+        designacao: '',
+        pais:{}
       },
       distrito: {
         codigo: '',
-        designacao: ''
+        designacao: '',
+        provincia:{}
       },
       tipoOrgao: {
         codigo: '',
@@ -237,16 +239,16 @@ export default {
       return Pais.query().all()
     },
     allProvincias() {
-      return Provincia.query().all()
+      return Provincia.query().with('pais').all()
     },
     allDistritos() {
-      return Distrito.query().all()
+      return Distrito.query().with('provincia').all()
     },
     allDistritosFromProvincia() {
-      return Distrito.query().where('provincia_id', this.provincia.id).get()
+      return Distrito.query().with('provincia').where('provincia_id', this.provincia.id).get()
     },
      allOrgaos() {
-      return DependenciaOrgao.query().with('tipoOrgao').with('provincia').with('distrito').where('orgao_id',this.orgao.id).all()
+      return DependenciaOrgao.query().with('tipoOrgao').with('provincia.pais').with('distrito.provincia.pais').where('orgao_id',this.orgao.id).all()
     }
   },
   methods: {
@@ -256,20 +258,17 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
+      this.provincia.pais = Pais.query().find(this.provincia.pais_id)
       this.dependenciaOrgao.provincia_id = this.provincia.id
       this.dependenciaOrgao.provincia = this.provincia
-      this.provincia.pais = Pais.query().find(this.provincia.pais_id)
       this.dependenciaOrgao.tipoOrgao_id = this.tipoOrgao.id
       this.dependenciaOrgao.tipoOrgao = this.tipoOrgao
       this.dependenciaOrgao.orgao_id = this.orgao.id
-       this.dependenciaOrgao.orgao = this.orgao
-      if (this.distrito == null) {
-        this.distrito = {}
-      } else {
-        this.orgao.distrito_id = this.distrito.id
-        this.distrito.provincia = this.provincia
-      }
-      this.orgao.distrito = this.distrito
+      this.dependenciaOrgao.orgao = this.orgao
+      this.dependenciaOrgao.distrito_id = this.distrito.id
+      this.distrito.provincia = this.provincia
+      this.dependenciaOrgao.distrito = this.distrito
+
       if (this.editedIndex > -1) {
         DependenciaOrgao.api().patch("/dependenciaOrgao/" + this.dependenciaOrgao.id, this.dependenciaOrgao).then(resp => {
           this.$q.notify({
@@ -330,17 +329,18 @@ export default {
       }
     },
     close() {
-      this.getAllPais()
-      this.getAllOrgao()
-      this.getAllTipoOrgao()
-      this.getAllProvincia()
-      this.getAllDistrito()
+      let offset = 0
+      this.getAllPais(offset)
+      this.getAllOrgao(offset)
+      this.getAllTipoOrgao(offset)
+      this.getAllProvincia(offset)
+      this.getAllDistrito(offset)
       this.show_dialog = false
       this.orgao = {}
       this.provincia = {}
       this.distrito = {}
       this.tipoOrgao = {}
-      this.props = this.orgao
+      this.props = this.dependenciaOrgao
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)
@@ -366,12 +366,13 @@ export default {
         Orgao.api().delete("/dependenciaOrgao/" + orgao.id)
       })
     },
-    editaOrgao(orgao) {
+    editaOrgao(dependenciaOrgao) {
+      console.log(dependenciaOrgao)
       this.editedIndex = 0
-      this.orgao = Object.assign({}, orgao)
-      this.tipoOrgao = TipoOrgao.query().find(orgao.tipoOrgao.id)
-      this.provincia = Provincia.query().with('pais').find(orgao.provincia.id)
-      this.distrito = Distrito.query().with('provincia').find(orgao.distrito.id)
+      this.dependenciaOrgao = Object.assign({}, dependenciaOrgao)
+      this.tipoOrgao = TipoOrgao.query().find(dependenciaOrgao.tipoOrgao.id)
+      this.provincia = Provincia.query().with('pais').find(dependenciaOrgao.provincia.id)
+      this.distrito = Distrito.query().with('provincia.pais').find(dependenciaOrgao.distrito.id)
       this.show_dialog = true
     },
     filterFn(val, update, abort) {
@@ -396,65 +397,64 @@ export default {
       }
     },
     getAllOrgao(offset) {
-      DependenciaOrgao.api().get("/dependenciaOrgao?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
+        if(offset >= 0){
+           DependenciaOrgao.api().get("/dependenciaOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllOrgao, 2)
+              setTimeout(this. getAllOrgao(offset), 2)
 
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+        }
     },
     getAllTipoOrgao(offset) {
-      TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
+        if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllTipoOrgao, 2)
+              setTimeout(this.getAllTipoOrgao(offset), 2)
 
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+        }
     },
-    getAllPais(offset) {
-      Pais.api().get("/pais?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
-          if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllPais, 2)
-
+  getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+       }
     },
     getAllProvincia(offset) {
-      Provincia.api().get("/provincia?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
-          if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllProvincia, 2)
-
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+      }
     },
     getAllDistrito(offset) {
-      Distrito.api().get("/distrito?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
-          if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllDistrito, 2)
-
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+      }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')
-    },
-    setModel(val) {
-      this.orgao.tipoOrgao = val
     },
     exportTable() {
       // naive encoding to csv format

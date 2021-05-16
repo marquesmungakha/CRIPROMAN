@@ -101,7 +101,8 @@ export default {
     return this.getAllModoAtuacao()
   },
   mounted() {
-    this.getAllModoAtuacao()
+    let offset = 0
+    this.getAllModoAtuacao(offset)
   },
   components: {
     'create-edit-form': require('components/modoAtuacao/createEditForm.vue').default
@@ -192,7 +193,8 @@ export default {
       }
     },
     close() {
-      this.getAllModoAtuacao()
+    let offset = 0
+    this.getAllModoAtuacao(offset)
       this.show_dialog = false
       this.modoAtuacao = {}
       this.props = this.modoAtuacao
@@ -227,8 +229,17 @@ export default {
       this.modoAtuacao = Object.assign({}, modoAtuacao)
       this.show_dialog = true
     },
-    getAllModoAtuacao() {
-      ModoAtuacao.api().get('/modoAtuacao?offset=0&max=1000000')
+    getAllModoAtuacao(offset) {
+       if(offset >=0){
+          ModoAtuacao.api().get("/modoAtuacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllModoAtuacao(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format

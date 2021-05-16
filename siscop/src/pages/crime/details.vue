@@ -1,7 +1,5 @@
 <template>
-  <q-page>
-    <div class="row q-col-gutter-sm q-ma-xs">
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+  <q-page class="q-ma-xs">
         <q-card bordered class="my-card" flat>
           <q-card-section class="bg-secondary text-white">
             <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -41,8 +39,6 @@
             </div>
           </div>
         </q-card>
-      </div>
-    </div>
     <create-edit-form :classeJudicial.sync="classeJudicial"
                       :close="close"
                       :createCrime="createCrime"
@@ -195,20 +191,20 @@ export default {
   i18n: {
     messages: {
       pt: {
-        title: 'Detalhes da Província',
-        basicInformation: 'Informacção do Província',
+        title: 'Detalhes do Tipo Legal de Crime',
+        basicInformation: 'Informacção do Tipo Legal de Crime',
         codigo: 'Código',
         designacao: 'Designação',
-        jurisdicao: 'Jurisdição',
+        jurisdicao: 'Famílias Delitivas',
         distritos: 'Distritos',
         comments: 'Comentários'
       },
       en: {
-        title: 'Detalhes do Província',
-        basicInformation: 'Informacção do Província',
+        title: 'Detalhes do  Tipo Legal de Crime',
+        basicInformation: 'Informacção do Tipo Legal de Crime',
         codigo: 'Código',
         designacao: 'Designação',
-        jurisdicao: 'Jurisdição',
+        jurisdicao: 'Famílias Delitivas',
         distritos: 'Distritos',
         comments: 'Comentários'
       }

@@ -202,9 +202,10 @@ export default {
     'orgao'
   ],
   mounted() {
-    this.getAllAlocacao()
-    this.getAllFuncao()
-    this.getAllQuadro()
+    let offset = 0
+    this.getAllAlocacao(offset)
+    this.getAllFuncao(offset)
+    this.getAllQuadro(offset)
   },
   components: {
     'create-edit-form': require('components/alocacao/createEditForm.vue').default
@@ -295,9 +296,10 @@ export default {
       }
     },
     close() { 
-      this.getAllAlocacao()
-      this.getAllFuncao()
-      this.getAllQuadro()
+      let offset = 0
+      this.getAllAlocacao(offset)
+      this.getAllFuncao(offset)
+      this.getAllQuadro(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.alocacao = {}
@@ -334,14 +336,38 @@ export default {
       this.alocacao.quadro.id = Quadro.query().find(this.quadro.id)
       this.show_dialog = true
     },
-    getAllAlocacao() {
-      Alocacao.api().get('/alocacao?offset=0&max=1000000')
+    getAllAlocacao(offset) {
+      if(offset >= 0){
+          Alocacao.api().get("/alocacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllAlocacao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllFuncao() {
-      Funcao.api().get('/funcao?offset=0&max=1000000')
+    getAllFuncao(offset) {
+      if(offset >= 0){
+          Funcao.api().get("/funcao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllFuncao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-     getAllQuadro() {
-      Quadro.api().get('/quadro?offset=0&max=1000000')
+     getAllQuadro(offset) {
+       if(offset >= 0){
+          Quadro.api().get("/quadro?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllQuadro(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     }
     },
     exportTable() {

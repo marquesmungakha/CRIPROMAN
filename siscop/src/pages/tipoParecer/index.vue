@@ -118,7 +118,8 @@ export default {
     return this.getAllTipoParecer()
   },
   mounted() {
-    this.getAllTipoParecer()
+    let offset = 0
+    this.getAllTipoParecer(offset)
   },
   components: {
     'create-edit-form': require('components/tipoParecer/createEditForm.vue').default
@@ -209,7 +210,8 @@ export default {
       }
     },
     close() {
-      this.getAllTipoParecer()
+    let offset = 0
+    this.getAllTipoParecer(offset)
       this.show_dialog = false
       this.tipoParecer = {}
       this.props = this.tipoParecer
@@ -244,8 +246,15 @@ export default {
       this.tipoParecer = Object.assign({}, tipoParecer)
       this.show_dialog = true
     },
-    getAllTipoParecer() {
-      TipoParecer.api().get('/tipoParecer?offset=0&max=1000000')
+    getAllTipoParecer(offset) {
+       if(offset >= 0){
+          TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoParecer(offset), 2)
+          }).catch(error => {
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

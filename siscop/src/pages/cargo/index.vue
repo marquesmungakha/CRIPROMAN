@@ -100,7 +100,8 @@ export default {
     return this.getAllCargo()
   },
   mounted() {
-    this.getAllCargo()
+     let offset = 0
+    this.getAllCargo(offset)
   },
   components: {
     'create-edit-form': require('components/cargo/createEditForm.vue').default
@@ -191,7 +192,8 @@ export default {
       }
     },
     close() {
-      this.getAllCargo()
+    let offset = 0
+    this.getAllCargo(offset)
       this.show_dialog = false
       this.cargo = {}
       this.props = this.cargo
@@ -226,8 +228,16 @@ export default {
       this.cargo = Object.assign({}, cargo)
       this.show_dialog = true
     },
-    getAllCargo() {
-      Cargo.api().get('/cargo?offset=0&max=1000000')
+    getAllCargo(offset) {
+       if(offset >= 0){
+          Cargo.api().get("/cargo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllCargo(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

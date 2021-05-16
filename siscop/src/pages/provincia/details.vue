@@ -1,5 +1,7 @@
 <template>
   <q-page>
+   <div class="row q-col-gutter-sm q-ma-xs">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
     <q-card bordered class="my-card" flat>
       <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -48,17 +50,38 @@
       </div>
 
     </q-card>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <q-card>
+                <q-tabs
+                  v-model="tab1"
+                  active-color="white"
+                  align="center"
+                  class="bg-teal text-white shadow-2"
+                  indicator-color="white"
+                  narrow-indicator>
+                  <q-tab label="distritos" name="distritos"/>
+                </q-tabs>
 
-    <create-edit-form :close="close"
-                      :codigo.sync="localProvincia.codigo"
-                      :createProvincia="createProvincia"
-                      :designacao.sync="localProvincia.designacao"
-                      :listErrors="(listErrors)"
-                      :pais.sync="pais"
-                      :paises="allPaises"
-                      :removeProvincia="removeProvincia"
-                      :show_dialog="show_dialog"
-                      :submitting="submitting"/>
+                <q-separator/>
+                <q-tab-panels v-model="tab" animated>
+                  <q-tab-panel name="distritos">
+                  <list-distrito :localProvincia.sync="provincia"/>
+                  </q-tab-panel>
+                </q-tab-panels>
+              </q-card>
+          </div>
+          <create-edit-form :close="close"
+                            :codigo.sync="localProvincia.codigo"
+                            :createProvincia="createProvincia"
+                            :designacao.sync="localProvincia.designacao"
+                            :listErrors="(listErrors)"
+                            :pais.sync="pais"
+                            :paises="allPaises"
+                            :removeProvincia="removeProvincia"
+                            :show_dialog="show_dialog"
+                            :submitting="submitting"/>
+    </div>
   </q-page>
 </template>
 
@@ -125,7 +148,8 @@ export default {
     }
   },
   components: {
-    'create-edit-form': require('components/provincia/createEditForm.vue').default
+    'create-edit-form': require('components/provincia/createEditForm.vue').default,
+    'list-distrito': require('pages/distrito/index.vue').default
   },
   methods: {
     removeProvincia(provincia) {

@@ -167,8 +167,9 @@ export default {
   },
   props: ['processoInvestigacao'],
   mounted() {
-    this.getAllApreensao()
-    this.getAllInspector()
+    let offset = 0
+    this.getAllApreensao(offset)
+    this.getAllInspector(offset)
   },
   components: {
     'create-edit-form': require('components/apreensao/createEditForm.vue').default
@@ -255,8 +256,9 @@ export default {
       }
     },
     close() {
-      this.getAllApreensao()
-      this.getAllInspector()
+      let offset = 0
+      this.getAllApreensao(offset)
+      this.getAllInspector(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.apreensao = {}
@@ -292,11 +294,27 @@ export default {
       this.inspector = Inspector.query().find(apreensao.inspector.id)
       this.show_dialog = true
     },
-    getAllApreensao() {
-      Apreensao.api().get("/apreensao?offset=0&max=1000000")
+    getAllApreensao(offset) {
+      if(offset >= 0){
+          Apreensao.api().get("/apreensao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllApreensao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllInspector() {
-      Inspector.api().get("/inspector?offset=0&max=1000000")
+    getAllInspector(offset) {
+        if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

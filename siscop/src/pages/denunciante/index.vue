@@ -379,11 +379,11 @@ export default {
   ],
   mounted() {
     let offset = 0
-    this.getAllDenunciante()
-    this.getAllDenuncianteProcesso()
-    this.getAllProvincia()
-    this.getAllPais()
-    this.getAllTipoDocumentoIdentificacao()
+    this.getAllDenunciante(offset)
+    this.getAllDenuncianteProcesso(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
   },
   components: {
     'create-edit-form': require('components/denunciante/createEditForm.vue').default,
@@ -574,11 +574,12 @@ export default {
       }
     },
     close() {
-      this.getAllDenuncianteProcesso()
-      this.getAllDenunciante()
-      this.getAllProvincia()
-      this.getAllPais()
-      this.getAllTipoDocumentoIdentificacao()
+     let offset = 0
+    this.getAllDenunciante(offset)
+    this.getAllDenuncianteProcesso(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
       this.denunciante_details_dialog = false
       this.step = 1
       this.offset = 0
@@ -624,9 +625,6 @@ export default {
       this.denunciante_details_dialog = false
     },
     mostraDenunciante(denunciante) {
-
-console.log(denunciante)
-
       this.pecaProcessoDenunciante = Object.assign({}, denunciante)
       this.denunciante =  this.pecaProcessoDenunciante.denunciante
       this.pais = Pais.query().find(this.denunciante.nacionalidade_id)
@@ -638,20 +636,60 @@ console.log(denunciante)
       this.denunciante_details_dialog = true
     },
 
-    getAllDenunciante() {
-      Denunciante.api().get('/denunciante?offset=0&max=1000000')
+    getAllDenunciante(offset) {
+        if(offset >= 0){
+          Denunciante.api().get("/denunciante?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDenunciante(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-     getAllDenuncianteProcesso() {
-      PecaProcessoDenunciante.api().get('/pecaProcessoDenunciante?offset=0&max=1000000')
+     getAllDenuncianteProcesso(offset) {
+       if(offset >= 0){
+          PecaProcessoDenunciante.api().get("/pecaProcessoDenunciante?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDenuncianteProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllTipoDocumentoIdentificacao() {
-      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
+   getAllTipoDocumentoIdentificacao(offset) {
+      if(offset >= 0){
+          TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     onFileChange(event){
       this.denunciante.fotografia = event.target.files[0];

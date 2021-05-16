@@ -58,57 +58,14 @@
             class="bg-teal text-white shadow-2"
             indicator-color="white"
             narrow-indicator>
-            <q-tab label="Distritos" name="distritos"/>
+            <q-tab label="Modelos" name="modelos"/>
           </q-tabs>
 
           <q-separator/>
 
           <q-tab-panels v-model="tab" animated>
-            <q-tab-panel name="distritos">
-              <div class="text-h6">{{ $t('distritos') }}</div>
-              Component List Distritos
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-
-        <q-card>
-          <q-tabs
-            v-model="tab1"
-            active-color="white"
-            align="left"
-            class="bg-teal text-white shadow-2"
-            indicator-color="white"
-            narrow-indicator>
-            <q-tab label="Coments" name="comments"/>
-          </q-tabs>
-
-          <q-separator/>
-
-          <q-tab-panels v-model="tab1" animated>
-            <q-tab-panel name="comments">
-              <div class="text-h6">{{ $t('comments') }}</div>
-              Component List 1
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-
-        <q-card>
-          <q-tabs
-            v-model="tab2"
-            active-color="white"
-            align="left"
-            class="bg-teal text-white shadow-2"
-            indicator-color="white"
-            narrow-indicator>
-            <q-tab label="Coments" name="comments"/>
-          </q-tabs>
-
-          <q-separator/>
-
-          <q-tab-panels v-model="tab2" animated>
-            <q-tab-panel name="comments">
-              <div class="text-h6">{{ $t('comments') }}</div>
-              Component List 2
+            <q-tab-panel name="modelos">
+               <list-modelos :marcaLocal.sync="marca"/>
             </q-tab-panel>
           </q-tab-panels>
         </q-card>
@@ -140,7 +97,7 @@ export default {
       options: [],
       submitting: false,
       show_dialog: false,
-      tab: 'distritos',
+      tab: 'modelos',
       tab1: 'comments',
       tab2: 'comments',
       splitterModel: 20,
@@ -188,7 +145,8 @@ export default {
     }
   },
   components: {
-    'create-edit-form': require('components/marca/createEditForm.vue').default
+    'create-edit-form': require('components/marca/createEditForm.vue').default,
+    'list-modelos': require('pages/modelo/index.vue').default
   },
   methods: {
     removeMarca(marca) {
@@ -300,7 +258,7 @@ export default {
         codigo: 'Código',
         designacao: 'Designação',
         tipoMeio: 'Tipo de Meio',
-        distritos: 'Distritos',
+        modelos: 'Modelos',
         comments: 'Comentários'
       },
       en: {
@@ -309,7 +267,7 @@ export default {
         codigo: 'Código',
         designacao: 'Designação',
         tipoMeio: 'Tipo de Meio',
-        distritos: 'Distritos',
+        modelos: 'Modelos',
         comments: 'Comentários'
       }
     }

@@ -412,11 +412,12 @@ export default {
     'processoInstrucaoPreparatoria'
   ],
   mounted() {
-    this.getAllVitima()
-    this.getAllVitimaProcesso()
-    this.getAllProvincia()
-    this.getAllPais()
-    this.getAllTipoDocumentoIdentificacao()
+    let offset = 0
+    this.getAllVitima(offset)
+    this.getAllVitimaProcesso(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
   },
   components: {
     'create-edit-form': require('components/vitima/createEditForm.vue').default,
@@ -598,11 +599,12 @@ export default {
       }
     },
     close() {
-      this.getAllVitimaProcesso()
-      this.getAllVitima()
-      this.getAllProvincia()
-      this.getAllPais()
-      this.getAllTipoDocumentoIdentificacao()
+    let offset = 0
+    this.getAllVitima(offset)
+    this.getAllVitimaProcesso(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
        this.step = 1
       this.offset = 0
       this.listErrors = {}
@@ -644,20 +646,60 @@ export default {
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.vitima.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    getAllVitima() {
-      Vitima.api().get('/vitima?offset=0&max=1000000')
+    getAllVitima(offset) {
+        if(offset >= 0){
+          Vitima.api().get("/vitima?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllVitima(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-     getAllVitimaProcesso() {
-      ProcessoInstrucaoPreparatoriaVitima.api().get('/processoInstrucaoPreparatoriaVitima?offset=0&max=1000000')
+     getAllVitimaProcesso(offset) {
+       if(offset >= 0){
+          ProcessoInstrucaoPreparatoriaVitima.api().get("/processoInstrucaoPreparatoriaVitima?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllVitimaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllTipoDocumentoIdentificacao() {
-      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
+    getAllTipoDocumentoIdentificacao(offset) {
+      if(offset >= 0){
+          TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+   getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     onFileChange(event){
       this.vitima.fotografia = event.target.files[0];

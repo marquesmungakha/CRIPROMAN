@@ -119,7 +119,8 @@ export default {
     return this.getAllTipoDocumentoIdentificacao()
   },
   mounted() {
-    this.getAllTipoDocumentoIdentificacao()
+   let offset = 0
+      this.getAllTipoDocumentoIdentificacao(offset)
   },
   components: {
     'create-edit-form': require('components/tipoDocumentoIdentificacao/createEditForm.vue').default
@@ -210,7 +211,8 @@ export default {
       }
     },
     close() {
-      this.getAllTipoDocumentoIdentificacao()
+      let offset = 0
+      this.getAllTipoDocumentoIdentificacao(offset)
       this.show_dialog = false
       this.tipoDocumentoIdentificacao = {}
       this.props = this.tipoDocumentoIdentificacao
@@ -245,8 +247,15 @@ export default {
       this.tipoDocumentoIdentificacao = Object.assign({}, tipoDocumentoIdentificacao)
       this.show_dialog = true
     },
-    getAllTipoDocumentoIdentificacao() {
-      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
+    getAllTipoDocumentoIdentificacao(offset) {
+      if(offset >= 0){
+          TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
+          }).catch(error => {
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

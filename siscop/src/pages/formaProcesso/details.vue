@@ -1,7 +1,6 @@
 <template>
   <q-page>
-    <div class="row q-col-gutter-sm q-ma-xs">
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    <div class="q-ma-xs">
         <q-card bordered class="my-card" flat>
           <q-card-section class="bg-secondary text-white">
             <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -52,8 +51,6 @@
             </div>
           </div>
         </q-card>
-      </div>
-    </div>
     <create-edit-form :close="close"
                       :codigo.sync="localFormaProcesso.codigo"
                       :createFormaProcesso="createFormaProcesso"
@@ -62,6 +59,7 @@
                       :removeFormaProcesso="removeFormaProcesso"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+    </div>
   </q-page>
 </template>
 

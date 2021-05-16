@@ -365,12 +365,13 @@ export default {
     'pecaProcesso'
   ],
   mounted() {
-    this.getAllTestemunhaPecaProcesso()
-    this.getAllProfissao()
-    this.getAllTestemunha()
-    this.getAllProvincia()
-    this.getAllPais()
-    this.getAllTipoDocumentoIdentificacao()
+    let offset = 0
+    this.getAllTestemunhaPecaProcesso(offset)
+    this.getAllProfissao(offset)
+    this.getAllTestemunha(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
   },
   components: {
     'create-edit-form': require('components/testemunha/createEditForm.vue').default,
@@ -553,12 +554,13 @@ export default {
       }
     },
     close() {
-      this.getAllTestemunhaPecaProcesso()
-      this.getAllProfissao()
-      this.getAllTestemunha()
-      this.getAllProvincia()
-      this.getAllPais()
-      this.getAllTipoDocumentoIdentificacao()
+     let offset = 0
+    this.getAllTestemunhaPecaProcesso(offset)
+    this.getAllProfissao(offset)
+    this.getAllTestemunha(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
       this.testemunha_details_dialog  = false
       this.step = 1
       this.offset = 0
@@ -614,23 +616,71 @@ export default {
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.testemunha.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.testemunha_details_dialog = true
     },
-    getAllTestemunhaPecaProcesso() {
-      PecaProcessoTestemunha.api().get('/pecaProcessoTestemunha?offset=0&max=1000000')
+    getAllTestemunhaPecaProcesso(offset) {
+      if(offset >= 0){
+          PecaProcessoTestemunha.api().get("/pecaProcessoTestemunha?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTestemunhaPecaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-     getAllTestemunha() {
-      Testemunha.api().get('/testemunha?offset=0&max=1000000')
+     getAllTestemunha(offset) {
+       if(offset >= 0){
+          Testemunha.api().get("/testemunha?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTestemunha(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllTipoDocumentoIdentificacao() {
-      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
+  getAllTipoDocumentoIdentificacao(offset) {
+      if(offset >= 0){
+          TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+   getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllProfissao() {
-      Profissao.api().get('/profissao?offset=0&max=1000000')
+  getAllProfissao(offset) {
+       if(offset >= 0){
+          Profissao.api().get("/profissao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProfissao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     onFileChange(event){
       this.testemunha.fotografia = event.target.files[0];

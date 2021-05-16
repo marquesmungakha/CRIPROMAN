@@ -209,7 +209,8 @@ export default {
     return this.getAllAgente()
   },
   mounted() {
-    this.getAllAgente()
+     let offset = 0
+    this.getAllAgente(offset)
   },
   components: {
     'create-edit-form': require('components/agente/createEditForm.vue').default,
@@ -356,8 +357,16 @@ export default {
       this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(agente.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
-    getAllAgente() {
-      Agente.api().get('/agente?offset=0&max=1000000')
+    getAllAgente(offset) {
+       if(offset >= 0){
+         Agente.api().get("/agente?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllAgente(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     onFileChange(event){
       this.agente.fotografia = event.target.files[0];

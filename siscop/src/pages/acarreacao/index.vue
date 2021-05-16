@@ -287,28 +287,26 @@ export default {
       this.show_dialog = true
     },
     getAllAcarreacaos(offset) {
-      Acarreacao.api().get("/acarreacao?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
-
+      if(offset >=0){
+      Acarreacao.api().get("/acarreacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllAcarreacaos, 2)
-
+              setTimeout(this.getAllAcarreacaos(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+      }
     },
     getAllInspector(offset) {
-      Inspector.api().get("/inspector?offset="+offset+"&max=1000").then(resp => {
-          console.log(resp)
-          offset = offset + 1
-
+      if(offset >=0){
+      Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this.getAllInspector, 2)
-
+              setTimeout(this.getAllInspector(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+      }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

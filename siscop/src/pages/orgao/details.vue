@@ -168,7 +168,7 @@ export default {
     // this.$store.dispatch('tipoOrgao/getTipoOrgao', this.orgao.tipoOrgao.id)
     // Return a Promise if you are running an async job
     // Example:
-    return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').find(currentRoute.params.id)
+    return Orgao.query().with('tipoOrgao').with('provincia.pais').with('distrito.provincia.pais').find(currentRoute.params.id)
   },
   created() {
   },
@@ -177,8 +177,7 @@ export default {
   computed: {
     orgao: {
       get() {
-
-        return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').find(this.$route.params.id)
+        return Orgao.query().with('tipoOrgao').with('provincia.pais').with('distrito.provincia.pais').find(this.$route.params.id)
       },
       set(orgao) {
         this.$emit('update:orgao', '')
@@ -252,13 +251,10 @@ export default {
       this.localOrgao.provincia.pais = Pais.query().find(this.provincia.pais_id)
       this.localOrgao.tipoOrgao_id = this.tipoOrgao.id
       this.localOrgao.tipoOrgao = this.tipoOrgao
-      if (this.distrito == null) {
-        this.distrito = {}
-      } else {
-        this.localOrgao.distrito_id = this.distrito.id
-        this.localOrgao.distrito.provincia = this.provincia
-      }
+      this.localOrgao.distrito_id = this.distrito.id
+      this.localOrgao.distrito.provincia = this.provincia
       this.localOrgao.distrito = this.distrito
+
       Orgao.api().patch("/orgao/" + this.localOrgao.id, this.localOrgao).then(resp => {
         console.log('update' + resp)
         this.$q.notify({

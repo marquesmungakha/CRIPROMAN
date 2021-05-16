@@ -431,12 +431,13 @@ export default {
     'processoInstrucaoPreparatoria'
   ],
   mounted() {
-    this.getAllArguido()
-    this.getAllArguidoProcesso()
-    this.getAllSituacaoPrisional()
-    this.getAllProvincia()
-    this.getAllPais()
-    this.getAllTipoDocumentoIdentificacao()
+    let offset = 0
+    this.getAllArguido(offset)
+    this.getAllArguidoProcesso(offset)
+    this.getAllSituacaoPrisional(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
   },
   components: {
     'create-edit-form': require('components/arguido/createEditForm.vue').default,
@@ -622,12 +623,13 @@ export default {
       }
     },
     close() {
-      this.getAllArguidoProcesso()
-      this.getAllSituacaoPrisional()
-      this.getAllArguido()
-      this.getAllProvincia()
-      this.getAllPais()
-      this.getAllTipoDocumentoIdentificacao()
+      let offset = 0
+      this.getAllArguido(offset)
+      this.getAllArguidoProcesso(offset)
+      this.getAllSituacaoPrisional(offset)
+      this.getAllProvincia(offset)
+      this.getAllPais(offset)
+      this.getAllTipoDocumentoIdentificacao(offset)
       this.arguido_details_dialog = false
       this.step = 1
       this.offset = 0
@@ -685,22 +687,70 @@ export default {
       this.arguido_details_dialog = true
     },
     getAllArguido() {
-      Arguido.api().get('/arguido?offset=0&max=1000000')
+             if(offset >= 0){
+          Arguido.api().get("/arguido?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllArguido(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
      getAllArguidoProcesso() {
-      ProcessoInstrucaoPreparatoriaArguido.api().get('/processoInstrucaoPreparatoriaArguido?offset=0&max=1000000')
+              if(offset >= 0){
+          ProcessoInstrucaoPreparatoriaArguido.api().get("/processoInstrucaoPreparatoriaArguido?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllArguidoProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     getAllTipoDocumentoIdentificacao() {
-      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
+             if(offset >= 0){
+          TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+             if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+             if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     getAllSituacaoPrisional() {
-      SituacaoPrisional.api().get('/situacaoPrisional?offset=0&max=1000000')
+          if(offset >= 0){
+          SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllSituacaoPrisional(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     onFileChange(event){
       this.arguido.fotografia = event.target.files[0];

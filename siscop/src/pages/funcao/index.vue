@@ -117,7 +117,8 @@ export default {
     return this.getAllFuncao()
   },
   mounted() {
-    this.getAllFuncao()
+    let offset = 0
+    this.getAllFuncao(offset)
   },
   components: {
     'create-edit-form': require('components/funcao/createEditForm.vue').default
@@ -208,7 +209,8 @@ export default {
       }
     },
     close() {
-      this.getAllFuncao()
+      let offset = 0
+      this.getAllFuncao(offset)
       this.show_dialog = false
       this.funcao = {}
       this.props = this.funcao
@@ -243,8 +245,16 @@ export default {
       this.funcao = Object.assign({}, funcao)
       this.show_dialog = true
     },
-    getAllFuncao() {
-      Funcao.api().get('/funcao?offset=0&max=1000000')
+    getAllFuncao(offset) {
+       if(offset >= 0){
+          Funcao.api().get("/funcao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllFuncao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format

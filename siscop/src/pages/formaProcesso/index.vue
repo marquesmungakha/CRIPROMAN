@@ -138,7 +138,8 @@ export default {
     return this.getAllFormaProcesso()
   },
   mounted() {
-    this.getAllFormaProcesso()
+    let offset = 0
+    this.getAllFormaProcesso(offset)
   },
   components: {
     'create-edit-form': require('components/formaProcesso/createEditForm.vue').default
@@ -229,7 +230,8 @@ export default {
       }
     },
     close() {
-      this.getAllFormaProcesso()
+      let offset = 0
+      this.getAllFormaProcesso(offset)
       this.show_dialog = false
       this.formaProcesso = {}
       this.props = this.formaProcesso
@@ -264,8 +266,16 @@ export default {
       this.formaProcesso = Object.assign({}, formaProcesso)
       this.show_dialog = true
     },
-    getAllFormaProcesso() {
-      FormaProcesso.api().get('/formaProcesso?offset=0&max=1000000')
+    getAllFormaProcesso(offset) {
+      if(offset >= 0){
+          FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllFormaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format

@@ -79,9 +79,9 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraSuspeito(props.row.suspeito)"/>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row.suspeito)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row.suspeito)"/>
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraSuspeito(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row)"/>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row)"/>
             </div>
           </q-td>
         </q-tr>
@@ -186,14 +186,14 @@
       </q-dialog>
     </div>
 
- <details-suspeito :suspeito.sync="suspeito" 
+ <details-suspeito :suspeito.sync="this.suspeito" 
                        :image.sync="image" 
-                       :pecaProcessoSuspeito.sync="pecaProcessoSuspeito" 
+                       :pecaProcessoSuspeito.sync="this.pecaProcessoSuspeito" 
                        :tipoDocumento.sync="tipoDocumento"
-                       :situacaoPrisional.sync="pecaProcessoSuspeito.situacaoPrisional"
-                       :profissao.sync="pecaProcessoSuspeito.profissao"
-                       :pais.sync="pais"
-                       :suspeito_details_dialog.sync="suspeito_details_dialog"
+                       :situacaoPrisional.sync="this.situacaoPrisional"
+                       :profissao.sync="this.profissao"
+                       :pais.sync="this.pais"
+                       :suspeito_details_dialog.sync="this.suspeito_details_dialog"
                        :close.sync="close"/>
 
   </q-page>
@@ -255,7 +255,10 @@ export default {
       },
         pecaProcessoSuspeito: {
         suspeito: {},
-        pecaProcesso: {}
+        pecaProcesso: {},
+        profissao: {},
+        situacaoPrisional:{},
+        dataSituacaoPrisional: ''
       },
       pais: {
         codigo: '',
@@ -374,13 +377,14 @@ export default {
     'pecaProcesso'
   ],
   mounted() {
-    this.getAllProfissao()
-    this.getAllProfissaoPecaProcesso()
-    this.getAllSituacaoPrisional()
-    this.getAllSuspeito()
-    this.getAllProvincia()
-    this.getAllPais()
-    this.getAllTipoDocumentoIdentificacao()
+    let offset = 0
+    this.getAllProfissao(offset)
+    this.getAllProfissaoPecaProcesso(offset)
+    this.getAllSituacaoPrisional(offset)
+    this.getAllSuspeito(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
   },
   components: {
     'create-edit-form': require('components/suspeito/createEditForm.vue').default,
@@ -573,13 +577,14 @@ export default {
       }
     },
     close() {
-      this.getAllProfissaoPecaProcesso()
-      this.getAllProfissao()
-      this.getAllSituacaoPrisional()
-      this.getAllSuspeito()
-      this.getAllProvincia()
-      this.getAllPais()
-      this.getAllTipoDocumentoIdentificacao()
+      let offset = 0
+    this.getAllProfissao(offset)
+    this.getAllProfissaoPecaProcesso(offset)
+    this.getAllSituacaoPrisional(offset)
+    this.getAllSuspeito(offset)
+    this.getAllProvincia(offset)
+    this.getAllPais(offset)
+    this.getAllTipoDocumentoIdentificacao(offset)
       this.suspeito_details_dialog = false
       this.step = 1
       this.offset = 0
@@ -615,7 +620,8 @@ export default {
     editaSuspeito(suspeito) {
       this.step = 2
       this.editedIndex = 0
-      this.suspeito = Object.assign({}, suspeito)
+      this.pecaProcessoSuspeito = Object.assign({}, suspeito)
+      this.suspeito = this.pecaProcessoSuspeito.suspeito
       this.pais = Pais.query().find(suspeito.nacionalidade_id)
       this.provincia = Provincia.query().find(suspeito.provincia_id)
       this.tipoDocumento = TipoDocumentoIdentificacao.query().find(suspeito.tipoDocumento_id)
@@ -626,36 +632,94 @@ export default {
       this.show_dialog = true
     },
      mostraSuspeito(suspeito) {
-      this.suspeito = Object.assign({}, suspeito)
-      this.pais = Pais.query().find(suspeito.nacionalidade_id)
-      this.provincia = Provincia.query().find(suspeito.provincia_id)
-      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(suspeito.tipoDocumento_id)
+       console.log(suspeito)
+      this.pecaProcessoSuspeito = Object.assign({}, suspeito)
+      this.suspeito = this.pecaProcessoSuspeito.suspeito
+      this.pais = Pais.query().find(this.suspeito.nacionalidade_id)
+      this.provincia = Provincia.query().find(this.suspeito.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.suspeito.tipoDocumento_id)
       this.profissao = Profissao.query().find(suspeito.profissao_id)
       this.situacaoPrisional = SituacaoPrisional.query().find(suspeito.situacaoPrisional_id)
       this.suspeito.pecaProcesso = this.pecaProcesso
-      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(this.suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.suspeito_details_dialog = true
     },
-   getAllProfissaoPecaProcesso() {
-      PecaProcessoSuspeito.api().get('/suspeito?offset=0&max=1000000')
+   getAllProfissaoPecaProcesso(offset) {
+      if(offset >= 0){
+          PecaProcessoSuspeito.api().get("/pecaProcessoSuspeito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProfissaoPecaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllSuspeito() {
-      Suspeito.api().get('/suspeito?offset=0&max=1000000')
+    getAllSuspeito(offset) {
+      if(offset >= 0){
+          Suspeito.api().get("/suspeito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllSuspeito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllTipoDocumentoIdentificacao() {
-      TipoDocumentoIdentificacao.api().get('/tipoDocumentoIdentificacao?offset=0&max=1000000')
+  getAllTipoDocumentoIdentificacao(offset) {
+      if(offset >= 0){
+          TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllProfissao() {
-      Profissao.api().get('/profissao?offset=0&max=1000000')
+    getAllProfissao(offset) {
+       if(offset >= 0){
+          Profissao.api().get("/profissao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProfissao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllSituacaoPrisional() {
-      SituacaoPrisional.api().get('/situacaoPrisional?offset=0&max=1000000')
+ getAllSituacaoPrisional(offset) {
+        if(offset >= 0){
+          SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllSituacaoPrisional(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
      onFileChange(event){
       this.suspeito.fotografia = event.target.files[0];

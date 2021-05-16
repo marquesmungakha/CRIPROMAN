@@ -1,5 +1,7 @@
 <template>
   <q-page>
+  <div class="row q-col-gutter-sm q-ma-xs">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
     <q-card bordered class="my-card" flat>
       <q-card-section class="bg-secondary text-white">
         <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -46,7 +48,28 @@
         </div>
       </div>
     </q-card>
-    <create-edit-form :close="close"
+     </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-card>
+            <q-tabs
+              v-model="tab1"
+              active-color="white"
+              align="center"
+              class="bg-teal text-white shadow-2"
+              indicator-color="white"
+              narrow-indicator>
+              <q-tab label="provincias" name="provincias"/>
+            </q-tabs>
+
+            <q-separator/>
+            <q-tab-panels v-model="tab" animated>
+              <q-tab-panel name="provincias">
+               <list-provincia :paisLocal.sync="pais"/>
+              </q-tab-panel>
+            </q-tab-panels>
+          </q-card>
+      </div>
+      <create-edit-form :close="close"
                       :codigo.sync="localPais.codigo"
                       :createPais="createPais"
                       :designacao.sync="localPais.designacao"
@@ -55,6 +78,7 @@
                       :removePais="removePais"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+  </div>
   </q-page>
 </template>
 
@@ -104,7 +128,8 @@ export default {
     }
   },
   components: {
-    'create-edit-form': require('components/pais/createEditForm.vue').default
+    'create-edit-form': require('components/pais/createEditForm.vue').default,
+    'list-provincia': require('pages/provincia/index.vue').default
   },
   methods: {
     removePais(pais) {

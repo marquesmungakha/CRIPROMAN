@@ -118,7 +118,8 @@ export default {
     return this.getAllTipoAuto()
   },
   mounted() {
-    this.getAllTipoAuto()
+    let offset = 0
+    this.getAllTipoAuto(offset)
   },
   components: {
     'create-edit-form': require('components/tipoAuto/createEditForm.vue').default
@@ -209,7 +210,8 @@ export default {
       }
     },
     close() {
-      this.getAllTipoAuto()
+     let offset = 0
+    this.getAllTipoAuto(offset)
       this.show_dialog = false
       this.tipoAuto = {}
       this.props = this.tipoAuto
@@ -244,8 +246,16 @@ export default {
       this.tipoAuto = Object.assign({}, tipoAuto)
       this.show_dialog = true
     },
-    getAllTipoAuto() {
-      TipoAuto.api().get('/tipoAuto?offset=0&max=1000000')
+    getAllTipoAuto(offset) {
+      if(offset >= 0){
+          TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoAuto(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

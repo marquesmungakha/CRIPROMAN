@@ -172,8 +172,8 @@ export default {
         { name: 'dataEntrada', align: 'left', label: 'Data de Entrada', field: row => row.dataEntrada, format: val => `${val}`, sortable: true },
         { name: 'proveniencia', align: 'left', label: 'Proveniência', field: row => row.proveniencia, format: val => `${val}`, sortable: true },
         { name: 'formaProcesso', align: 'left', label: 'Forma de Processo', field: row => row.formaProcesso, format: val => `${val}`, sortable: true },
-        { name: 'classeJudicial', align: 'left', label: 'Jurisdição/Famílias Diletivas', field: row => row.classeJudicial, format: val => `${val}`, sortable: true },
-        { name: 'accoesCrimes', align: 'left', label: 'Accções/Crimes', field: row => row.accoesCrimes, format: val => `${val}`, sortable: true },
+        { name: 'classeJudicial', align: 'left', label: 'Famílias Diletivas', field: row => row.classeJudicial, format: val => `${val}`, sortable: true },
+        { name: 'accoesCrimes', align: 'left', label: 'Crimes', field: row => row.accoesCrimes, format: val => `${val}`, sortable: true },
         { name: 'magistrado', align: 'left', label: 'Magistrado', field: row => row.magistrado, format: val => `${val}`, sortable: true },
         { name: "estado", align: "left", label: "Estado", field: row => row.estado, sortable: true  },
         { name: 'actions', label: 'Movimento', field: 'actions' }
@@ -198,14 +198,14 @@ export default {
   mounted () {
     let offset = 0
       this.getAllProcesso(offset)
-      this.getAllFormaProcesso()
-      this.getAllJurisdicao()
-      this.getAllCrime()
-      this.getAllMagistrado()
-      this.getAllOrgao()
-      this.getAllPais()
-      this.getAllProvincia()
-      this.getAllTipoOrgao()
+      this.getAllFormaProcesso(offset)
+      this.getAllJurisdicao(offset)
+      this.getAllCrime(offset)
+      this.getAllMagistrado(offset)
+      this.getAllOrgao(offset)
+      this.getAllPais(offset)
+      this.getAllProvincia(offset)
+      this.getAllTipoOrgao(offset)
   },
   components: {
     'create-edit-form': require('components/processoInstrucaoPreparatoria/createEditForm.vue').default
@@ -327,15 +327,16 @@ export default {
       }
     },
     close () {
-      this.getAllProcesso()
-      this.getAllFormaProcesso()
-      this.getAllJurisdicao()
-      this.getAllCrime()
-      this.getAllMagistrado()
-      this.getAllOrgao()
-      this.getAllPais()
-      this.getAllProvincia()
-      this.getAllTipoOrgao()
+     let offset = 0
+      this.getAllProcesso(offset)
+      this.getAllFormaProcesso(offset)
+      this.getAllJurisdicao(offset)
+      this.getAllCrime(offset)
+      this.getAllMagistrado(offset)
+      this.getAllOrgao(offset)
+      this.getAllPais(offset)
+      this.getAllProvincia(offset)
+      this.getAllTipoOrgao(offset)
       this.listErrors = {}
       this.show_dialog = false
       this.processoInstrucaoPreparatoria = {}
@@ -375,40 +376,103 @@ export default {
       this.show_dialog = true
     },
     getAllProcesso(offset) {
-      ProcessoInstrucaoPreparatoria.api().get("/processoInstrucaoPreparatoria?offset="+offset+"&max=100").then(resp => {
-          console.log(resp)
-          console.log(offset)
-           offset = offset + 100
-          if(resp.response.data.length > 0) 
-              setTimeout(this.getAllProcesso(offset), 2)
-
+      if(offset >= 0) {
+         ProcessoInstrucaoPreparatoria.api().get("/processoInstrucaoPreparatoria?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllProcesso(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
+        }
     },
-    getAllFormaProcesso() {
-      FormaProcesso.api().get('/formaProcesso?offset=0&max=1000000')
+    getAllFormaProcesso(offset) {
+       if(offset >= 0) {
+         FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllFormaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllJurisdicao() {
-      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+    getAllJurisdicao(offset) {
+       if(offset >= 0) {
+         ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllJurisdicao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllCrime() {
-      Crime.api().get('/crime?offset=0&max=1000000')
+    getAllCrime(offset) {
+       if(offset >= 0) {
+         Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllCrime(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllMagistrado() {
-      Magistrado.api().get('/magistrado?offset=0&max=1000000')
+    getAllMagistrado(offset) {
+      if(offset >= 0){
+           Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllMagistrado(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllOrgao() {
-      Orgao.api().get('/orgao?offset=0&max=1000000')
+   getAllOrgao(offset) {
+        if(offset >= 0){
+           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-     getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllTipoOrgao(offset) {
+        if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllTipoOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllTipoOrgao() {
-      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+  getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-     getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     abortFilterFn () {
       // console.log('delayed filter aborted')

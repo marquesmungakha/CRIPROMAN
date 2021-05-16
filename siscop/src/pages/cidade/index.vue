@@ -160,19 +160,16 @@ export default {
     return this.getAllCidade()
   },
   mounted() {
-    this.getAllPais()
-    this.getAllCidade()
-    this.getAllProvincia()
-    this.getAllDistrito()
+    let offset = 0
+    this.getAllPais(offset)
+    this.getAllCidade(offset)
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
   },
   components: {
     'create-edit-form': require('components/cidade/createEditForm.vue').default
   },
   created() {
-    //  this.getAllPais()
-    //  this.getAllCidade()
-    //  this.getAllProvincia()
-    //  this.getAllDistrito()
     this.$q.loading.show({
       message: "Carregando ...",
       spinnerColor: "grey-4",
@@ -273,10 +270,11 @@ export default {
       }
     },
     close() {
-      this.getAllCidade()
-      this.getAllPais()
-      this.getAllProvincia()
-      this.getAllDistrito()
+     let offset = 0
+    this.getAllPais(offset)
+    this.getAllCidade(offset)
+    this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
       this.show_dialog = false
       this.cidade = {}
       this.provincia = {}
@@ -315,36 +313,49 @@ export default {
       this.distrito = Distrito.query().find(cidade.distrito.id)
       this.show_dialog = true
     },
-    getAllCidade() {
-      Cidade.api().get('/cidade?offset=0&max=1000000').then(resp => {
-        console.log(resp)
-      }).catch(error => {
-        console.log(error)
-        if (error.request.response != null) {
-          const arrayErrors = JSON.parse(error.request.response)
-          if (arrayErrors.total == null) {
-            this.listErrors.push(arrayErrors.message)
-          } else {
-            arrayErrors._embedded.errors.forEach(element => {
-              this.listErrors.push(element.message)
-            })
-          }
-          console.log(this.listErrors)
-        }
-      })
+    getAllCidade(offset) {
+       if(offset >= 0){
+          Cidade.api().get("/cidade?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllCidade(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      return Provincia.api().get('/provincia?offset=0&max=1000000', {
-        persistOptions: {
-          insert: ['pais']
-        }
-      })
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllDistrito() {
-      Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllDistrito(offset) {
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     filterFn(val, update, abort) {
       const stringOptions = this.allProvincias

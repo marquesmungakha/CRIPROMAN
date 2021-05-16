@@ -4,8 +4,6 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 
-// import grails.plugins.orm.auditable.Auditable
-
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/cargo')
 class Cargo implements Auditable {

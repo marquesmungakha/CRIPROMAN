@@ -101,7 +101,8 @@ export default {
     return this.getAllTipoDedo()
   },
   mounted() {
-    this.getAllTipoDedo()
+    let offset = 0 
+    this.getAllTipoDedo(offset)
   },
   components: {
     'create-edit-form': require('components/tipoDedo/createEditForm.vue').default
@@ -192,7 +193,8 @@ export default {
       }
     },
     close() {
-      this.getAllTipoDedo()
+     let offset = 0 
+    this.getAllTipoDedo(offset)
       this.show_dialog = false
       this.tipoDedo = {}
       this.props = this.tipoDedo
@@ -227,8 +229,15 @@ export default {
       this.tipoDedo = Object.assign({}, tipoDedo)
       this.show_dialog = true
     },
-    getAllTipoDedo() {
-      TipoDedo.api().get('/tipoDedo?offset=0&max=1000000')
+    getAllTipoDedo(offset) {
+       if(offset >= 0){
+          TipoDedo.api().get("/tipoDedo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoDedo(offset), 2)
+          }).catch(error => {
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

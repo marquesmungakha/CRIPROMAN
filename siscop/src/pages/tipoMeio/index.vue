@@ -101,7 +101,8 @@ export default {
     return this.getAllTipoMeio()
   },
   mounted() {
-    this.getAllTipoMeio()
+let offset = 0
+    this.getAllTipoMeio(offset)
   },
   components: {
     'create-edit-form': require('components/tipoMeio/createEditForm.vue').default
@@ -192,7 +193,8 @@ export default {
       }
     },
     close() {
-      this.getAllTipoMeio()
+      let offset = 0
+      this.getAllTipoMeio(offset)
       this.show_dialog = false
       this.tipoMeio = {}
       this.props = this.tipoMeio
@@ -227,8 +229,15 @@ export default {
       this.tipoMeio = Object.assign({}, tipoMeio)
       this.show_dialog = true
     },
-    getAllTipoMeio() {
-      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
+    getAllTipoMeio(offset) {
+      if(offset >= 0){
+          TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoMeio(offset), 2)
+          }).catch(error => {
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

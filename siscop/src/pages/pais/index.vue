@@ -135,7 +135,8 @@ export default {
     return this.getAllPais()
   },
   mounted() {
-    this.getAllPais()
+    let offset = 0
+    this.getAllPais(offset)
   },
   components: {
     'create-edit-form': require('components/pais/createEditForm.vue').default
@@ -222,6 +223,8 @@ export default {
       }
     },
     close() {
+      let offset = 0
+      this.getAllPais(offset)
       this.show_dialog = false
       this.pais = {}
       this.props = this.pais
@@ -257,23 +260,16 @@ export default {
       this.pais = Object.assign({}, pais)
       this.show_dialog = true
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000').then(resp => {
-        console.log(resp)
-      }).catch(error => {
-        console.log(error)
-        if (error.request.response != null) {
-          const arrayErrors = JSON.parse(error.request.response)
-          if (arrayErrors.total == null) {
-            this.listErrors.push(arrayErrors.message)
-          } else {
-            arrayErrors._embedded.errors.forEach(element => {
-              this.listErrors.push(element.message)
-            })
-          }
-          console.log(this.listErrors)
-        }
-      })
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

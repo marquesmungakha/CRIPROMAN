@@ -143,7 +143,8 @@ export default {
     return this.getAllSituacaoPrisional()
   },
   mounted() {
-    this.getAllSituacaoPrisional()
+    let offset = 0
+    this.getAllSituacaoPrisional(offset)
   },
   components: {
     'create-edit-form': require('components/situacaoPrisional/createEditForm.vue').default
@@ -234,7 +235,8 @@ export default {
       }
     },
     close() {
-      this.getAllSituacaoPrisional()
+      let offset = 0
+    this.getAllSituacaoPrisional(offset)
       this.show_dialog = false
       this.situacaoPrisional = {}
       this.props = this.situacaoPrisional
@@ -264,8 +266,16 @@ export default {
         SituacaoPrisional.api().delete("/situacaoPrisional/" + situacaoPrisional.id)
       })
     },
-    getAllSituacaoPrisional() {
-      SituacaoPrisional.api().get('/situacaoPrisional?offset=0&max=1000000')
+    getAllSituacaoPrisional(offset) {
+        if(offset >= 0){
+          SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllSituacaoPrisional(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     editaSituacaoPrisional(situacaoPrisional) {
       this.editedIndex = 0

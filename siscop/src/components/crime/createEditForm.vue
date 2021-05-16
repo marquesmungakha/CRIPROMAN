@@ -37,7 +37,7 @@
                               use-input
                               fill-input
                               hide-selected
-                              label="Jurisdição *"
+                              label="Família Delitiva *"
                               input-debounce="0"
                               :options="options"
                               option-label="designacao"

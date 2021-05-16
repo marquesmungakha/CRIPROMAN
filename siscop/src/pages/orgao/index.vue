@@ -201,11 +201,12 @@ export default {
     return this.getAllOrgao()
   },
   mounted() {
-    this.getAllPais()
-    this.getAllOrgao()
-    this.getAllTipoOrgao()
-    this.getAllProvincia()
-    this.getAllDistrito()
+     let offset = 0
+      this.getAllPais(offset)
+      this.getAllOrgao(offset)
+      this.getAllTipoOrgao(offset)
+      this.getAllProvincia(offset)
+      this.getAllDistrito(offset)
   },
   components: {
     'create-edit-form': require('components/orgao/createEditForm.vue').default
@@ -241,7 +242,7 @@ export default {
       return Distrito.query().where('provincia_id', this.provincia.id).get()
     },
     allOrgaos() {
-      return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').all()
+      return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').where('nivel',0).get()
     }
   },
   methods: {
@@ -259,6 +260,7 @@ export default {
       this.orgao.distrito_id = this.distrito.id
       this.distrito.provincia = this.provincia
       this.orgao.distrito = this.distrito
+
       if (this.editedIndex > -1) {
         Orgao.api().patch("/orgao/" + this.orgao.id, this.orgao).then(resp => {
           this.$q.notify({
@@ -319,11 +321,12 @@ export default {
       }
     },
     close() {
-      this.getAllPais()
-      this.getAllOrgao()
-      this.getAllTipoOrgao()
-      this.getAllProvincia()
-      this.getAllDistrito()
+     let offset = 0
+      this.getAllPais(offset)
+      this.getAllOrgao(offset)
+      this.getAllTipoOrgao(offset)
+      this.getAllProvincia(offset)
+      this.getAllDistrito(offset)
       this.show_dialog = false
       this.orgao = {}
       this.provincia = {}
@@ -384,20 +387,60 @@ export default {
         })
       }
     },
-    getAllOrgao() {
-      Orgao.api().get('/orgao?offset=0&max=1000000')
+    getAllOrgao(offset) {
+        if(offset >= 0){
+           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this. getAllOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllTipoOrgao() {
-      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+    getAllTipoOrgao(offset) {
+        if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllTipoOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
-    getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+  getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllProvincia(offset) {
+      if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllDistrito() {
-      Distrito.api().get('/distrito?offset=0&max=1000000')
+    getAllDistrito(offset) {
+      if(offset >= 0){
+          Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

@@ -141,7 +141,8 @@ export default {
     'pecaProcesso'
   ],
   mounted() {
-    this.getAllBemSubtraido()
+    let offset = 0
+    this.getAllBemSubtraido(offset)
   },
   components: {
     'create-edit-form': require('components/bemSubtraido/createEditForm.vue').default
@@ -221,8 +222,9 @@ export default {
       }
     },
     close() {
-      this.getAllBemSubtraido()
-        this.listErrors = {}
+      let offset = 0
+      this.getAllBemSubtraido(offset)
+      this.listErrors = {}
       this.show_dialog = false
       this.bemSubtraido = {}
       this.props = this.bemSubtraido
@@ -256,8 +258,16 @@ export default {
       this.bemSubtraido = Object.assign({}, bemSubtraido)
       this.show_dialog = true
     },
-     getAllBemSubtraido() {
-      BemSubtraido.api().get('/bemSubtraido?offset=0&max=1000000')
+     getAllBemSubtraido(offset) {
+       if(offset >= 0){
+          BemSubtraido.api().get("/bemSubtraido?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllBemSubtraido(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format

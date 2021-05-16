@@ -1,7 +1,6 @@
 <template>
   <q-page>
-    <div class="row q-col-gutter-sm q-ma-xs">
-      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    <div class="q-ma-xs">
         <q-card bordered class="my-card" flat>
           <q-card-section class="bg-secondary text-white">
             <div class="text-h6">{{ $t('basicInformation') }}</div>
@@ -30,7 +29,7 @@
           <div class="row">
             <div class="col">
               <q-card-actions align="left">
-                <q-btn v-go-back=" '/tipoMeio' " class="glossy" color="primary" label="Voltar" no-caps/>
+                <q-btn v-go-back=" '/tipoOrgao' " class="glossy" color="primary" label="Voltar" no-caps/>
               </q-card-actions>
             </div>
             <div class="col">
@@ -41,8 +40,6 @@
             </div>
           </div>
         </q-card>
-      </div>
-    </div>
     <create-edit-form :close="close"
                       :codigo.sync="localTipoOrgao.codigo"
                       :createTipoOrgao="createTipoOrgao"
@@ -51,6 +48,7 @@
                       :removeTipoOrgao="removeTipoOrgao"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+    </div>
   </q-page>
 </template>
 
@@ -79,7 +77,7 @@ export default {
   computed: {
     tipoOrgao: {
       get() {
-        return TipoOrgao.query().find(currentRoute.params.id)
+        return TipoOrgao.query().find(this.$route.params.id)
       },
       set(tipoOrgao) {
         this.$emit('update:tipoOrgao', '')

@@ -10,7 +10,7 @@ import TipoOrgao from "../tipoOrgao/tipoOrgao";
 
 export default class DependenciaOrgao extends Model {
 
-  static  entity = 'dependencia_orgao'
+  static  entity = 'dependenciasOrgao'
 
   static fields() {
 

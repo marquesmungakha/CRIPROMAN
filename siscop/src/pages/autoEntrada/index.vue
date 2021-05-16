@@ -230,15 +230,16 @@ export default {
     return this.getAllAutoEntrada()
   },
   mounted() {
-    this.getAllAutoEntrada()
-    this.getAllTipoAuto()
-    this.getAllJurisdicao()
-    this.getAllCrime()
-    this.getAllInspector()
-    this.getAllOrgao()
-    this.getAllPais()
-    this.getAllProvincia()
-    this.getAllTipoOrgao()
+    let offset = 0
+    this.getAllAutoEntrada(offset)
+    this.getAllTipoAuto(offset)
+    this.getAllJurisdicao(offset)
+    this.getAllCrime(offset)
+    this.getAllInspector(offset)
+    this.getAllOrgao(offset)
+    this.getAllPais(offset)
+    this.getAllProvincia(offset)
+    this.getAllTipoOrgao(offset)
   },
   components: {
     'create-edit-form': require('components/autoEntrada/createEditForm.vue').default
@@ -361,15 +362,16 @@ export default {
       }
     },
     close() {
-    this.getAllAutoEntrada()
-    this.getAllTipoAuto()
-    this.getAllJurisdicao()
-    this.getAllCrime()
-    this.getAllInspector()
-    this.getAllOrgao()
-    this.getAllPais()
-    this.getAllProvincia()
-    this.getAllTipoOrgao()
+    let offset = 0
+    this.getAllAutoEntrada(offset)
+    this.getAllTipoAuto(offset)
+    this.getAllJurisdicao(offset)
+    this.getAllCrime(offset)
+    this.getAllInspector(offset)
+    this.getAllOrgao(offset)
+    this.getAllPais(offset)
+    this.getAllProvincia(offset)
+    this.getAllTipoOrgao(offset)
     this.listErrors = {}
     this.show_dialog = false
     this.autoEntrada = {}
@@ -409,32 +411,113 @@ export default {
       this.orgao = Orgao.query().first()
       this.show_dialog = true
     },
-    getAllAutoEntrada() {
-      AutoEntrada.api().get('/autoEntrada?offset=0&max=1000000')
+    getAllAutoEntrada(offset) {
+       if(offset >= 0){
+          AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllAutoEntrada(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllTipoAuto() {
-      TipoAuto.api().get('/tipoAuto?offset=0&max=1000000')
+    getAllTipoAuto(offset) {
+       if(offset >= 0){
+          TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoAuto(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllJurisdicao() {
-      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+    getAllJurisdicao(offset) {
+       if(offset >= 0){
+          ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllJurisdicao(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllCrime() {
-      Crime.api().get('/crime?offset=0&max=1000000')
+    getAllCrime(offset) {
+       if(offset >= 0){
+          Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllCrime(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllInspector() {
-      Inspector.api().get('/inspector?offset=0&max=1000000')
+    getAllInspector(offset) {
+       if(offset >= 0){
+          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllInspector(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllOrgao() {
-      Orgao.api().get('/orgao?offset=0&max=1000000')
+    getAllOrgao(offset) {
+       if(offset >= 0){
+          Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllOrgao(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-    getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllProvincia(offset) {
+     if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+     }
     },
-    getAllTipoOrgao() {
-      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+    getAllTipoOrgao(offset) {
+       if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoOrgao(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
-     getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+     getAllPais(offset) {
+        if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
     },
     abortFilterFn() {
       // console.log('delayed filter aborted')

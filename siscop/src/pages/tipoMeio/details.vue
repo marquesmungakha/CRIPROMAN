@@ -36,7 +36,27 @@
           </div>
         </q-card>
       </div>
-    </div>
+      <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card>
+          <q-tabs
+            v-model="tab"
+            active-color="white"
+            align="center"
+            class="bg-teal text-white shadow-2"
+            indicator-color="white"
+            narrow-indicator>
+            <q-tab label="Marcas" name="marcas"/>
+          </q-tabs>
+
+          <q-separator/>
+
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="marcas">
+              <list-marcas :localTipoMeio.sync="tipoMeio"/>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </div>
     <create-edit-form :close="close"
                       :createTipoMeio="createTipoMeio"
                       :designacao.sync="localTipoMeio.designacao"
@@ -44,6 +64,7 @@
                       :removeTipoMeio="removeTipoMeio"
                       :show_dialog="show_dialog"
                       :submitting="submitting"/>
+    </div>
   </q-page>
 </template>
 
@@ -82,7 +103,8 @@ export default {
     }
   },
   components: {
-    'create-edit-form': require('components/tipoMeio/createEditForm.vue').default
+    'create-edit-form': require('components/tipoMeio/createEditForm.vue').default,
+    'list-marcas': require('pages/marca/index.vue').default
   },
   methods: {
     removeTipoMeio(tipoMeio) {
@@ -162,6 +184,7 @@ export default {
       listErrors: [],
       submitting: false,
       show_dialog: false,
+      tab: 'marcas',
       splitterModel: 20,
       localTipoMeio: {
         designacao: ''

@@ -140,9 +140,11 @@ export default {
     return this.getAllModelo()
   },
   mounted() {
-    this.getAllMarca()
-    this.getAllModelo()
-    this.getAllTipoMeio()
+    this.marca = this.marcaLocal
+    let offset = 0 
+    this.getAllMarca(offset)
+    this.getAllModelo(offset)
+    this.getAllTipoMeio(offset)
   },
   components: {
     'create-edit-form': require('components/modelo/createEditForm.vue').default
@@ -166,7 +168,13 @@ export default {
       return Marca.query().all()
     },
     allModelos() {
-      return Modelo.query().with('marca').all()
+
+      if(this.$route.params.id !== undefined){
+            return Modelo.query().with('marca').where('marca_id',Number(this.$route.params.id)).get()
+        }
+        else{
+            return Modelo.query().with('marca').all()
+        }
     }
   },
   methods: {
@@ -239,8 +247,10 @@ export default {
       }
     },
     close() {
-      this.getAllMarca()
-      this.getAllModelo()
+      let offset = 0 
+    this.getAllMarca(offset)
+    this.getAllModelo(offset)
+    this.getAllTipoMeio(offset)
       this.show_dialog = false
       this.modelo = {}
       this.props = this.modelo
@@ -281,14 +291,41 @@ export default {
     setModel(val) {
       this.modelo.marca = val
     },
-    getAllMarca() {
-      Marca.api().get('/marca?offset=0&max=1000000')
+     getAllMarca(offset) {
+       if(offset >=0){
+      Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllMarca(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllModelo() {
-      Modelo.api().get('/modelo?offset=0&max=1000000')
+    getAllTipoMeio(offset) {
+       if(offset >=0){
+      TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllTipoMeio(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoMeio() {
-      TipoMeio.api().get('/tipoMeio?offset=0&max=1000000')
+    getAllModelo(offset) {
+      if(offset >=0){
+      Modelo.api().get("/modelo?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 1
+          if(resp.response.data.length() > 0) 
+              setTimeout(this.getAllModelo(offset), 2)
+
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     exportTable() {
       // naive encoding to csv format
@@ -317,6 +354,9 @@ export default {
         })
       }
     }
-  }
+  },
+  props:[
+    'marcaLocal'
+  ]
 }
 </script>
