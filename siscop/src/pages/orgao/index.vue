@@ -56,10 +56,31 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/orgao/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaOrgao(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeOrgao(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaOrgao(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeOrgao(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -181,7 +202,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -203,10 +224,10 @@ export default {
   mounted() {
      let offset = 0
       this.getAllPais(offset)
-      this.getAllOrgao(offset)
       this.getAllTipoOrgao(offset)
       this.getAllProvincia(offset)
       this.getAllDistrito(offset)
+      this.getAllOrgao(offset)
   },
   components: {
     'create-edit-form': require('components/orgao/createEditForm.vue').default
@@ -242,7 +263,12 @@ export default {
       return Distrito.query().where('provincia_id', this.provincia.id).get()
     },
     allOrgaos() {
-      return Orgao.query().with('tipoOrgao').with('provincia').with('distrito').where('nivel',0).get()
+
+      const orgaoPrincipal = Orgao.query().find(localStorage.getItem('orgaoId'))
+      if(orgaoPrincipal.nivel === 0)
+          return Orgao.query().with('tipoOrgao').with('provincia.*').with('distrito.provincia.*').where('nivel',0).get()
+      else
+          this.$router.push({path:'/orgao/'+orgaoPrincipal.id}) 
     }
   },
   methods: {
@@ -322,11 +348,11 @@ export default {
     },
     close() {
      let offset = 0
-      this.getAllPais(offset)
-      this.getAllOrgao(offset)
-      this.getAllTipoOrgao(offset)
-      this.getAllProvincia(offset)
-      this.getAllDistrito(offset)
+      // this.getAllPais(offset)
+      // this.getAllOrgao(offset)
+      // this.getAllTipoOrgao(offset)
+      // this.getAllProvincia(offset)
+      // this.getAllDistrito(offset)
       this.show_dialog = false
       this.orgao = {}
       this.provincia = {}
@@ -452,7 +478,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.orgao.orgaos.map(row =>
+          this.allOrgaos.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

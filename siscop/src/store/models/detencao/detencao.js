@@ -18,12 +18,13 @@ export default class Detencao extends Model {
       inspector_id: this.attr(''),
       processo_id: this.attr(''),
       localDetencao: this.attr(''),
-      motivoDetencao_id: this.attr(''),
+      motivoDetencao: this.attr(''),
+      // motivoDetencao_id: this.attr(''),
 
       // Relationshiops
       processo: this.belongsTo(ProcessoInvestigacao, 'processo_id'),
-      inspector: this.belongsTo(Inspector, 'inspector_id'),
-      motivoDetencao: this.belongsTo(MotivoDetencao, 'motivoDetencao_id')
+      inspector: this.belongsTo(Inspector, 'inspector_id')
+    //  motivoDetencao: this.belongsTo(MotivoDetencao, 'motivoDetencao_id')
     }
   }
 

@@ -13,7 +13,7 @@ class ProcessoInstrucaoPreparatoriaDenunciante {
     String localTrabalho
     String ocupacao
     String qualidadeDe
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Denunciante denunciante
 
     static belongsTo = ProcessoInstrucaoPreparatoria

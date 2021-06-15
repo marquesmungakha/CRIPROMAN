@@ -1,6 +1,6 @@
 <template>
  
-    <q-dialog :value="arguido_details_dialog" persistent>
+    <q-dialog outlined tack-label class="w-field" :dense="true" :value="arguido_details_dialog" persistent>
             <q-card class="my-card"  style="width: 900px; max-width: 90vw;" flat bordered>
               <q-card-section>
                 <div class="text-h6">
@@ -63,7 +63,7 @@
                   </div>
                   <div class="row">
                     <div class="col text-caption text-grey">
-                      Númenero de Documento:
+                      Número de Documento:
                     </div>
                     <div class="col text-caption text-grey">
                       {{ this.arguido.numDocumentoIndentificacao}}
@@ -171,6 +171,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>
 <style scoped>
   img {
     max-height: 300px;

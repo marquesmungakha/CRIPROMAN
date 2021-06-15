@@ -6,8 +6,8 @@
       </svg>
     </a>
       <div class="title">
-        <h3>Modelo 1, 2 e 8- Tabela Pivot</h3>
-        <small>Sample Dataset: Tips({{ filteredData.length }})</small>
+        <h3>Tabela Dinâmica - Modelo 1, 2 e 8</h3>
+        <!--small>Sample Dataset: Tips({{ filteredData.length }})</small-->
       </div>
 
       <div>
@@ -82,7 +82,6 @@ import { VuePivottableUi, PivotUtilities, Renderer } from 'vue-pivottable'
 import 'vue-pivottable/dist/vue-pivottable.css'
 import { scaleLinear } from 'd3-scale'
 import { QSpinnerBall } from 'quasar'
-import ProcessoInstrucaoPreparatoria from 'src/store/models/processoInstrucaoPreparatoria/processoInstrucaoPreparatoria'
 import FormaProcesso from 'src/store/models/formaProcesso/formaProcesso'
 import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 import Crime from 'src/store/models/crime/crime'
@@ -92,7 +91,12 @@ import Provincia from 'src/store/models/provincia/provincia'
 import TipoOrgao from 'src/store/models/tipoOrgao/tipoOrgao'
 import Pais from 'src/store/models/pais/pais'
 import TipoParecer from 'src/store/models/tipoParecer/tipoParecer'
-import ParecerProcesso from 'src/store/models/parecerProcesso/parecerProcesso'
+import ProcessoInvestigacao from 'src/store/models/processoInvestigacao/processoInvestigacao'
+import Despacho from 'src/store/models/despacho/despacho'
+import Pergunta from 'src/store/models/pergunta/pergunta'
+import PecaProcessoArguido from 'src/store/models/pecaProcesso/pecaProcessoArguido'
+import PecaProcesso from 'src/store/models/pecaProcesso/pecaProcesso'
+import SituacaoPrisional from 'src/store/models/situacaoPrisional/situacaoPrisional'
 
 
 export default {
@@ -109,10 +113,29 @@ export default {
           Dinner: true
         }
       },
+      orgao: {
+        codigo: '',
+        sigla: '',
+        designacao: ''
+      },
       config: {},
       filteredData: [],
       data: [],
-      attributes: ['Numero Processo', 'Forma Processo', 'Movimento', 'Orgao','Tipo Parecer','Jurisdicao','accoes/Crimes'],
+      attributes: ['Numero Processo', 
+                   'Forma Processo', 
+                   'Movimento', 
+                   'Orgão',
+                   'Destino',
+                   'Tipo Parecer',
+                   'Familia Delitiva',
+                   'Crimes',
+                   'Autor Processo',
+                   'Situação Prisional',
+                   'Periodo - Mensal',
+                   'Periodo - Trimestral',
+                   'Periodo - Semestral',
+                   'Periodo - Anual'
+                   ],
       rows: ['Forma Processo'],
       cols: ['Movimento'],
       vals: ['Numero Processo'],
@@ -174,60 +197,75 @@ export default {
           }
         },
         pt: {
-          renderError: '피벗 테이블 결과를 렌더링하는 동안 오류가 발생 했습니다.',
-          computeError: '피벗 테이블 결과를 계산하는 동안 오류가 발생 했습니다.',
-          uiRenderError: '피벗 테이블 UI를 렌더링하는 동안 오류가 발생 했습니다.',
-          selectAll: '모두 선택',
-          selectNone: '선택 안함',
-          tooMany: '표시 할 값이 너무 많습니다.',
-          filterResults: '값 필터링',
-          totals: '합계',
-          only: '단독',
+          renderError: 'Ocorreu um erro ao renderizar os resultados da tabela dinâmica.',
+          computeError: 'Ocorreu um erro ao calcular o resultado da tabela dinâmica.',
+          uiRenderError: 'Ocorreu um erro ao renderizar a IU da tabela dinâmica.',
+          selectAll: 'Selecionar tudo',
+          selectNone: 'Tirar a  seleção',
+          tooMany: 'Exibir todos valores.',
+          filterResults: 'Filtragem de valor',
+          totals: 'Totais',
+          only: 'Exclusivo',
           rendererMap: {
-            Table: '테이블',
-            'Table Heatmap': '테이블 히트맵',
-            'Table Col Heatmap': '테이블 열 히트맵',
-            'Table Row Heatmap': '테이블 행 히트맵',
-            'Export Table TSV': '테이블 TSV로 내보내기',
-            'Grouped Column Chart': '그룹화된 차트',
-            'Stacked Column Chart': '누적 차트',
-            'Grouped Bar Chart': '그룹화된 막대형 차트',
-            'Stacked Bar Chart': '누적 막대형 차트',
-            'Line Chart': '라인 차트',
-            'Dot Chart': '도트 차트',
-            'Area Chart': '영역 차트',
-            'Scatter Chart': '분산형 차트',
-            'Multiple Pie Chart': '다중 원형 차트'
+            Table: 'Tabela',
+            'Table Heatmap': 'Tabela mapa de calor',
+            'Table Col Heatmap': 'Tabela mapa de calor por coluna',
+            'Table Row Heatmap': 'Tabela mapa de calor por linha',
+            'Export Table TSV': 'Exportar para tabela TSV',
+            'Grouped Column Chart': 'Gráfico agrupado por coluna',
+            'Stacked Column Chart': 'Gráfico empilhado por coluna',
+            'Grouped Bar Chart': 'Gráfico de barras agrupadas',
+            'Stacked Bar Chart': 'Gráfico de barras empilhadas',
+            'Line Chart': 'Gráfico de linha',
+            'Dot Chart': 'Gráfico de pontos',
+            'Area Chart': 'Gráfico de área',
+            'Scatter Chart': 'Gráfico de dispersão',
+            'Multiple Pie Chart': 'Vários gráficos de pizza'
           },
           aggregatorMap: {
-            Count: '개수',
-            'Count Unique Values': '고유 값 개수',
-            'List Unique Values': '고유 값 목록',
-            Sum: '합계',
-            'Integer Sum': '정수 합계',
-            Average: '평균',
-            Median: '중앙',
-            'Sample Variance': '표본 분산',
-            'Sample Standard Deviation': '샘플 표준 편차',
-            Minimum: '최소',
-            Maximum: '최대',
-            First: '첫 번째',
-            Last: '마지막',
-            'Sum over Sum': '누적 합계',
-            'Sum as Fraction of Total': '부분별 비율 합계',
-            'Sum as Fraction of Rows': '행별 비율 합계',
-            'Sum as Fraction of Columns': '열별 비율 합계',
-            'Count as Fraction of Total': '전체 중 부분 개수',
-            'Count as Fraction of Rows': '행 부분 개수',
-            'Count as Fraction of Columns': '열 부분 개수'
+            Count: 'Contagem',
+            'Count Unique Values': 'Contagem de valores únicos',
+            'List Unique Values': 'Lista de valores únicos',
+            Sum: 'Soma',
+            'Integer Sum': 'Soma Inteira',
+            Average: 'Média',
+            Median: 'Mediana',
+            'Sample Variance': 'Variância da amostra',
+            'Sample Standard Deviation': 'Desvio padrão da amostra',
+            Minimum: 'Mínimo',
+            Maximum: 'Máximo',
+            First: 'Primeiro',
+            Last: 'Último',
+            'Sum over Sum': 'Soma total',
+            'Sum as Fraction of Total': 'Soma de Fracções do valor total',
+            'Sum as Fraction of Rows': 'Soma de Fracções por linha',
+            'Sum as Fraction of Columns': 'Soma de Fracções por colunas',
+            'Count as Fraction of Total': 'Total de Fracções',
+            'Count as Fraction of Rows': 'Total de Fracções por linha',
+            'Count as Fraction of Columns': 'Total de Fracções por colunas'
           }
         }
       },
-      locale: 'en'
+      locale: 'pt'
     }
   },
   created () {
-  this.$q.loading.show({
+     let offset = 0
+    this.getAllProcesso(offset)
+    this.getAllFormaProcesso(offset)
+    this.getAllJurisdicao(offset)
+    this.getAllCrime(offset)
+    this.getAllMagistrado(offset)
+    this.getAllOrgao(offset)
+    this.getAllPais(offset)
+    this.getAllProvincia(offset)
+    this.getAllTipoOrgao(offset)
+    this.getAllDespachos(offset)
+    this.getAllTipoParecer(offset)
+    this.getAllPergunta(offset)
+    this.getAllArguidoProcesso(offset)
+    this.getAllSituacaoPrisional(offset)
+    this.$q.loading.show({
       message: "Carregando ...",
       spinnerColor: "grey-4",
       spinner: QSpinnerBall
@@ -239,65 +277,207 @@ export default {
     }, 1000)
   },
   mounted () {
-    this.getAllProcesso()
-    this.getAllFormaProcesso()
-    this.getAllJurisdicao()
-    this.getAllCrime()
-    this.getAllMagistrado()
-    this.getAllOrgao()
-    this.getAllPais()
-    this.getAllProvincia()
-    this.getAllTipoOrgao()
-    // this.getAllParecerProcesso()
-    this.getAllTipoParecer()
+    let offset = 0
+    this.getAllProcesso(offset)
+    this.getAllFormaProcesso(offset)
+    this.getAllJurisdicao(offset)
+    this.getAllCrime(offset)
+    this.getAllMagistrado(offset)
+    this.getAllOrgao(offset)
+    this.getAllPais(offset)
+    this.getAllProvincia(offset)
+    this.getAllTipoOrgao(offset)
+    this.getAllDespachos(offset)
+    this.getAllTipoParecer(offset)
+    this.getAllPergunta(offset)
+    this.getAllArguidoProcesso(offset)
+    this.getAllSituacaoPrisional(offset)
+    this.$q.loading.show({
+      message: "Carregando ...",
+      spinnerColor: "grey-4",
+      spinner: QSpinnerBall
+      // delay: 400 // ms
+    })
+    setTimeout(() => {
+      this.$q.loading.hide()
+        this.data = this.allData
+    }, 1000)
   },
   computed: {
 
     allProcessos () {
-    const findos = ProcessoInstrucaoPreparatoria.query()
-                                                .has('pareceresProcesso',1)
-                                                .with('magistrado')
-                                                .with('formaProcesso')
-                                                .with('pareceresProcesso.tipoParecer')
-                                                .with('classeJudicial')
-                                                .with('accoesCrimes.classeJudicial')
-                                                .with('pareceresProcesso')
-                                                .with('orgao.tipoOrgao')
-                                                .with('orgao.provincia.pais').all().map(v => ({...v, movimento:'Findos'}))
+
+    this.orgao = Orgao.query().with('provincia.*')
+                                .with('tipoOrgao')
+                                .with('distrito.*')
+                                .find(Number(localStorage.getItem('orgaoId')))
+
+    let listOrgaoId = Orgao.query().where('orgao_id',Number(localStorage.getItem('orgaoId'))).get()
+
+
+    if(this.orgao.nivel === 0){
+       const findos = ProcessoInvestigacao.query()
+                                                .has('despachos',1)
+                                                .withAll()
+                                                // .with('formaProcesso')
+                                                .with('despachos.tipoParecer')
+                                                // .with('classeJudicial')
+                                                // .with('accoesCrimes.classeJudicial')
+                                                // .with('despachos')
+                                                // .with('numeroAuto')
+                                                // .with('numeroAuto.orgao.tipoOrgao')
+                                                // .with('numeroAuto.orgao.provincia.pais')
+                                                .all().map(v => ({...v, movimento:'Findos'}))
    
-    const transitados = ProcessoInstrucaoPreparatoria.query()
-                                                .hasNot('pareceresProcesso')
-                                                .with('magistrado')
-                                                .with('formaProcesso')
-                                                .with('pareceresProcesso.tipoParecer')
-                                                .with('classeJudicial')
-                                                .with('accoesCrimes.classeJudicial')
-                                                .with('pareceresProcesso')
-                                                .with('orgao.tipoOrgao')
-                                                .with('orgao.provincia.pais').all().map(v => ({...v, movimento:'Transitados'}))
+    const transitados = ProcessoInvestigacao.query()
+                                                .hasNot('despachos')
+                                                .withAll()
+                                                // .with('magistrado')
+                                                // .with('formaProcesso')
+                                                .with('despachos.tipoParecer')
+                                                // .with('classeJudicial')
+                                                // .with('accoesCrimes.classeJudicial')
+                                                // .with('despachos')
+                                                // .with('numeroAuto')
+                                                // .with('numeroAuto.orgao.tipoOrgao')
+                                                // .with('numeroAuto.orgao.provincia.pais')
+                                                .all().map(v => ({...v, movimento:'Transitados'}))
 
-    const processo = ProcessoInstrucaoPreparatoria.query()
-                                                  .with('magistrado')
-                                                  .with('formaProcesso')
-                                                  .with('classeJudicial')
-                                                  .with('accoesCrimes.classeJudicial')
-                                                  .with('orgao.tipoOrgao')
-                                                  .with('orgao.provincia.pais').all().map(v => ({...v, movimento:'Entradas'}))
+    const processo = ProcessoInvestigacao.query()
+                                                .withAll()
+                                                  // .with('magistrado')
+                                                  // .with('formaProcesso')
+                                                  // .with('classeJudicial')
+                                                  // .with('numeroAuto')
+                                                  // .with('accoesCrimes.classeJudicial')
+                                                  // .with('numeroAuto.orgao.tipoOrgao')
+                                                  // .with('numeroAuto.orgao.provincia.pais')
+                                                  .all().map(v => ({...v, movimento:'Entradas'}))
 
+    return processo.concat(transitados).concat(findos)
+
+    }else{
+       const findos = ProcessoInvestigacao.query()
+                                                .has('despachos',1)
+                                                .withAll()
+                                                // .with('magistrado')
+                                                // .with('formaProcesso')
+                                                .with('despachos.tipoParecer')
+                                                // .with('classeJudicial')
+                                                // .with('accoesCrimes.classeJudicial')
+                                                // .with('despachos')
+                                                // .with('numeroAuto')
+                                                .whereHas('numeroAuto', (query) => {
+                                                                        query.where('orgao_id', Number(localStorage.getItem('orgaoId')))
+                                                })
+                                                .orWhere('numeroAuto.orgao', (query) => {
+                                                                        query.whereIdIn(listOrgaoId.map( (orgao) => {return orgao.id} ))
+                                                })
+                                                // .with('numeroAuto.orgao.provincia.pais')
+                                                .all().map(v => ({...v, movimento:'Findos'}))
+   
+        const transitados = ProcessoInvestigacao.query()
+                                                .hasNot('despachos')
+                                                .withAll()
+                                                // .with('magistrado')
+                                                // .with('formaProcesso')
+                                                .with('despachos.tipoParecer')
+                                                // .with('classeJudicial')
+                                                // .with('accoesCrimes.classeJudicial')
+                                                // .with('despachos')
+                                                // .with('numeroAuto')
+                                                // .with('numeroAuto.orgao.tipoOrgao')
+                                                // .with('numeroAuto.orgao.provincia.pais')
+                                                .whereHas('numeroAuto', (query) => {
+                                                                        query.where('orgao_id', Number(localStorage.getItem('orgaoId')))
+                                                })
+                                                .orWhere('numeroAuto.orgao', (query) => {
+                                                                        query.whereIdIn(listOrgaoId.map( (orgao) => {return orgao.id} ))
+                                                })
+                                                .all().map(v => ({...v, movimento:'Transitados'}))
+
+        const processo = ProcessoInvestigacao.query()
+                                                .withAll()
+                                                  // .with('magistrado')
+                                                  // .with('formaProcesso')
+                                                  // .with('classeJudicial')
+                                                  // .with('numeroAuto')
+                                                  // .with('accoesCrimes.classeJudicial')
+                                                  // .with('numeroAuto.orgao.tipoOrgao')
+                                                  // .with('numeroAuto.orgao.provincia.pais')
+                                                 .whereHas('numeroAuto', (query) => {
+                                                                        query.where('orgao_id', Number(localStorage.getItem('orgaoId')))
+                                                })
+                                                .orWhere('numeroAuto.orgao', (query) => {
+                                                                        query.whereIdIn(listOrgaoId.map( (orgao) => {return orgao.id} ))
+                                                })
+                                                  .all().map(v => ({...v, movimento:'Entradas'}))
+      
       return processo.concat(transitados).concat(findos)
+
+    }
+
     },
     allData () {
       const data = []
       for (let processo of this.allProcessos){
-        data.push(
-          {'Numero Processo': processo.numeroProcesso, 
-          'Forma Processo': processo.formaProcesso.designacao, 
-          'Movimento': processo.movimento, 
-          'Tipo Parecer': (processo.pareceresProcesso.length > 0) ? processo.pareceresProcesso[0].tipoParecer.designacao : ' ',
-          'Orgao': processo.orgao.designacao, 
-          'Jurisdicao': processo.classeJudicial.designacao,
-          'accoes/Crimes': processo.accoesCrimes.designacao}
+
+      let autoPergunta = Pergunta.query().where('processo_id',processo.id).get()
+      let pecaProcesso = null
+      let arguidos = null
+      let situacaoPrisional = null
+     
+      if(autoPergunta !== null)
+          pecaProcesso = PecaProcesso.query().with('arguidos.situacaoPrisional').whereIdIn(autoPergunta.map( (auto) => {return auto.id})).get()
+
+      if( pecaProcesso !== null)
+          arguidos = pecaProcesso.map( (peca) => {return peca.arguidos})
+
+       if(arguidos.length > 0){
+          situacaoPrisional = arguidos[0].map( (arguido) => {return arguido.situacaoPrisional})
+          for(let sp of situacaoPrisional)
+            data.push(
+          {
+            'Numero Processo': processo.numeroProcesso, 
+            'Forma Processo': processo.formaProcesso.designacao, 
+            'Movimento': processo.movimento, 
+            'Autor Processo': (processo.autor !== null) ? processo.autor : 'Sem Informação',
+            'Tipo Parecer': (processo.despachos.length > 0) ? TipoParecer.query().find(processo.despachos[0].tipoParecer_id).designacao : ' ',
+            'Destino': (processo.despachos.length > 0) ? Orgao.query().find(processo.despachos[0].destino_id).designacao : ' ',
+            'Orgão': (processo.numeroAuto !== null) ? Orgao.query().find(processo.numeroAuto.orgao_id).designacao : ' ', 
+            'Familia Delitiva': (processo.numeroAuto !== null) ? ClasseJudicial.query().find(processo.numeroAuto.classeJudicial_id).designacao : ' ',
+            'Crimes': (processo.numeroAuto !== null) ? Crime.query().find(processo.numeroAuto.crime_id).designacao : ' ',
+            'Periodo - Mensal': new Date(processo.dataEntrada).toLocaleString('pt-pt', { month: 'short' }),
+            'Periodo - Trimestral': this.getCurrentQuartly(new Date(processo.dataEntrada)),
+            'Periodo - Semestral': this.getCurrentSemestral(new Date(processo.dataEntrada)),
+            'Periodo - Anual': new Date(processo.dataEntrada).getUTCFullYear(),
+            'Situação Prisional': (sp !==null) ? sp.designacao : ' '
+          }
         )
+       }else{
+             data.push(
+          {
+            'Numero Processo': processo.numeroProcesso, 
+            'Forma Processo': processo.formaProcesso.designacao, 
+            'Movimento': processo.movimento, 
+            'Autor Processo': (processo.autor !== null) ? processo.autor : 'Sem Informação',
+            'Tipo Parecer': (processo.despachos.length > 0) ? TipoParecer.query().find(processo.despachos[0].tipoParecer_id).designacao : ' ',
+            'Destino': (processo.despachos.length > 0) ? Orgao.query().find(processo.despachos[0].destino_id).designacao : ' ',
+            'Orgão': (processo.numeroAuto !== null) ? Orgao.query().find(processo.numeroAuto.orgao_id).designacao : ' ', 
+            'Familia Delitiva': (processo.numeroAuto !== null) ? ClasseJudicial.query().find(processo.numeroAuto.classeJudicial_id).designacao : ' ',
+            'Crimes': (processo.numeroAuto !== null) ? Crime.query().find(processo.numeroAuto.crime_id).designacao : ' ',
+            'Periodo - Mensal': new Date(processo.dataEntrada).toLocaleString('pt-pt', { month: 'short' }),
+            'Periodo - Trimestral': this.getCurrentQuartly(new Date(processo.dataEntrada)),
+            'Periodo - Semestral': this.getCurrentSemestral(new Date(processo.dataEntrada)),
+            'Periodo - Anual': new Date(processo.dataEntrada).getUTCFullYear(),
+            'Situação Prisional': 'Sem Informação'
+          }
+        )
+       }
+       
+
+
+    
       }
         return data
     },
@@ -373,38 +553,167 @@ export default {
         return { 'background-color': scale(x) }
       }
     },
-    getAllProcesso() {
-      ProcessoInstrucaoPreparatoria.api().get('/processoInstrucaoPreparatoria?offset=0&max=1000000')
+    getCurrentQuartly(date){
+       var month = date.getMonth() + 1;
+          return (Math.ceil(month / 3))+'º Trimestre';
     },
-    getAllFormaProcesso() {
-      FormaProcesso.api().get('/formaProcesso?offset=0&max=1000000')
+    getCurrentSemestral(date){
+       var month = date.getMonth() + 1;
+          return (Math.ceil(month / 6))+'º Semestre';
     },
-    getAllJurisdicao() {
-      ClasseJudicial.api().get('/classeJudicial?offset=0&max=1000000')
+    getAllProcesso(offset) {
+         if(offset >= 0){
+          ProcessoInvestigacao.api().get("/processoInvestigacao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllCrime() {
-      Crime.api().get('/crime?offset=0&max=1000000')
+    getAllFormaProcesso(offset) {
+      if(offset >= 0){
+          FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllFormaProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllMagistrado() {
-      Magistrado.api().get('/magistrado?offset=0&max=1000000')
+    getAllJurisdicao(offset) {
+      if(offset >= 0){
+          ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllJurisdicao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllOrgao() {
-      Orgao.api().get('/orgao?offset=0&max=1000000')
+    getAllCrime(offset) {
+      if(offset >= 0){
+          Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllCrime(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-     getAllProvincia() {
-      Provincia.api().get('/provincia?offset=0&max=1000000')
+    getAllMagistrado(offset) {
+      if(offset >= 0){
+          Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllMagistrado(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoOrgao() {
-      TipoOrgao.api().get('/tipoOrgao?offset=0&max=1000000')
+    getAllOrgao(offset) {
+      if(offset >= 0){
+          Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-     getAllPais() {
-      Pais.api().get('/pais?offset=0&max=1000000')
+     getAllProvincia(offset) {
+       if(offset >= 0){
+          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllProvincia(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllTipoParecer() {
-      TipoParecer.api().get('/tipoParecer?offset=0&max=1000000')
+    getAllTipoOrgao(offset) {
+      if(offset >= 0){
+          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoOrgao(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
-    getAllParecerProcesso() {
-      ParecerProcesso.api().get('/parecerProcesso?offset=0&max=1000000')
+     getAllPais(offset) {
+       if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
+    getAllTipoParecer(offset) {
+      if(offset >= 0){
+          TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoParecer(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
+    getAllDespachos(offset) {
+      if(offset >= 0){
+          Despacho.api().get("/despacho?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDespachos(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
+    getAllPergunta(offset) {
+       if(offset >= 0){
+          Pergunta.api().get("/pergunta?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPergunta(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
+    },
+     getAllArguidoProcesso(offset) {
+              if(offset >= 0){
+          PecaProcessoArguido.api().get("/pecaProcessoArguido?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllArguidoProcesso(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
+    },
+    getAllSituacaoPrisional(offset) {
+          if(offset >= 0){
+          SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllSituacaoPrisional(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     }
   },
   watch: {

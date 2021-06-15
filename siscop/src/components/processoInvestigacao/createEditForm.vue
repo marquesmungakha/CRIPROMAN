@@ -6,7 +6,7 @@
             <div class="text-h6">Adicionar Processo!</div>
         </q-card-section>
                 <q-card-section>
-          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
+          <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 650px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
             <ul class="list-group alert alert-danger">
               <li class="list-group-item text-negative q-pl-xs text-weight-regular text-caption"
                   v-for="item in listErrors" :key="item">
@@ -19,24 +19,37 @@
         <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form @submit.prevent="createProcesso" class="q-gutter-md">
                     <q-list>
-                        <q-item>
-                            <q-item-section>
-                                <q-input :value="numeroProcesso"
-                                @input="$emit('update:numeroProcesso', $event)"
-                                ref="numeroProcesso"
-                                label="Número do Processo *"
-                                lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza o Número do Auto']" />
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
+                    <div class="row">
+                      <div class="row q-gutter-xs" style="width: 500px;">
+                          <div class="col-4 text-left">Número do Processo *</div>
+                             <q-input :value="numeroProcesso"
+                                  @input="$emit('update:numeroProcesso', $event)"
+                                  ref="numeroProcesso"
+                                  lazy-rules
+                                  outlined
+                                  stack-label
+                                  class="w-field"
+                                  :dense="true"
+                                  :rules="[ val => val && val.length > 0 || 'Introduza o Número do Processo']" >
+                                  <!--template v-slot:before>
+                                  <div class="text-subtitle1"> Número do Processo *</div>
+                                  </template-->
+                                  </q-input>
+                        </div>
+                    </div>
+
+                       <div class="row">
+                        <div class="row q-gutter-xs" style="width: 500px;">
+                          <div class="col-4 text-left">Número do Auto *</div>
                             <q-select
                               :value="numeroAuto"
                               use-input
                               fill-input
                               hide-selected
-                              label="Número do Auto *"
+                              outlined
+                              stack-label
+                              class="w-field"
+                              :dense="true"
                               input-debounce="0"
                               :options="optionsAutoEntrada"
                               option-label="numero"
@@ -52,12 +65,23 @@
                                   </q-item-section>
                                 </q-item>
                               </template>
+                               <!--template v-slot:before>
+                                 <div class="text-subtitle1"> Número do Auto *</div>
+                                </template-->
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
-                                <q-input :value="dataEntrada"  label="Data de Entrada " @input="$emit('update:dataEntrada', $event)" :rules="['####-##-##']">
+                          </div>
+                      <div class="row q-gutter-xs" style="width: 500px;">
+                        <div class="col-4 text-left">Data de Entrada *</div>
+                                <q-input :value="dataEntrada"  
+                                outlined
+                                stack-label
+                                class="w-field"
+                                :dense="true"
+                                @input="$emit('update:dataEntrada', $event)" 
+                                :rules="['####-##-##']">
+                                <!--template v-slot:before>
+                                 <div class="text-subtitle1"> Data de Entrada *</div>
+                                </template-->
                                 <template v-slot:append>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -70,26 +94,36 @@
                                   </q-icon>
                                 </template>
                               </q-input>
-                            </q-item-section>
-                            </q-item>
-                            <q-item>
-                            <q-item-section>
+                        </div>
+                       </div>
+                      <div class="row">  
+                      <div class="row q-gutter-xs" style="width: 500px;">
+                          <div class="col-4 text-left">Proveniência *</div>
                                 <q-input :value="proveniencia"
                                 @input="$emit('update:proveniencia', $event)"
                                 ref="proveniencia"
-                                label="Proveniência *"
                                 lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza a Proveniência']" />
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
+                                outlined
+                                stack-label
+                                class="w-field"
+                                :dense="true"
+                                :rules="[ val => val && val.length > 0 || 'Introduza a Proveniência']" >
+                                <!--template v-slot:before>
+                                 <div class="text-subtitle1"> Proveniência *</div>
+                                </template-->
+                                </q-input>
+                    </div>
+                  <div class="row q-gutter-xs" style="width: 500px;">
+                    <div class="col-4 text-left">Forma de Processo *</div>
                             <q-select
                               :value="formaProcesso"
                               use-input
                               fill-input
                               hide-selected
-                              label="Forma de Processo  *"
+                              outlined
+                              stack-label
+                              class="w-field"
+                              :dense="true"
                               input-debounce="0"
                               :options="optionsFormaProcesso"
                               option-label="designacao"
@@ -105,17 +139,24 @@
                                   </q-item-section>
                                 </q-item>
                               </template>
+                              <!--template v-slot:before>
+                                 <div class="text-subtitle1"> </div>
+                                </template-->
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
+                    </div>
+                    </div>
+                    <div class="row">  
+                    <div class="row q-gutter-xs" style="width: 500px;">
+                        <div class="col-4 text-left">Inspector Responsável *</div>
                             <q-select
                               :value="inspector"
                               use-input
                               fill-input
                               hide-selected
-                              label="Inspector Responsável "
+                              outlined
+                              stack-label
+                              class="w-field"
+                              :dense="true"
                               input-debounce="0"
                               :options="optionsInspector"
                               option-label="numero"
@@ -131,17 +172,22 @@
                                   </q-item-section>
                                 </q-item>
                               </template>
+                              <!--template v-slot:before>
+                                 <div class="text-subtitle1"> Inspector Responsável *</div>
+                                </template-->
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
+                    </div>
+                  <div class="row q-gutter-xs" style="width: 500px;">
+                          <div class="col-4 text-left">Magistrado *</div>
                             <q-select
                               :value="magistrado"
                               use-input
                               fill-input
                               hide-selected
-                              label="Magistrado "
+                              outlined
+                              tack-label
+                              class="w-field"
+                              :dense="true"
                               input-debounce="0"
                               :options="optionsMagistrado"
                               option-label="numero"
@@ -157,9 +203,20 @@
                                   </q-item-section>
                                 </q-item>
                               </template>
+                              <!--template v-slot:before>
+                                 <div class="text-subtitle1"> Magistrado *</div>
+                                </template-->
                             </q-select>
-                            </q-item-section>
-                        </q-item>
+                        </div>
+                    </div>
+                    <div class="row">                         
+                      <div class="row q-gutter-xs">
+                        <div class="text-left">Processo com Autor? *</div>
+                          <q-radio :value="autor" val="Conhecido" label="Conhecido" @input="$emit('update:autor', $event)"/>
+                          <q-radio :value="autor" val="Desconhecido" label="Desconhecido" @input="$emit('update:autor', $event)"/>
+                          <q-radio :value="autor" val="Esclarecido" label="Esclarecido" @input="$emit('update:autor', $event)"/>
+                      </div>
+                    </div>
                     </q-list>
                 </q-form>
         </q-card-section>
@@ -294,6 +351,7 @@ export default {
       'magistrados',
       'formaProcessos',
       'autoEntradas',
+      'autor',
       'close',
       'submitting',
       'createProcesso'
@@ -301,3 +359,8 @@ export default {
 
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>

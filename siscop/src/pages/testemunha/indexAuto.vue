@@ -126,7 +126,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createTestemunha">
              <div class="q-pa-md">
                 <q-stepper
@@ -363,7 +363,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -453,7 +453,7 @@ export default {
                        testemunnha.sexo === this.testemunnha.sexo &&
                        testemunnha.numDocumentoIndentificacao === this.testemunnha.numDocumentoIndentificacao 
                        }).first()
-              if(results === undefined){
+              if(results === undefined  || results === null){
                     setTimeout(this.findIndividuo, 2)
               }else{
                 this.testemunnha = results
@@ -711,7 +711,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.testemunha.testemunhas.map(row =>
+          this.allTestemunhasFromAutoEntrada.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

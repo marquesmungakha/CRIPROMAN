@@ -10,11 +10,12 @@ import org.informservice.criproman.testemunha.Testemunha
 @Resource(uri='/api/pecaProcessoTestemunha')
 class PecaProcessoTestemunha {
 
-    String depoimento
+
     PecaProcesso pecaProcesso
     Testemunha testemunha
     Profissao profissao
     String ocupacao
+    String depoimento
 
     static mapping = {
         version false

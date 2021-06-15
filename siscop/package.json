@@ -2,7 +2,7 @@
   "name": "siscop",
   "version": "0.0.1",
   "description": "Sistema criado para auxilio na gestao de processos que dao entrada nas procuradorias a nivel nacional",
-  "productName": "Sistema de Gestao Processual da PGR",
+  "productName": "Sistema de Gestao Processual",
   "author": "colaconhongo <shycolaco@gmail.com>",
   "private": true,
   "scripts": {
@@ -13,18 +13,20 @@
   "dependencies": {
     "@quasar/extras": "^1.9.17",
     "@teamnovu/vue-responsive-image": "^0.0.1",
-    "@vuex-orm/core": "^0.36.3",
+    "@vuex-orm/core": "^0.36.4",
     "@vuex-orm/plugin-axios": "^0.9.3",
     "apex": "^0.1.2",
+    "apexcharts": "^3.26.2",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
     "d3-scale": "^3.2.3",
+    "localbase": "^0.7.5",
     "quasar": "^1.15.3",
     "vue": "^2.6.12",
     "vue-apexcharts": "^1.6.0",
     "vue-i18n": "^8.0.0",
     "vue-pivottable": "^0.3.82",
-    "vuex": "^3.6.0"
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",

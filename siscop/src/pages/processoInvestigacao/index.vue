@@ -24,9 +24,9 @@
               </q-popup-edit>
             </q-td>
             <q-td key="numeroAuto" :props="props">
-              <div class="text-pre-wrap">{{ props.row.numeroAuto_id }}</div>
-              <q-popup-edit v-model="props.row.numeroAuto_id">
-                <q-input v-model="props.row.numeroAuto_id" dense autofocus ></q-input>
+              <div class="text-pre-wrap">{{ props.row.numeroAuto.numero}}</div>
+              <q-popup-edit v-model="props.row.numeroAuto.numero">
+                <q-input v-model="props.row.numeroAuto.numero" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
             <q-td key="dataEntrada" :props="props">
@@ -59,13 +59,45 @@
                 <q-input v-model="props.row.magistrado" dense autofocus ></q-input>
               </q-popup-edit>
             </q-td>
+            <q-td key="estado" :props="props">
+            <q-chip :color="(props.row.despachos.length !== 0)?'green':(props.row.despachos.length === 0?'red':'grey')"
+              text-color="white" dense class="text-weight-bolder" square
+              style="width: 130px" :icon="(props.row.despachos.length !== 0)?'published_with_changes':(props.row.despachos.length === 0?'unpublished':'do_disturb_on')">
+              <span v-if="props.row.despachos.length !== 0"> {{props.row.despachos[0].tipoParecer.codigo}}</span>
+              <span v-else>Sem despacho</span>
+            </q-chip>
+            <q-popup-edit v-model="props.row.activo" title="Update estado">
+              <q-input v-model="props.row.activo" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
             <q-td key="actions" :props="props">
              <div class="q-gutter-sm">
               <router-link :to="`/processoInvestigacao/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
+              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
                </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaProcesso(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeProcesso(props.row)" size=sm no-caps/>
+              <q-btn round glossy icon="edit" color="blue" @click="editaProcesso(props.row)" size=sm no-caps >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn round glossy icon="delete_forever" color="red" @click="removeProcesso(props.row)" size=sm no-caps>
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
              </div>
             </q-td>
           </q-tr>
@@ -81,6 +113,7 @@
                     :magistrado.sync="magistrado"
                     :inspector.sync="inspector"
                     :anexo.sync="processoInvestigacao.anexo"
+                    :autor.sync="processoInvestigacao.autor"
                     :inspectors.sync="allInspectors"
                     :formaProcessos.sync="allFormaProcessos"
                     :autoEntradas.sync="allAutoEntradas"
@@ -100,9 +133,17 @@ import FormaProcesso from 'src/store/models/formaProcesso/formaProcesso'
 import Magistrado from 'src/store/models/magistrado/magistrado'
 import Orgao from 'src/store/models/orgao/orgao'
 import ProcessoInvestigacao from 'src/store/models/processoInvestigacao/processoInvestigacao'
-import TipoAuto from 'src/store/models/tipoAuto/tipoAuto'
 import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 import Crime from 'src/store/models/crime/crime'
+import TipoAuto from 'src/store/models/tipoAuto/tipoAuto'
+import Despacho from 'src/store/models/despacho/despacho'
+import TipoParecerAuto from 'src/store/models/tipoParecerAuto/tipoParecerAuto'
+import TipoParecer from 'src/store/models/tipoParecer/tipoParecer'
+import ParecerAuto from 'src/store/models/parecerAuto/parecerAuto'
+import Provincia from 'src/store/models/provincia/provincia'
+import TipoOrgao from 'src/store/models/tipoOrgao/tipoOrgao'
+import Pais from 'src/store/models/pais/pais'
+import Distrito from 'src/store/models/distrito/distrito'
 
 function wrapCsvValue (val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -128,14 +169,28 @@ export default {
         proveniencia: '',
         dataEntrada: '',
         anexo: [],
+        autor:'Conhecido',
         numeroAuto: {},
         formaProcesso: {},
         magistrado: {},
         inspector: {},
-        orgao: {}
       },
       numeroAuto: {
-        numero: ''
+        numero: '',
+        dataAbertura: '',
+        descricao: '',
+        modusOperandi: '',
+        horaOcorrencia: '',
+        infraccao: '',
+        endereco: '',
+        responsavelLocal: '',
+        contacto: '',
+        anexo: [],
+        tipoAuto: {},
+        classeJudicial: {},
+        crime: {},
+        inspector: {},
+        orgao: {}
       },
       formaProcesso: {
         designacao: ''
@@ -153,11 +208,12 @@ export default {
       columns: [
         { name: 'numeroProcesso', align: 'left', label: 'Número do Processo', field: row => row.numeroProcesso, format: val => `${val}`, sortable: true },
         { name: 'numeroAuto', align: 'left', label: 'Número do Auto', field: row => row.numeroAuto, format: val => `${val}`, sortable: true },
-        { name: 'proveniencia', align: 'left', label: 'Proveniência', field: row => row.proveniencia, format: val => `${val}`, sortable: true },
         { name: 'dataEntrada', align: 'left', label: 'Data de Entrada', field: row => row.dataEntrada, format: val => `${val}`, sortable: true },
+        { name: 'proveniencia', align: 'left', label: 'Proveniência', field: row => row.proveniencia, format: val => `${val}`, sortable: true },
         { name: 'formaProcesso', align: 'left', label: 'Forma de Processo', field: row => row.formaProcesso, format: val => `${val}`, sortable: true },
         { name: 'inspector', align: 'left', label: 'Inspector', field: row => row.inspector, format: val => `${val}`, sortable: true },
         { name: 'magistrado', align: 'left', label: 'Magistrado', field: row => row.magistrado, format: val => `${val}`, sortable: true },
+        { name: 'estado', align: 'left', label: 'Estado', format: val => `${val}`, sortable: true },
         { name: 'actions', label: 'Movimento', field: 'actions' }
       ],
       data: []
@@ -177,7 +233,7 @@ export default {
     // Example:
     return this.getAllProcesso()
   },
-  mounted () {
+  async mounted () {
     let offset = 0
       this.getAllProcesso(offset)
       this.getAllAutoEntrada(offset)
@@ -188,6 +244,10 @@ export default {
       this.getAllMagistrado(offset)
       this.getAllInspector(offset)
       this.getAllOrgao(offset)
+      this.getAllDespacho(offset)
+      this.getAllTipoParecer(offset)
+      this.getAllParecerAuto(offset)
+      this.getAllTipoParecerAuto(offset)
   },
   components: {
     'create-edit-form': require('components/processoInvestigacao/createEditForm.vue').default
@@ -199,7 +259,6 @@ export default {
       spinner: QSpinnerBall
       // delay: 400 // ms
     })
-
     setTimeout(() => {
       this.$q.loading.hide()
     }, 600)
@@ -209,46 +268,102 @@ export default {
   },
   computed: {
     allInspectors () {
-      return Inspector.query().all()
+      return Object.freeze(Inspector.query().all())
     },
     allAutoEntradas () {
-      return AutoEntrada.query().with('orgao').with('inspector').with('crime.classeJudicial').with('classeJudicial').with('tipoAuto').hasNot('processoInvestigacao').get()
+      const orgaoPrincipal = Orgao.query().find(localStorage.getItem('orgaoId'))
+          if(orgaoPrincipal.nivel === 0)
+                return AutoEntrada.query()
+                                          .with(['orgao.provincia.pais','orgao.distrito.provincia.pais','orgao.tipoOrgao'])
+                                          .with('inspector')
+                                          .with('crime.*')
+                                          .with('classeJudicial')
+                                          .with('tipoAuto')
+                                          .hasNot('processoInvestigacao').get()
+          else
+               return AutoEntrada.query()
+                                          .with(['orgao.provincia.pais','orgao.distrito.provincia.pais','orgao.tipoOrgao'])
+                                          .with('inspector')
+                                          .with('crime.*')
+                                          .with('classeJudicial')
+                                          .with('tipoAuto')
+                                          .where('orgao_id',orgaoPrincipal.id)
+                                          .hasNot('processoInvestigacao').get()
+
     },
     allFormaProcessos () {
-      return FormaProcesso.query().all()
+      return Object.freeze(FormaProcesso.query().all())
     },
     allMagistrados () {
-      return Magistrado.query().all()
+      return Object.freeze(Magistrado.query().all())
     },
+     allCrimes() {
+      return Object.freeze(Crime.query().all())
+    },
+    allclasseJudicials() {
+      return Object.freeze(ClasseJudicial.query().all())
+    },
+    alltipoAutos() {
+      return Object.freeze(TipoAuto.query().all())
+    },
+    allPaises() {
+      return Object.freeze(Pais.query().all())
+    },
+    allProvincias() {
+      return Object.freeze(Provincia.query().with('pais').get())
+    },
+     allDistritos() {
+        return Object.freeze(Distrito.query().with('provincia.*').get())
+     },
     allOrgaos () {
-      return Orgao.query().all()
+      return Object.freeze(Orgao.query().all())
     },
     allProcessos () {
-      return ProcessoInvestigacao.query().with('orgao').with('inspector').with('magistrado').with('formaProcesso').with('autoEntrada').all()
+       const orgaoPrincipal = Orgao.query().find(localStorage.getItem('orgaoId'))
+       
+          if(orgaoPrincipal.nivel === 0)
+                return Object.freeze(ProcessoInvestigacao.query()
+                                                                .with('inspector')
+                                                                .with('magistrado')
+                                                                .with('formaProcesso')
+                                                                .with('despachos.tipoParecer')
+                                                                .with('numeroAuto.*').all())
+            else
+                return Object.freeze(ProcessoInvestigacao.query()
+                                                                .with('inspector')
+                                                                .with('magistrado')
+                                                                .with('formaProcesso')
+                                                                .with('despachos.tipoParecer')
+                                                                .with('numeroAuto.*')
+                                                                .whereHas('numeroAuto', (query) => {
+                                                                        query.where('orgao_id', orgaoPrincipal.id)
+                                                                })
+                                                                .get())
     }
   },
   methods: {
     createProcesso () {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
-      this.processoInvestigacao.numeroAuto_id = this.numeroAuto.id
-      this.processoInvestigacao.formaProcesso_id = this.formaProcesso.id
-      this.processoInvestigacao.magistrado_id = this.magistrado.id
-      this.processoInvestigacao.inspector_id = this.inspector.id
+      // setTimeout(() => {
+      //   this.submitting = false
+      // }, 300)
       
       this.processoInvestigacao.formaProcesso = this.formaProcesso
+      this.processoInvestigacao.formaProcesso_id = this.formaProcesso.id
+
       this.processoInvestigacao.magistrado = this.magistrado
+      this.processoInvestigacao.magistrado_id = this.magistrado.id
+
       this.processoInvestigacao.inspector = this.inspector
-      this.processoInvestigacao.orgao = Orgao.query().with('provincia.pais').with('tipoOrgao').first()
-      this.processoInvestigacao.orgao_id = Orgao.query().first().id
+      this.processoInvestigacao.inspector_id = this.inspector.id
+
       this.processoInvestigacao.numeroAuto = this.numeroAuto
-      //  const image = new Blob([this.processoInvestigacao.anexo])
-      this.processoInvestigacao.anexo = null
+      this.processoInvestigacao.numeroAuto_id = this.numeroAuto.id
+
       if (this.editedIndex > -1) {
          ProcessoInvestigacao.api().patch("/processoInvestigacao/" + this.processoInvestigacao.id, this.processoInvestigacao).then(resp => {
+          this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -272,12 +387,13 @@ export default {
                 this.listErrors.push(element.message)
               })
             }
+            this.submitting = false
             console.log(this.listErrors)
           }
         })
       } else {
         ProcessoInvestigacao.api().post("/processoInvestigacao/", this.processoInvestigacao).then(resp => {
-          console.log(resp)
+          this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -302,25 +418,21 @@ export default {
                 this.listErrors.push(element.message)
               })
             }
+            this.submitting = false
             console.log(this.listErrors)
           }
         })
       }
     },
     close () {
-     let offset = 0
-      this.getAllProcesso(offset)
-      this.getAllAutoEntrada(offset)
-      this.getAllFormaProcesso(offset)
-      this.getAllTipoAuto(offset)
-      this.getAllJurisdicao(offset)
-      this.getAllCrime(offset)
-      this.getAllMagistrado(offset)
-      this.getAllInspector(offset)
-      this.getAllOrgao(offset)
-      this.listErrors = {}
+      this.listErrors = []
       this.show_dialog = false
-      this.processoInvestigacao = {}
+      this.processoInvestigacao = []
+      this.processoInvestigacao.autor='Conhecido'
+      this.numeroAuto = []
+      this.magistrado = []
+      this.formaProcesso = []
+      this.inspector = []
       this.props = this.processoInvestigacao
       setTimeout(() => {
         this.editedIndex = -1
@@ -350,59 +462,64 @@ export default {
     editaProcesso (processoInvestigacao) {
       this.editedIndex = 0
       this.processoInvestigacao = Object.assign({}, processoInvestigacao)
-      this.numeroAuto = AutoEntrada.query().find(processoInvestigacao.autoEntrada_id)
+      this.numeroAuto = AutoEntrada.query().with(['orgao.provincia.pais','orgao.distrito.provincia.pais','orgao.tipoOrgao'])
+                                            .with('inspector')
+                                            .with('crime.*')
+                                            .with('classeJudicial')
+                                            .with('tipoAuto')
+                                            .find(processoInvestigacao.numeroAuto_id)
       this.formaProcesso = FormaProcesso.query().find(processoInvestigacao.formaProcesso_id)
       this.magistrado = Magistrado.query().find(processoInvestigacao.magistrado_id)
       this.inspector = Inspector.query().find(processoInvestigacao.inspector_id)
       this.show_dialog = true
     },
-     getAllAutoEntrada(offset) {
+    async getAllAutoEntrada(offset) {
        if(offset >= 0) {
-         AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
+        await AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllAutoEntrada(offset), 2)
+              setTimeout(this.getAllAutoEntrada(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
     },
-    getAllProcesso(offset) {
+   async getAllProcesso(offset) {
       if(offset >= 0) {
-         ProcessoInvestigacao.api().get("/processoInvestigacao?offset="+offset+"&max=100").then(resp => {
+        await ProcessoInvestigacao.api().get("/processoInvestigacao?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllProcesso(offset), 2)
+              setTimeout(this.getAllProcesso(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
     },
-    getAllFormaProcesso(offset) {
+  async  getAllFormaProcesso(offset) {
        if(offset >= 0) {
-         FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+        await FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllFormaProcesso(offset), 2)
+              setTimeout(this.getAllFormaProcesso(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
     },
-    getAllTipoAuto(offset) {
+  async  getAllTipoAuto(offset) {
        if(offset >= 0) {
-         TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+        await TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllTipoAuto(offset), 2)
+              setTimeout(this.getAllTipoAuto(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
     },
-   getAllInspector(offset) {
+  async getAllInspector(offset) {
        if(offset >= 0){
-          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+         await Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)
@@ -411,49 +528,93 @@ export default {
         })
        }
     },
-    getAllOrgao(offset) {
+  async  getAllOrgao(offset) {
         if(offset >= 0){
-           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+          await Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllOrgao(offset), 2)
+              setTimeout(this.getAllOrgao(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
       }
     },
-     getAllJurisdicao(offset) {
+   async  getAllJurisdicao(offset) {
        if(offset >= 0) {
-         ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        await ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllJurisdicao(offset), 2)
+              setTimeout(this.getAllJurisdicao(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
     },
-    getAllCrime(offset) {
+   async getAllCrime(offset) {
        if(offset >= 0) {
-         Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+         await Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllCrime(offset), 2)
+              setTimeout(this.getAllCrime(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
     },
-    getAllMagistrado(offset) {
+  async  getAllMagistrado(offset) {
       if(offset >= 0){
-           Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+        await Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length() > 0) 
-              setTimeout(this. getAllMagistrado(offset), 2)
+              setTimeout(this.getAllMagistrado(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
+    },
+    async getAllDespacho(offset) {
+      if(offset >= 0){
+          await Despacho.api().get("/despacho?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDespacho(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
+    },
+    async getAllTipoParecer(offset) {
+       if(offset >= 0){
+          await TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoParecer(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
+    },
+    async getAllParecerAuto(offset) {
+      if(offset >= 0){
+        await ParecerAuto.api().get("/parecerAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllParecerAuto(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
+    async getAllTipoParecerAuto(offset) {
+      if(offset >= 0){
+        await TipoParecerAuto.api().get("/tipoParecerAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoParecer(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
     },
     abortFilterFn () {
       // console.log('delayed filter aborted')
@@ -462,7 +623,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.processoInvestigacao.processos.map(row =>
+          this.allProcessos.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

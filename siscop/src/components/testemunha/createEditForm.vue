@@ -1,14 +1,16 @@
 <template>
 
   <q-list>
-      <q-item>
-          <q-item-section>
+  <q-item>
+    <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Profissão *</div>
             <q-select
-              :value="profissao"
+              outlined tack-label class="w-field" :dense="true" :value="profissao"
               use-input
               fill-input
               hide-selected
-              label="Profissão *"
+              
               input-debounce="0"
               :options="optionsProfissao"
               option-label="designacao"
@@ -25,23 +27,26 @@
                 </q-item>
               </template>
             </q-select>
-          </q-item-section>
-      </q-item>
-      <q-item>
-        <q-item-section>
-            <q-input :value="ocupacao"
+        </div> 
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Ocupação</div>
+            <q-input outlined tack-label class="w-field" :dense="true" :value="ocupacao"
             @input="$emit('update:ocupacao', $event)"
             ref="ocupacao"
-            label="Ocupação "
+            
             lazy-rules
               />
-          </q-item-section>
-      </q-item>
-      <q-item>
-          <q-item-section>
-                <q-input :value="depoimento"  type="textarea"  label="Depoimento *  " @input="$emit('update:depoimento', $event)"/>
-          </q-item-section>
-      </q-item>
+        </div>
+    </div>
+  </q-item>
+  <q-item>
+      <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Cargo Ocupado *</div>
+                <q-input outlined tack-label class="w-field" :dense="true" :value="depoimento"  type="textarea"  label="Depoimento *  " @input="$emit('update:depoimento', $event)"/>
+        </div>
+      </div>
+  </q-item>
   </q-list>
 
 </template>
@@ -89,3 +94,8 @@ export default {
   ]
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>

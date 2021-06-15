@@ -21,7 +21,7 @@
                 <q-item class="full-width">
                   <q-item-section>
                     <q-item-label lines="1" caption >{{ $t('numeroAuto') }}</q-item-label>
-                    <q-item-label class="text-grey-9">{{ processoInvestigacao.numeroAuto }}</q-item-label>
+                    <q-item-label class="text-grey-9">{{ processoInvestigacao.numeroAuto_id }}</q-item-label>
                   </q-item-section>
                 </q-item>
                 </div>
@@ -100,6 +100,17 @@
                     </q-item>
                   </div>
                 </div>
+                <q-separator/>
+                 <div class="row">
+                 <div class="col">
+                    <q-item class="full-width">
+                      <q-item-section>
+                        <q-item-label lines="1" caption >{{ $t('Processo com Autor') }}</q-item-label>
+                        <q-item-label class="text-grey-9">{{ processoInvestigacao.autor }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                 </div>
+                 </div>
                  <q-separator/>
                 </q-card-section>
                  <div class="row">
@@ -196,6 +207,7 @@
                     :magistrado.sync="magistrado"
                     :inspector.sync="inspector"
                     :anexo.sync="localProcesso.anexo"
+                    :autor.sync="localProcesso.autor"
                     :inspectors.sync="allInspectors"
                     :formaProcessos.sync="allFormaProcessos"
                     :autoEntradas.sync="allAutoEntradas"
@@ -214,6 +226,7 @@ import FormaProcesso from 'src/store/models/formaProcesso/formaProcesso'
 import Magistrado from 'src/store/models/magistrado/magistrado'
 import Orgao from 'src/store/models/orgao/orgao'
 import ProcessoInvestigacao from 'src/store/models/processoInvestigacao/processoInvestigacao'
+// import ProcessoInvestigacao from 'src/store/models/processoInvestigacao/processoInvestigacao'
 // import TipoAuto from 'src/store/models/tipoAuto/tipoAuto'
 // import ClasseJudicial from 'src/store/models/jurisdicao/jurisdicao'
 // import Crime from 'src/store/models/crime/crime'
@@ -237,14 +250,28 @@ export default {
         proveniencia: '',
         dataEntrada: '',
         anexo: [],
+        autor: '',
         numeroAuto: {},
         formaProcesso: {},
         magistrado: {},
-        inspector: {},
-        orgao: {}
+        inspector: {}
       },
       numeroAuto: {
-        numero: ''
+        numero: '',
+        dataAbertura: '',
+        descricao: '',
+        modusOperandi: '',
+        horaOcorrencia: '',
+        infraccao: '',
+        endereco: '',
+        responsavelLocal: '',
+        contacto: '',
+        anexo: [],
+        tipoAuto: {},
+        classeJudicial: {},
+        crime: {},
+        inspector: {},
+        orgao: {}
       },
       formaProcesso: {
         designacao: ''
@@ -272,7 +299,7 @@ export default {
     // the component gets instantiated.
     // Return a Promise if you are running an async job
     // Example:
-    return ProcessoInvestigacao.query().with('orgao').with('inspector').with('magistrado').with('formaProcesso').with('autoEntrada').with('despachos').find(currentRoute.params.id)
+  //  return ProcessoInvestigacao.query().with('orgao').with('inspector').with('magistrado').with('formaProcesso').with('autoEntrada').with('despachos').find(currentRoute.params.id)
   },
   created () {
   },
@@ -281,7 +308,20 @@ export default {
   computed: {
     processoInvestigacao: {
       get () {
-        return ProcessoInvestigacao.query().with('orgao').with('inspector').with('magistrado').with('formaProcesso').with('autoEntrada').with('despachos').find(this.$route.params.id)
+        return ProcessoInvestigacao.query()
+                                   .with('orgao')
+                                   .with('inspector')
+                                   .with('magistrado')
+                                   .with('formaProcesso')
+                                   .with(['numeroAuto.orgao.provincia.pais',
+                                         'numeroAuto.orgao.distrito.provincia.pais',
+                                         'numeroAuto.orgao.tipoOrgao',
+                                         'numeroAuto.inspector',
+                                         'numeroAuto.classeJudicial',
+                                         'numeroAuto.tipoAuto',
+                                         'numeroAuto.crime.classeJudicial'])
+                                   .with('despachos')
+                                   .find(this.$route.params.id)
       },
       set (processoInvestigacao) {
         this.$emit('update:processoInvestigacao', '')
@@ -292,8 +332,9 @@ export default {
       return Inspector.query().all()
     },
     allAutoEntradas () {
-      return AutoEntrada.query().with('orgao').with('inspector').with('crime.classeJudicial').with('classeJudicial').with('tipoAuto').hasNot('processoInvestigacao').get()
+      return AutoEntrada.query().withAll().hasNot('processoInvestigacao').get()
     },
+      // AutoEntrada.query().with('orgao').with('inspector').with('crime.classeJudicial').with('classeJudicial').with('tipoAuto').hasNot('processoInvestigacao').get()
     allFormaProcessos () {
       return FormaProcesso.query().all()
     },
@@ -334,7 +375,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + processoInvestigacao.designacao + ' ]'
         })
-         ProcessoInvestigacao.api().delete("/processoInvestigacao/" + this.processoInvestigacao.id)
+         ProcessoInvestigacao.api().delete("/processoInvestigacao/" + processoInvestigacao.id)
         this.$router.go(-1)
       })
     },
@@ -344,17 +385,19 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.localProcesso.numeroAuto_id = this.numeroAuto.id
+
+      this.localProcesso.formaProcesso = this.formaProcesso
       this.localProcesso.formaProcesso_id = this.formaProcesso.id
-      this.localProcesso.magistrado_id = this.magistrado.id
+
+      this.localProcesso.magistrado = this.magistrado
+       this.localProcesso.magistrado_id = this.magistrado.id
+
+      this.localProcesso.inspector = this.inspector
       this.localProcesso.inspector_id = this.inspector.id
       
-      this.localProcesso.formaProcesso = this.formaProcesso
-      this.localProcesso.magistrado = this.magistrado
-      this.localProcesso.inspector = this.inspector
-      this.localProcesso.orgao = Orgao.query().with('provincia.pais').with('tipoOrgao').first()
-      this.localProcesso.orgao_id = Orgao.query().first().id
       this.localProcesso.numeroAuto = this.numeroAuto
+      this.localProcesso.numeroAuto_id = this.numeroAuto.id
+
       ProcessoInvestigacao.api().patch("/processoInvestigacao/" + this.localProcesso.id, this.localProcesso).then(resp => {
         console.log('update' + resp)
         this.$q.notify({
@@ -392,7 +435,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/processoInvestigacao/" + processoInvestigacao.id, formData, {
+        ProcessoInvestigacao.api().patch("/processoInvestigacao/" + processoInvestigacao.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;
@@ -419,7 +462,12 @@ export default {
       this.editedIndex = 0
       this.processoInvestigacao = Object.assign({}, processoInvestigacao)
       this.localProcesso = Object.assign({}, processoInvestigacao)
-      this.numeroAuto = AutoEntrada.query().find(processoInvestigacao.autoEntrada_id)
+      this.numeroAuto = AutoEntrada.query().with(['orgao.provincia.pais','orgao.distrito.provincia.pais','orgao.tipoOrgao'])
+                                            .with('inspector')
+                                            .with('crime.*')
+                                            .with('classeJudicial')
+                                            .with('tipoAuto')
+                                            .find(processoInvestigacao.numeroAuto_id)
       this.formaProcesso = FormaProcesso.query().find(processoInvestigacao.formaProcesso_id)
       this.magistrado = Magistrado.query().find(processoInvestigacao.magistrado_id)
       this.inspector = Inspector.query().find(processoInvestigacao.inspector_id)
@@ -450,7 +498,7 @@ export default {
         proveniencia: 'Proveniência',
         dataEntrada: 'Data de Entrada',
         anexo: 'Anexo',
-        formaProcesso: 'FormaProcesso',
+        formaProcesso: 'Forma Processo',
         inspector: 'Inspector',
         magistrado: 'Magistrado',
         agentes: 'Agentes'
@@ -463,7 +511,7 @@ export default {
         proveniencia: 'Proveniência',
         dataEntrada: 'Data de Entrada',
         anexo: 'Anexo',
-        formaProcesso: 'FormaProcesso',
+        formaProcesso: 'Forma Processo',
         inspector: 'Inspector',
         magistrado: 'Magistrado',
         agentes: 'Agentes'

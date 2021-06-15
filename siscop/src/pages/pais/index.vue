@@ -38,11 +38,32 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/pais/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm>
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaPais(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaPais(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click.stop="removePais(props.row)"/>
+                     @click.stop="removePais(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -91,7 +112,7 @@ export default {
         {
           name: 'codigo',
           required: true,
-          label: 'Codigo',
+          label: 'Código',
           align: 'left',
           field: row => row.codigo,
           format: val => `${val}`,
@@ -100,7 +121,7 @@ export default {
         {
           name: 'designacao',
           align: 'left',
-          label: 'Designacao',
+          label: 'Designação',
           field: row => row.designacao,
           format: val => `${val}`,
           sortable: true
@@ -113,7 +134,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -148,7 +169,6 @@ export default {
       spinner: QSpinnerBall
       // delay: 400 // ms
     })
-
     setTimeout(() => {
       this.$q.loading.hide()
     }, 600)
@@ -275,7 +295,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.pais.paises.map(row =>
+          this.allPaises.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

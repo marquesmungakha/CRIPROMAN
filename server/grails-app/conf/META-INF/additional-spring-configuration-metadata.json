@@ -1,1 +1,8 @@
-{ "properties": [ ] }
+{
+  "properties": [
+    {
+      "name": "management.server.connection-timeout",
+      "type": "java.lang.String",
+      "description": "Description for management.server.connection-timeout."
+  }
+] }

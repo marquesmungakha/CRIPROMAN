@@ -27,11 +27,32 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/modoAtuacao/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaModoAtuacao(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaModoAtuacao(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click.stop="removeModoAtuacao(props.row)"/>
+                     @click.stop="removeModoAtuacao(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -81,7 +102,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -232,7 +253,7 @@ export default {
     getAllModoAtuacao(offset) {
        if(offset >=0){
           ModoAtuacao.api().get("/modoAtuacao?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllModoAtuacao(offset), 2)
 
@@ -245,7 +266,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.modoAtuacao.modosAtuacao.map(row =>
+          this.allModosAtuacao.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

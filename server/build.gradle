@@ -22,6 +22,7 @@ apply plugin:"com.github.node-gradle.node"
 apply plugin:"org.grails.plugins.views-json"
 
 repositories {
+    mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
@@ -50,9 +51,10 @@ dependencies {
     compile "org.grails:grails-logging"
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:async"
-    compile 'org.grails.plugins:spring-security-core:4.0.3'
+    compile "org.grails.plugins:spring-security-core:4.0.3"
     compile "org.grails.plugins:spring-security-rest:3.0.1"
-    compile 'org.grails.plugins:audit-logging:3.0.6'
+    compile "org.grails.plugins:cache-headers:2.0.2"
+    compile "org.grails.plugins:audit-logging:3.0.6"
     compile "org.grails.plugins:hibernate5"
     compile "org.hibernate:hibernate-core:5.4.18.Final"
     compile "org.grails.plugins:views-json"

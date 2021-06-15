@@ -50,10 +50,31 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/bairro/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaBairro(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeBairro(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaBairro(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeBairro(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -168,7 +189,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -189,10 +210,16 @@ export default {
   },
   mounted() {
     let offset = 0
-    this.distrito = this.localDistrito
-    this.provincia = this.localProvincia
-    this.postoAdministrativo = this.localPostoAdministrativo
-    this.localidade = this.localLocalidade
+
+        if(this.localDistrito !== null && this.localDistrito !== undefined && 
+        this.localProvincia !== null &&  this.localProvincia !== undefined && 
+        this.localPostoAdministrativo !== null &&  this.localPostoAdministrativo !== undefined &&
+        this.localLocalidade !== null &&  this.localLocalidade !== undefined ){
+          this.distrito = this.localDistrito
+          this.provincia = this.localProvincia
+          this.postoAdministrativo = this.localPostoAdministrativo
+          this.localidade = this.localLocalidade
+    }
     this.getAllPais(offset)
     this.getAllPostoAdministrativo(offset)
     this.getAllProvincia(offset)
@@ -450,7 +477,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.bairro.bairros.map(row =>
+          this.allBairros.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

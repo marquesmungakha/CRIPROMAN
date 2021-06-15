@@ -31,7 +31,7 @@
             </q-popup-edit>
           </q-td>
           <q-td key="tipoAuto" :props="props">
-            <div class="text-pre-wrap">{{ props.row.tipoAuto.designacao }}</div>
+            <div class="text-pre-wrap">{{ props.row.tipoAuto.designacao}}</div>
             <q-popup-edit v-model="props.row.tipoAuto.designacao">
               <q-input v-model="props.row.tipoAuto.designacao" autofocus dense></q-input>
             </q-popup-edit>
@@ -49,21 +49,53 @@
             </q-popup-edit>
           </q-td>
           <q-td key="inspector" :props="props">
-            <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
+            <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome}}
               {{ props.row.inspector.apelido }}
             </div>
-            <q-popup-edit v-model="props.row.inspector">
-              <q-input v-model="props.row.inspector" autofocus dense></q-input>
+            <q-popup-edit v-model="props.row.inspector.nome">
+              <q-input v-model="props.row.inspector.nome" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="estado" :props="props">
+          <q-chip :color="(props.row.pareceresAuto.length !== 0)?'green':(props.row.pareceresAuto.length === 0?'red':'grey')"
+              text-color="white" dense class="text-weight-bolder" square
+              style="width: 130px" :icon="(props.row.pareceresAuto.length !== 0)?'published_with_changes':(props.row.pareceresAuto.length === 0?'unpublished':'do_disturb_on')">
+              <span v-if="props.row.pareceresAuto.length !== 0"> {{props.row.pareceresAuto[0].tipoParecer.codigo}}</span>
+              <span v-else>Sem despacho</span>
+            </q-chip>
+            <q-popup-edit v-model="props.row.activo" title="Update estado">
+              <q-input v-model="props.row.activo" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/autoEntrada/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaAutoEntrada(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaAutoEntrada(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeAutoEntrada(props.row)"/>
+                     @click="removeAutoEntrada(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -107,6 +139,9 @@ import AutoEntrada from 'src/store/models/autoEntrada/autoEntrada'
 import Provincia from 'src/store/models/provincia/provincia'
 import TipoOrgao from 'src/store/models/tipoOrgao/tipoOrgao'
 import Pais from 'src/store/models/pais/pais'
+import Distrito from 'src/store/models/distrito/distrito'
+import ParecerAuto from 'src/store/models/parecerAuto/parecerAuto'
+import TipoParecerAuto from 'src/store/models/tipoParecerAuto/tipoParecerAuto'
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -182,7 +217,7 @@ export default {
           name: 'tipoAuto',
           align: 'left',
           label: 'Tipo de Auto',
-          field: row => row.tipoAuto,
+          field: row => row.tipoAuto_id,
           format: val => `${val}`,
           sortable: true
         },
@@ -190,7 +225,7 @@ export default {
           name: 'classeJudicial',
           align: 'left',
           label: 'Família Delitiva',
-          field: row => row.classeJudicial,
+          field: row => row.classeJudicial_id,
           format: val => `${val}`,
           sortable: true
         },
@@ -198,7 +233,7 @@ export default {
           name: 'crime',
           align: 'left',
           label: 'Tipo Legal de Crime',
-          field: row => row.crime,
+          field: row => row.crime_id,
           format: val => `${val}`,
           sortable: true
         },
@@ -206,13 +241,21 @@ export default {
           name: 'inspector',
           align: 'left',
           label: 'Inspector',
-          field: row => row.inspector,
+          field: row => row.inspector_id,
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {
+          name: 'estado',
+          align: 'left',
+          label: 'Estado',
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
-      data: []
+      data: [] //Object.freeze(AutoEntrada.query().all())
+            // AutoEntrada.query().with('orgao.provincia').with('inspector').with('crime').with('classeJudicial').with('tipoAuto').get()
     }
   },
   preFetch({store, currentRoute, previousRoute, redirect, ssrContext, urlPath, publicPath}) {
@@ -231,7 +274,6 @@ export default {
   },
   mounted() {
     let offset = 0
-    this.getAllAutoEntrada(offset)
     this.getAllTipoAuto(offset)
     this.getAllJurisdicao(offset)
     this.getAllCrime(offset)
@@ -239,7 +281,11 @@ export default {
     this.getAllOrgao(offset)
     this.getAllPais(offset)
     this.getAllProvincia(offset)
+    this.getAllDistrito(offset)
     this.getAllTipoOrgao(offset)
+    this.getAllAutoEntrada(offset)
+    this.getAllParecerAuto(offset)
+    this.getAllTipoParecer(offset)
   },
   components: {
     'create-edit-form': require('components/autoEntrada/createEditForm.vue').default
@@ -260,25 +306,52 @@ export default {
   metaInfo: {},
   computed: {
     allInspectors() {
-      return Inspector.query().all()
+      return Object.freeze(Inspector.query().all())
     },
     allCrimes() {
-      return Crime.query().all()
+      return Object.freeze(Crime.query().all())
     },
     allCrimesFromClasseJudicial() {
-      return Crime.query().where('classeJudicial_id', this.classeJudicial.id).get()
+      return Object.freeze(Crime.query().where('classeJudicial_id', this.classeJudicial.id).get())
     },
     allclasseJudicials() {
-      return ClasseJudicial.query().all()
+      return Object.freeze(ClasseJudicial.query().all())
     },
     alltipoAutos() {
-      return TipoAuto.query().all()
+      return Object.freeze(TipoAuto.query().all())
     },
+    allPaises() {
+      return Object.freeze(Pais.query().all())
+    },
+    allProvincias() {
+      return Object.freeze(Provincia.query().with('pais').get())
+    },
+     allDistritos() {
+        return Object.freeze(Distrito.query().with('provincia.*').get())
+     },
     allOrgaos() {
-      return Orgao.query().all()
+      return Object.freeze(Orgao.query().withAll().get())
     },
     allAutoEntradas() {
-      return AutoEntrada.query().with('orgao').with('inspector').with('crime').with('classeJudicial').with('tipoAuto').get()
+        const orgaoPrincipal = Orgao.query().find(localStorage.getItem('orgaoId'))
+          if(orgaoPrincipal.nivel === 0)
+              return Object.freeze(AutoEntrada.query()
+                                              .with(['orgao.provincia.pais','orgao.distrito.provincia.pais','orgao.tipoOrgao'])
+                                              .with('inspector')
+                                              .with('crime.*')
+                                              .with('classeJudicial')
+                                              .with('tipoAuto')
+                                              .with('pareceresAuto.tipoParecer').get())
+          else
+              return Object.freeze(AutoEntrada.query()
+                                              .with(['orgao.provincia.pais','orgao.distrito.provincia.pais','orgao.tipoOrgao'])
+                                              .with('inspector')
+                                              .with('crime.*')
+                                              .with('classeJudicial')
+                                              .with('tipoAuto')
+                                              .with('pareceresAuto.tipoParecer')
+                                              .where('orgao_id',orgaoPrincipal.id).get())
+
     }
   },
   methods: {
@@ -289,20 +362,30 @@ export default {
         this.submitting = false
       }, 300)
 
-      this.autoEntrada.tipoAuto = this.tipoAuto
-      this.autoEntrada.classeJudicial = this.classeJudicial
-      this.crime.classeJudicial = this.classeJudicial
-      this.autoEntrada.crime = this.crime
-      this.autoEntrada.inspector = this.inspector
-      this.autoEntrada.tipoAuto_id = this.tipoAuto.id
+      this.orgao = Orgao.query().with('provincia.*')
+                                .with('tipoOrgao')
+                                .with('distrito.provincia.*')
+                                .find(localStorage.getItem('orgaoId'))
+
       this.autoEntrada.classeJudicial_id = this.classeJudicial.id
+      this.autoEntrada.classeJudicial = this.classeJudicial
+
+      this.crime.classeJudicial = this.classeJudicial
+
       this.autoEntrada.crime_id = this.crime.id
+      this.autoEntrada.crime = this.crime
+
       this.autoEntrada.inspector_id = this.inspector.id
-      this.autoEntrada.orgao_id = Orgao.query().first().id
-      this.autoEntrada.orgao = Orgao.query().with('provincia.pais').with('tipoOrgao').first()
+      this.autoEntrada.inspector = this.inspector
+
+      this.autoEntrada.tipoAuto_id = this.tipoAuto.id
+      this.autoEntrada.tipoAuto = this.tipoAuto
+
+      this.autoEntrada.orgao_id =  this.orgao.id
+      this.autoEntrada.orgao =  this.orgao
 
       if (this.editedIndex > -1) {
-        AutoEntrada.api().patch("/autoEntrada/" + this.autoEntrada.id,  this.autoEntrada, config).then(resp => {
+        AutoEntrada.api().patch("/autoEntrada/" + this.autoEntrada.id,  this.autoEntrada).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -362,19 +445,13 @@ export default {
       }
     },
     close() {
-    let offset = 0
-    this.getAllAutoEntrada(offset)
-    this.getAllTipoAuto(offset)
-    this.getAllJurisdicao(offset)
-    this.getAllCrime(offset)
-    this.getAllInspector(offset)
-    this.getAllOrgao(offset)
-    this.getAllPais(offset)
-    this.getAllProvincia(offset)
-    this.getAllTipoOrgao(offset)
     this.listErrors = {}
     this.show_dialog = false
     this.autoEntrada = {}
+    this.classeJudicial = {}
+    this.crime = {}
+    this.inspector = {}
+    this.tipoAuto = {}
     this.props = this.autoEntrada
       setTimeout(() => {
         this.editedIndex = -1
@@ -408,13 +485,15 @@ export default {
       this.classeJudicial = ClasseJudicial.query().find(autoEntrada.classeJudicial_id)
       this.crime = Crime.query().find(autoEntrada.crime_id)
       this.inspector = Inspector.query().find(autoEntrada.inspector_id)
-      this.orgao = Orgao.query().first()
+      this.orgao = Orgao.query().find(localStorage.getItem('orgaoId'))
       this.show_dialog = true
     },
-    getAllAutoEntrada(offset) {
+
+ async getAllAutoEntrada(offset) {
        if(offset >= 0){
-          AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
+        await AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
+          console.log(resp)
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllAutoEntrada(offset), 2)
 
@@ -423,9 +502,9 @@ export default {
         })
        }
     },
-    getAllTipoAuto(offset) {
+  async getAllTipoAuto(offset) {
        if(offset >= 0){
-          TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+        await TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoAuto(offset), 2)
@@ -435,9 +514,9 @@ export default {
         })
        }
     },
-    getAllJurisdicao(offset) {
+  async getAllJurisdicao(offset) {
        if(offset >= 0){
-          ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        await ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao(offset), 2)
@@ -447,9 +526,9 @@ export default {
         })
        }
     },
-    getAllCrime(offset) {
+  async getAllCrime(offset) {
        if(offset >= 0){
-          Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+         await Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCrime(offset), 2)
@@ -459,9 +538,9 @@ export default {
         })
        }
     },
-    getAllInspector(offset) {
+  async getAllInspector(offset) {
        if(offset >= 0){
-          Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        await Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)
@@ -471,21 +550,18 @@ export default {
         })
        }
     },
-    getAllOrgao(offset) {
-       if(offset >= 0){
-          Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 100
-          if(resp.response.data.length > 0) 
-              setTimeout(this.getAllOrgao(offset), 2)
-
-          }).catch(error => {
-          console.log('Erro no code ' + error)
-        })
-       }
-    },
-    getAllProvincia(offset) {
+    async getAllOrgao(offset) {
+            if(offset >= 0){
+              await Orgao.api().get("/orgao/"+localStorage.getItem('orgaoId')).then(resp => {
+              this.orgao = resp.response.data
+                }).catch(error => {
+                console.log('Erro no code ' + error)
+              })
+              }
+          },
+  async getAllProvincia(offset) {
      if(offset >= 0){
-          Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+      await Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -495,9 +571,20 @@ export default {
         })
      }
     },
-    getAllTipoOrgao(offset) {
+  async getAllDistrito(offset) {
+      if(offset >= 0){
+        await  Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllDistrito(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
+  async getAllTipoOrgao(offset) {
        if(offset >= 0){
-          TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        await TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)
@@ -507,9 +594,9 @@ export default {
         })
        }
     },
-     getAllPais(offset) {
+  async getAllPais(offset) {
         if(offset >= 0){
-          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        await Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -519,6 +606,28 @@ export default {
         })
         }
     },
+   async getAllParecerAuto(offset) {
+      if(offset >= 0){
+        await ParecerAuto.api().get("/parecerAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllParecerAuto(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
+    async getAllTipoParecer(offset) {
+      if(offset >= 0){
+        await TipoParecerAuto.api().get("/tipoParecerAuto?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllTipoParecer(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+      }
+    },
     abortFilterFn() {
       // console.log('delayed filter aborted')
     },
@@ -526,7 +635,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.autoEntrada.autoEntradas.map(row =>
+          this.allAutoEntradas.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

@@ -1,21 +1,19 @@
 import {Model} from "@vuex-orm/core";
 import Acusado from "../acusado/acusado";
-import PecaProcesso from "../pecaProcesso/pecaProcesso"
+import AutoEntrada from "../autoEntrada/autoEntrada"
 
-export default class PecaProcessoAcusado extends Model {
+export default class AutoEntradaAcusado extends Model {
 
-  static  entity = 'pecaProcesso_acusado'
-
-// static primaryKey = ['pecaProcesso_id','acusado_id']
+  static  entity = 'autoEntrada_acusado'
 
   static fields() {
     return {
       id: this.attr(null),
       declaracao: this.attr(''),
-      pecaProcesso_id: this.attr(''),
+      autoEntrada_id: this.attr(''),
       acusado_id: this.attr(''),
       // Relationshiops
-      pecaProcesso: this.belongsTo(PecaProcesso, 'pecaProcesso_id'),
+      autoEntrada: this.belongsTo(AutoEntrada, 'autoEntrada_id'),
       acusado: this.belongsTo(Acusado, 'acusado_id')
     }
   }

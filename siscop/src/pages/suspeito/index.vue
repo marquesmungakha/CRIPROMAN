@@ -79,9 +79,30 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraSuspeito(props.row)"/>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row)"/>
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraSuspeito(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaSuspeito(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeSuspeito(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -104,7 +125,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createSuspeito">
              <div class="q-pa-md">
                 <q-stepper
@@ -186,14 +207,14 @@
       </q-dialog>
     </div>
 
- <details-suspeito :suspeito.sync="this.suspeito" 
+ <details-suspeito :suspeito.sync="suspeito" 
                        :image.sync="image" 
-                       :pecaProcessoSuspeito.sync="this.pecaProcessoSuspeito" 
+                       :pecaProcessoSuspeito.sync="pecaProcessoSuspeito" 
                        :tipoDocumento.sync="tipoDocumento"
-                       :situacaoPrisional.sync="this.situacaoPrisional"
-                       :profissao.sync="this.profissao"
-                       :pais.sync="this.pais"
-                       :suspeito_details_dialog.sync="this.suspeito_details_dialog"
+                       :situacaoPrisional.sync="situacaoPrisional"
+                       :profissao.sync="profissao"
+                       :pais.sync="pais"
+                       :suspeito_details_dialog.sync="suspeito_details_dialog"
                        :close.sync="close"/>
 
   </q-page>
@@ -354,7 +375,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -451,7 +472,7 @@ export default {
                        suspeito.sexo === this.suspeito.sexo &&
                        suspeito.numDocumentoIndentificacao === this.suspeito.numDocumentoIndentificacao 
                        }).first()
-              if(results === undefined){
+              if(results === undefined  || results === null){
                     setTimeout(this.findIndividuo, 2)
               }else{
                 this.suspeito = results
@@ -622,17 +643,16 @@ export default {
       this.editedIndex = 0
       this.pecaProcessoSuspeito = Object.assign({}, suspeito)
       this.suspeito = this.pecaProcessoSuspeito.suspeito
-      this.pais = Pais.query().find(suspeito.nacionalidade_id)
-      this.provincia = Provincia.query().find(suspeito.provincia_id)
-      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(suspeito.tipoDocumento_id)
+      this.pais = Pais.query().find( this.suspeito.nacionalidade_id)
+      this.provincia = Provincia.query().find( this.suspeito.provincia_id)
+      this.tipoDocumento = TipoDocumentoIdentificacao.query().find(this.suspeito.tipoDocumento_id)
       this.profissao = Profissao.query().find(suspeito.profissao_id)
       this.situacaoPrisional = SituacaoPrisional.query().find(suspeito.situacaoPrisional_id)
       this.suspeito.pecaProcesso = this.pecaProcesso
-      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array(suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      this.image ='data:image/jpeg;base64,' + btoa(new Uint8Array( this.suspeito.fotografia).reduce((data, byte) => data + String.fromCharCode(byte), ''))
       this.show_dialog = true
     },
      mostraSuspeito(suspeito) {
-       console.log(suspeito)
       this.pecaProcessoSuspeito = Object.assign({}, suspeito)
       this.suspeito = this.pecaProcessoSuspeito.suspeito
       this.pais = Pais.query().find(this.suspeito.nacionalidade_id)
@@ -729,7 +749,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.suspeito.suspeitos.map(row =>
+          this.allSuspeitosFromPecaProcesso.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

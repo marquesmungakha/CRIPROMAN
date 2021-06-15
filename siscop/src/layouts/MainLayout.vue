@@ -11,7 +11,7 @@
             <q-space/>
             <div class="text-weight-thin"> SISTEMA DE GESTÃO PROCESSUAL </div>
             <q-space/>
-            <!--div class="text-weight-thin"> DEPARTAMENTO DE PLANIFICACAO E AVALIACAO ESTATISTICA </div-->
+            <div class="text-weight-thin"> {{ this.orgaoDescricao }}</div>
           </q-toolbar-title>
           <div class="q-gutter-sm row items-center no-wrap">
             <q-btn round dense flat color="grey-8" icon="notifications">
@@ -173,11 +173,16 @@
                     <q-item-label>Tipo Legal de Crime</q-item-label>
                   </q-item-section>
             </q-item>
+               <q-item to="/tipoParecerAuto" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
+                  <q-item-section>
+                    <q-item-label> Estágio do Auto </q-item-label>
+                  </q-item-section>
+            </q-item>
               </q-expansion-item>
                 <q-expansion-item icon="import_contacts" :header-inset-level="0.85" label="Processo" >
             <q-item to="/situacaoPrisional" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
                   <q-item-section>
-                    <q-item-label>Situacao Prisional</q-item-label>
+                    <q-item-label>Situação Prisional</q-item-label>
                   </q-item-section>
             </q-item>
             <q-item to="/formaProcesso" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
@@ -245,7 +250,7 @@
                   </q-item-section>
             </q-item>
           </q-expansion-item>
-            <q-expansion-item icon="apartment" :header-inset-level="0.85" label="Orgao" >
+            <q-expansion-item icon="apartment" :header-inset-level="0.85" label="Orgão" >
              <q-item to="/tipoOrgao" exact style="margin-left: 105px  !important;" class="q-ml-xl" active-class="q-item-no-link-highlighting">
                   <q-item-section>
                     <q-item-label>Tipo Orgão </q-item-label>
@@ -315,7 +320,7 @@
                 <q-item-label>Modelo 1, 2 e 8</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item class="q-ml-xl" active-class="q-item-no-link-highlighting">
+            <!-- <q-item class="q-ml-xl" active-class="q-item-no-link-highlighting">
               <q-item-section avatar>
                 <q-icon name="receipt_long"/>
               </q-item-section>
@@ -330,9 +335,9 @@
               <q-item-section>
                 <q-item-label>Modelo 8</q-item-label>
               </q-item-section>
-            </q-item>
+            </q-item> -->
         </q-expansion-item>
-        <q-expansion-item icon="people_alt" label="Gestao de Utilizadores" >
+        <!--q-expansion-item icon="people_alt" label="Gestao de Utilizadores" >
             <q-item class="q-ml-xl" active-class="q-item-no-link-highlighting">
             <q-item-section avatar>
                 <q-icon name="person"/>
@@ -357,7 +362,7 @@
                 <q-item-label>Permissoes</q-item-label>
               </q-item-section>
             </q-item>
-        </q-expansion-item>
+        </q-expansion-item-->
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -368,14 +373,18 @@
       </q-toolbar>
     </q-footer>
 
-    <q-page-container>
-      <router-view />
+    <q-page-container class="overflow-auto">
+        <!--keep-alive>
+          <router-view />
+        </keep-alive-->
+          <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import Orgao from 'src/store/models/orgao/orgao'
 
 export default {
   name: 'MainLayout',
@@ -388,10 +397,25 @@ export default {
       leftDrawerOpen: false,
       userInfoOpen: false,
       onMainClick: '',
-      onItemClick: ''
+      onItemClick: '',
+      orgaoDescricao: ''
     }
   },
-
+  mounted() {
+     let offset = 0
+      this.getAllOrgao(offset)
+  },
+  methods: {
+     getAllOrgao(offset) {
+        if(offset >= 0){
+           Orgao.api().get("/orgao/"+localStorage.getItem('orgaoId')).then(resp => {
+        this.orgaoDescricao = resp.response.data.designacao
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+        }
+    },
+  },
   meta: {
     title: 'GEPROC-SERNIC'
   }

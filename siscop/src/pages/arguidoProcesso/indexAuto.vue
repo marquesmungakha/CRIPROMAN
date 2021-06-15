@@ -744,7 +744,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.arguido.arguidos.map(row =>
+          this.allArguidosFromPecaProcesso.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

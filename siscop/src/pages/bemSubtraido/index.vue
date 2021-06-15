@@ -31,9 +31,23 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaBemSubtraido(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaBemSubtraido(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeBemSubtraido(props.row)"/>
+                     @click="removeBemSubtraido(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -56,7 +70,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createBemSubtraido">
               <create-edit-form :descricao.sync="bemSubtraido.descricao"
                                 :valorPrejuizo.sync="bemSubtraido.valorPrejuizo"/>
@@ -118,7 +132,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -138,7 +152,7 @@ export default {
     return this.getAllBemSubtraido()
   },
   props: [
-    'pecaProcesso'
+    'pecaProcesso', 'autoEntrada'
   ],
   mounted() {
     let offset = 0
@@ -150,7 +164,11 @@ export default {
   metaInfo: {},
   computed: {
     allBemSubtraidosFromPecaProcesso() {
-      return BemSubtraido.query().where('pecaProcesso_id',this.pecaProcesso.id).get()
+    if(this.pecaProcesso !== undefined && this.pecaProcesso !== null)
+        return BemSubtraido.query().where('pecaProcesso_id',this.pecaProcesso.id).get()
+      else
+       return BemSubtraido.query().where('autoEntrada_id',this.autoEntrada.id).get()
+
     }
   },
   methods: {
@@ -160,8 +178,13 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.bemSubtraido.pecaProcesso_id = this.pecaProcesso.id
-      this.bemSubtraido.pecaProcesso = this.pecaProcesso
+       if(this.pecaProcesso !== undefined && this.pecaProcesso !== null){
+            this.bemSubtraido.pecaProcesso_id = this.pecaProcesso.id
+            this.bemSubtraido.pecaProcesso = this.pecaProcesso
+       }else{
+         this.bemSubtraido.autoEntrada_id = this.autoEntrada.id
+         this.bemSubtraido.autoEntrada = this.autoEntrada
+       }
       if (this.editedIndex > -1) {
          BemSubtraido.api().patch("/bemSubtraido/" + this.bemSubtraido.id, this.bemSubtraido).then(resp => {
           this.$q.notify({
@@ -273,7 +296,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.bemSubtraido.bemSubtraidos.map(row =>
+          this.allBemSubtraidosFromPecaProcesso.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

@@ -31,6 +31,7 @@ export default class ProcessoInstrucaoPreparatoria extends Model {
       proveniencia: this.attr(''),
       dataEntrada: this.attr(''),
       anexo: this.attr(''),
+      autor: this.attr(''),
       formaProcesso_id: this.attr(''),
       classeJudicial_id: this.attr(''),
       accoesCrimes_id: this.attr(''),

@@ -35,9 +35,9 @@
             </q-popup-edit>
           </q-td>
           <q-td key="motivoDetencao" :props="props">
-            <div class="text-pre-wrap">{{ props.row.motivoDetencao.designacao }}</div>
-            <q-popup-edit v-model="props.row.motivoDetencao.designacao">
-              <q-input v-model="props.row.motivoDetencao.designacao" autofocus dense></q-input>
+            <div class="text-pre-wrap">{{ props.row.motivoDetencao }}</div>
+            <q-popup-edit v-model="props.row.motivoDetencao">
+              <q-input v-model="props.row.motivoDetencao" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="inspector" :props="props">
@@ -51,10 +51,31 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/detencao/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm>
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDetencao(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDetencao(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDetencao(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDetencao(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -65,12 +86,11 @@
                       :createDetencao="createDetencao"
                       :dataAbertura.sync="detencao.dataAbertura"
                       :descricao.sync="detencao.descricao"
+                      :motivoDetencao.sync="detencao.motivoDetencao"
                       :inspector.sync="inspector"
                       :inspectors.sync="allInspectors"
                       :listErrors="listErrors"
                       :localDetencao.sync="detencao.localDetencao"
-                      :motivoDetencao.sync="motivoDetencao"
-                      :motivoDetencaos.sync="allMotivoDetencaos"
                       :numero.sync="detencao.numero"
                       :removeDetencao="removeDetencao"
                       :show_dialog="show_dialog"
@@ -109,10 +129,9 @@ export default {
         descricao: '',
         localDetencao: '',
         anexo: [],
-        motivoDetencao: {},
+        motivoDetencao: '',
         inspector: {},
-        processo: {},
-        orgao: {}
+        processo: {}
       },
       motivoDetencao: {
         designacao: ''
@@ -153,7 +172,7 @@ export default {
           name: 'motivoDetencao',
           align: 'left',
           label: 'Motivo de Detenção',
-          field: row => row.motivoDetencao.id,
+          field: row => row.motivoDetencao,
           format: val => `${val}`,
           sortable: true
         },
@@ -165,7 +184,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -188,7 +207,7 @@ export default {
   mounted() {
     let offset = 0
     this.getAllDetencao(offset)
-    this.getAllMotivoDetencao(offset)
+    // this.getAllMotivoDetencao(offset)
     this.getAllInspector(offset)
   },
   components: {
@@ -199,9 +218,9 @@ export default {
     allInspectors() {
       return Inspector.query().all()
     },
-    allMotivoDetencaos() {
-      return MotivoDetencao.query().all()
-    },
+    // allMotivoDetencaos() {
+    //   return MotivoDetencao.query().all()
+    // },
     allDetencaos() {
       return Detencao.query().with('inspector').with('motivoDetencao').where('processo_id',this.processoInvestigacao.id).get()
     }
@@ -213,14 +232,17 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.detencao.motivoDetencao = this.motivoDetencao
-      this.detencao.motivoDetencao_ID = this.motivoDetencao.id
+      // this.detencao.motivoDetencao = this.motivoDetencao
+      // this.detencao.motivoDetencao_id = this.motivoDetencao.id
+
       this.detencao.inspector_id = this.inspector
       this.detencao.inspector = this.inspector
+
       this.detencao.processo_id = this.processoInvestigacao.id
       this.detencao.processo = this.processoInvestigacao
-      //  const image = new Blob([this.detencao.anexo])
-      this.detencao.anexo = null
+     
+     console.log(this.detencao)
+  
       if (this.editedIndex > -1) {
          Detencao.api().patch("/detencao/" + this.detencao.id, this.detencao).then(resp => {
           this.$q.notify({
@@ -318,7 +340,7 @@ export default {
       this.editedIndex = 0
       this.detencao = Object.assign({}, detencao)
       this.motivoDetencao = MotivoDetencao.query().find(detencao.motivoDetencao_id)
-      this.inspector = Inspector.query().find(detencao.inspector.id) 
+      this.inspector = Inspector.query().find(detencao.inspector_id) 
       this.show_dialog = true
     },
     getAllDetencao(offset) {
@@ -361,7 +383,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.detencao.detencaos.map(row =>
+          this.allDetencaos.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

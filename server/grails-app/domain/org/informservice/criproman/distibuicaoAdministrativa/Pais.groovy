@@ -1,12 +1,11 @@
 package org.informservice.criproman.distibuicaoAdministrativa
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/pais')
-class Pais implements Auditable {
+class Pais { //implements Auditable {
 
     String designacao
     String nacionalidade

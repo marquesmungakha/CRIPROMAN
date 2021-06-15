@@ -1,19 +1,18 @@
 package org.informservice.criproman.individuo
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.distibuicaoAdministrativa.Pais
 import org.informservice.criproman.distibuicaoAdministrativa.Provincia
+import org.informservice.criproman.profissao.Profissao
 
 // import grails.plugins.orm.auditable.Auditable
 
-import org.informservice.criproman.profissao.Profissao
 import org.informservice.criproman.tipoDocumentoIdentificacao.TipoDocumentoIdentificacao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/individuo')
-class Individuo implements Auditable {
+class Individuo { //implements Auditable {
 
     String nome
     String apelido

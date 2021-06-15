@@ -61,9 +61,23 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaMeioUtilizado(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaMeioUtilizado(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeMeioUtilizado(props.row)"/>
+                     @click="removeMeioUtilizado(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -86,7 +100,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createMeioUtilizado">
               <create-edit-form :calibre.sync="meioUtilizado.calibre"
                                 :cor.sync="meioUtilizado.cor"
@@ -210,7 +224,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -230,7 +244,8 @@ export default {
     return this.getAllMeioUtilizado()
   },
   props: [
-    'pecaProcesso'
+    'pecaProcesso',
+    'autoEntrada'
   ],
   mounted() {
     let offset = 0
@@ -247,7 +262,10 @@ export default {
   metaInfo: {},
   computed: {
     allMeioUtilizadosFromPecaProcesso() {
-      return MeiosUtilizado.query().with('tipoMeio').with('marca').with('modelo').all()
+      if(this.pecaProcesso !== null && this.pecaProcesso !== undefined)
+          return MeiosUtilizado.query().with('tipoMeio').with('marca').with('modelo').where('pecaProcesso_id',this.pecaProcesso.id).get()
+      else
+          return MeiosUtilizado.query().with('tipoMeio').with('marca').with('modelo').where('autoEntrada_id',this.autoEntrada.id).get()
     },
     allTipoMeio() {
       return TipoMeio.query().all()
@@ -277,11 +295,15 @@ export default {
       this.modelo.marca = this.marca
       this.meioUtilizado.marca_id = this.marca.id
       this.meioUtilizado.modelo_id = this.modelo.id
-      this.meioUtilizado.pecaProcesso_id = this.pecaProcesso.id
       this.meioUtilizado.marca = this.marca
       this.meioUtilizado.modelo = this.modelo
-      this.meioUtilizado.pecaProcesso = this.pecaProcesso
-    
+      if(this.pecaProcesso !== null && this.pecaProcesso !== undefined){
+            this.meioUtilizado.pecaProcesso = this.pecaProcesso
+            this.meioUtilizado.pecaProcesso_id = this.pecaProcesso.id
+      }else{
+          this.meioUtilizado.autoEntrada = this.autoEntrada
+          this.meioUtilizado.autoEntrada_id = this.autoEntrada.id
+ }
       if (this.editedIndex > -1) {
          MeiosUtilizado.api().patch("/meioUtilizado/" + this.meioUtilizado.id, this.meioUtilizado).then(resp => {
           this.$q.notify({
@@ -383,10 +405,10 @@ export default {
       this.modelo = Modelo.query().find(meioUtilizado.modelo_id)
       this.show_dialog = true
     },
-    getAllMeioUtilizado() {
+    getAllMeioUtilizado(offset) {
       if(offset >=0){
         MeiosUtilizado.api().get("/meioUtilizado?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMeioUtilizado(offset), 2)
 
@@ -398,7 +420,7 @@ export default {
    getAllMarca(offset) {
        if(offset >=0){
       Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMarca(offset), 2)
 
@@ -410,7 +432,7 @@ export default {
     getAllTipoMeio(offset) {
        if(offset >=0){
       TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoMeio(offset), 2)
 
@@ -422,7 +444,7 @@ export default {
     getAllModelo(offset) {
       if(offset >=0){
       Modelo.api().get("/modelo?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllModelo(offset), 2)
 
@@ -435,7 +457,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.meioUtilizado.meioUtilizados.map(row =>
+          this.allMeioUtilizadosFromPecaProcesso.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

@@ -1,14 +1,16 @@
 <template>
 
   <q-list>
-      <q-item>
-          <q-item-section>
+  <q-item>
+     <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Profissão *</div>
             <q-select
-              :value="profissao"
+              outlined tack-label class="w-field" :dense="true" :value="profissao"
               use-input
               fill-input
               hide-selected
-              label="Profissão *"
+              
               input-debounce="0"
               :options="optionsProfissao"
               option-label="designacao"
@@ -25,16 +27,15 @@
                 </q-item>
               </template>
             </q-select>
-          </q-item-section>
-      </q-item>
-      <q-item>
-          <q-item-section>
+        </div>     
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Situação Prisional *</div>
             <q-select
-              :value="situacaoPrisional"
+              outlined tack-label class="w-field" :dense="true" :value="situacaoPrisional"
               use-input
               fill-input
               hide-selected
-              label="Situação Prisional *"
+              
               input-debounce="0"
               :options="optionsSituacaoPrisional"
               option-label="designacao"
@@ -51,15 +52,18 @@
                 </q-item>
               </template>
             </q-select>
-          </q-item-section>
-      </q-item>
-      <q-item>
-            <q-item-section>
-            <q-input :value="dataSituacaoPrisional"  label="Data Situação Prisional " @input="$emit('update:dataSituacaoPrisional', $event)" :rules="['####-##-##']">
+        </div>
+     </div>
+  </q-item>
+  <q-item>
+     <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Data Situação Prisional </div>
+            <q-input outlined tack-label class="w-field" :dense="true" :value="dataSituacaoPrisional"   @input="$emit('update:dataSituacaoPrisional', $event)" :rules="['####-##-##']">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                  <q-date :value="dataSituacaoPrisional" minimal mask="YYYY-MM-DD" @input="$emit('update:dataSituacaoPrisional', $event)">
+                  <q-date outlined tack-label class="w-field" :dense="true" :value="dataSituacaoPrisional" minimal mask="YYYY-MM-DD" @input="$emit('update:dataSituacaoPrisional', $event)">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -68,8 +72,9 @@
               </q-icon>
             </template>
           </q-input>
-            </q-item-section>
-        </q-item>
+        </div>
+     </div>
+  </q-item>
   </q-list>
 
 </template>
@@ -140,3 +145,8 @@ export default {
   ]
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>

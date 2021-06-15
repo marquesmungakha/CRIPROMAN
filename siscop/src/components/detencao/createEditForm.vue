@@ -19,23 +19,24 @@
         <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form @submit.prevent="createDetencao" class="q-gutter-md">
                     <q-list>
-                        <q-item>
-                            <q-item-section>
-                                <q-input :value="numero"
+                    <q-item>
+                        <div class="row">                
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Número do Auto *</div>
+                                <q-input outlined tack-label class="w-field" :dense="true" :value="numero"
                                 @input="$emit('update:numero', $event)"
                                 ref="numero"
-                                label="Número do Auto *"
+                          
                                 lazy-rules
                                 :rules="[ val => val && val.length > 0 || 'Introduza o Número do Auto']" />
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
-                                <q-input :value="dataAbertura"  label="Data de Abertura " @input="$emit('update:dataAbertura', $event)" :rules="['####-##-##']">
+        </div>         
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Data de Abertura *</div>
+                                <q-input outlined tack-label class="w-field" :dense="true" :value="dataAbertura"   @input="$emit('update:dataAbertura', $event)" :rules="['####-##-##']">
                                 <template v-slot:append>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                                      <q-date :value="dataAbertura" minimal mask="YYYY-MM-DD" @input="$emit('update:dataAbertura', $event)">
+                                      <q-date outlined tack-label class="w-field" :dense="true" :value="dataAbertura" minimal mask="YYYY-MM-DD" @input="$emit('update:dataAbertura', $event)">
                                         <div class="row items-center justify-end">
                                           <q-btn v-close-popup label="Close" color="primary" flat />
                                         </div>
@@ -44,21 +45,28 @@
                                   </q-icon>
                                 </template>
                               </q-input>
-                            </q-item-section>
-                            </q-item>
-                            <q-item>
-                            <q-item-section>
-                                 <q-input :value="descricao"  type="textarea"  label="Descrição do Auto  " @input="$emit('update:descricao', $event)"/>
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
-                            <q-select
-                              :value="motivoDetencao"
+        </div>
+                        </div>
+                    </q-item>
+                    <q-item>
+                            <div class="row">                
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Descrição do Auto *</div>
+                                 <q-input outlined tack-label class="w-field" :dense="true" :value="descricao"  type="textarea"   @input="$emit('update:descricao', $event)"/>
+        </div>
+                   
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Motivo da Detenção *</div>
+          <q-input outlined tack-label class="w-field" :dense="true" :value="motivoDetencao"
+                                @input="$emit('update:motivoDetencao', $event)"
+                                ref="motivoDetencao"
+                                lazy-rules
+                                :rules="[ val => val && val.length > 0 || 'Introduza o local da detenção']" />
+                            <!--q-select
+                              outlined tack-label class="w-field" :dense="true" :value="motivoDetencao"
                               use-input
                               fill-input
                               hide-selected
-                              label="Motivo da Detenção *"
                               input-debounce="0"
                               :options="optionsMotivoDetencao"
                               option-label="designacao"
@@ -74,27 +82,31 @@
                                   </q-item-section>
                                 </q-item>
                               </template>
-                            </q-select>
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
-                                <q-input :value="localDetencao"
+                            </q-select-->
+                  </div>    
+            </div>
+                    </q-item>
+                    <q-item>
+            <div class="row">       
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Local da detenção *</div>
+                                <q-input outlined tack-label class="w-field" :dense="true" :value="localDetencao"
                                 @input="$emit('update:localDetencao', $event)"
                                 ref="localDetencao"
-                                label="Local da detenção *"
                                 lazy-rules
                                 :rules="[ val => val && val.length > 0 || 'Introduza o local da detenção']" />
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
+        </div>
+                         </div>
+                    </q-item>
+                    <q-item>
+                        <div class="row">                
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Inspector Responsável *</div>
                             <q-select
-                              :value="inspector"
+                              outlined tack-label class="w-field" :dense="true" :value="inspector"
                               use-input
                               fill-input
                               hide-selected
-                              label="Inspector Responsável "
                               input-debounce="0"
                               :options="optionsInspector"
                               option-label="numero"
@@ -111,17 +123,10 @@
                                 </q-item>
                               </template>
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                          <q-item-section>
-                            <q-file color="primary" :value="anexo" label="Label"  @input="$emit('update:anexo', $event)">
-                              <template v-slot:prepend>
-                                <q-icon name="attach_file" />
-                              </template>
-                            </q-file>
-                          </q-item-section>
-                        </q-item>
+        </div>            
+        
+                        </div>
+                    </q-item>
                     </q-list>
                 </q-form>
         </q-card-section>
@@ -216,3 +221,8 @@ export default {
 
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>

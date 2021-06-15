@@ -5,6 +5,8 @@ grails.plugin.springsecurity.userLookup.userDomainClassName = 'org.informservice
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'org.informservice.criproman.seguranca.SecUserSecRole'
 grails.plugin.springsecurity.authority.className = 'org.informservice.criproman.seguranca.SecRole'
 
+
+
 grails.plugin.springsecurity.useSecurityEventListener = true
 
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [

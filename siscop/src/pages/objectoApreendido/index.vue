@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-    <q-table :columns="columns" :data="allObjectosApreendidossFromPecaProcesso" :filter="filter" binary-state-sort
+    <q-table :columns="columns" :data="allObjectoApreendidosFromPecaProcesso" :filter="filter" binary-state-sort
              row-key="name" title="Objectos Apreendidos">
 
       <template v-slot:top-right>
@@ -23,15 +23,21 @@
               <q-input v-model="props.row.descricao" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
-          <q-td key="valorPrejuizo" :props="props">
-            {{ props.row.valorPrejuizo }}
-            <q-popup-edit v-model="props.row.valorPrejuizo">
-              <q-input v-model="props.row.valorPrejuizo" autofocus counter dense></q-input>
+          <q-td key="tipo" :props="props">
+            {{ props.row.tipo }}
+            <q-popup-edit v-model="props.row.tipo">
+              <q-input v-model="props.row.tipo" autofocus counter dense></q-input>
+            </q-popup-edit>
+          </q-td>
+          <q-td key="estado" :props="props">
+            {{ props.row.estado }}
+            <q-popup-edit v-model="props.row.estado">
+              <q-input v-model="props.row.estado" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaObjectosApreendidos(props.row)">
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaObjectoApreendido(props.row)">
                 <q-tooltip content-class="bg-white text-primary shadow-4" 
                           :offset="[10, 10]"
                           transition-show="rotate"
@@ -40,7 +46,7 @@
                 </q-tooltip>
                 </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeObjectosApreendidos(props.row)">
+                     @click="removeObjectoApreendido(props.row)">
                 <q-tooltip content-class="bg-red text-white shadow-4" 
                           :offset="[10, 10]"
                           transition-show="rotate"
@@ -71,15 +77,15 @@
         </q-card-section>
           <q-separator/>
           <q-card-section class="scroll" style="max-height: 80vh">
-            <q-form class="q-gutter-md" @submit.prevent="createObjectosApreendidos">
-              <create-edit-form :descricao.sync="objectosApreendidos.descricao"
-                                :tipo.sync="objectosApreendidos.tipo"
-                                :estado.sync="objectosApreendidos.estado"/>
+            <q-form class="q-gutter-md" @submit.prevent="createObjectoApreendido">
+              <create-edit-form :descricao.sync="objectoApreendido.descricao"
+                                :tipo.sync="objectoApreendido.tipo"
+                                :estado.sync="objectoApreendido.estado"/>
             </q-form>
           </q-card-section>
           <q-separator/>
           <q-card-actions align="right">
-            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createObjectosApreendidos"/>
+            <q-btn :loading="submitting" color="teal" label="Gravar" type="submit" @click.stop="createObjectoApreendido"/>
             <q-btn v-close-popup color="negative" label="Cancelar" type="reset" @click="close"/>
           </q-card-actions>
         </q-card>
@@ -90,6 +96,7 @@
 
 <script>
 import {exportFile} from 'quasar'
+import ObjectoApreendido from 'src/store/models/objectoApreendido/objectoApreendido'
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== undefined ? formatFn(val) : val
@@ -99,20 +106,20 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'ObjectosApreendidos',
+  name: 'ObjectoApreendido',
   data() {
     return {
       listErrors: [],
-      objectosApreendidos_details_dialog: false,
+      objectoApreendido_details_dialog: false,
       editedIndex: -1,
       submitting: false,
       filter: '',
       show_dialog: false,
       show_filter: false,
-      objectosApreendidos: {
+      objectoApreendido: {
         descricao: '',
-        valorPrejuizo: '',
-        pecaProcesso: {}
+        tipo: '',
+        estado: ''
       },
       columns: [
         {
@@ -125,14 +132,22 @@ export default {
           sortable: true
         },
         {
-          name: 'valorPrejuizo',
+          name: 'tipo',
           align: 'left',
-          label: 'Valor do Prejuizo (MZ)',
-          field: row => row.valorPrejuizo,
+          label: 'Tipo de Objecto',
+          field: row => row.tipo,
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {
+          name: 'estado',
+          align: 'left',
+          label: 'Estado do Objecto',
+          field: row => row.estado,
+          format: val => `${val}`,
+          sortable: true
+        },
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -149,44 +164,44 @@ export default {
 
     // Return a Promise if you are running an async job
     // Example:
-    return this.getAllObjectosApreendidos()
+    return this.getAllObjectoApreendido()
   },
   props: [
     'pecaProcesso', 'autoEntrada'
   ],
   mounted() {
     let offset = 0
-    this.getAllObjectosApreendidos(offset)
+    this.getAllObjectoApreendido(offset)
   },
   components: {
-    'create-edit-form': require('components/objectosApreendidos/createEditForm.vue').default
+    'create-edit-form': require('components/objectoApreendido/createEditForm.vue').default
   },
   metaInfo: {},
   computed: {
-    allObjectosApreendidossFromPecaProcesso() {
+    allObjectoApreendidosFromPecaProcesso() {
     if(this.pecaProcesso !== undefined && this.pecaProcesso !== null)
-        return ObjectosApreendidos.query().where('pecaProcesso_id',this.pecaProcesso.id).get()
+        return ObjectoApreendido.query().where('pecaProcesso_id',this.pecaProcesso.id).get()
       else
-       return ObjectosApreendidos.query().where('autoEntrada_id',this.autoEntrada.id).get()
+       return ObjectoApreendido.query().where('autoEntrada_id',this.autoEntrada.id).get()
 
     }
   },
   methods: {
-    createObjectosApreendidos() {
+    createObjectoApreendido() {
       this.listErrors = []
       this.submitting = true
       setTimeout(() => {
         this.submitting = false
       }, 300)
        if(this.pecaProcesso !== undefined && this.pecaProcesso !== null){
-            this.objectosApreendidos.pecaProcesso_id = this.pecaProcesso.id
-            this.objectosApreendidos.pecaProcesso = this.pecaProcesso
+            this.objectoApreendido.pecaProcesso_id = this.pecaProcesso.id
+            this.objectoApreendido.pecaProcesso = this.pecaProcesso
        }else{
-         this.objectosApreendidos.autoEntrada_id = this.autoEntrada.id
-         this.objectosApreendidos.autoEntrada = this.autoEntrada
+         this.objectoApreendido.autoEntrada_id = this.autoEntrada.id
+         this.objectoApreendido.autoEntrada = this.autoEntrada
        }
       if (this.editedIndex > -1) {
-         ObjectosApreendido.api().patch("/objectosApreendidos/" + this.objectosApreendidos.id, this.objectosApreendidos).then(resp => {
+         ObjectoApreendido.api().patch("/objectoApreendido/" + this.objectoApreendido.id, this.objectoApreendido).then(resp => {
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -196,7 +211,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi actualizada com successo!! [' + this.objectosApreendidos.nome + ' ]'
+            message: 'A informação foi actualizada com successo!! [' + this.objectoApreendido.nome + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -214,7 +229,7 @@ export default {
           }
         })
       } else {
-       ObjectosApreendidos.api().post("/objectosApreendidos/", this.objectosApreendidos).then(resp => {
+       ObjectoApreendido.api().post("/objectoApreendido/", this.objectoApreendido).then(resp => {
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -225,7 +240,7 @@ export default {
             position: 'bottom',
             classes: 'glossy',
             progress: true,
-            message: 'A informação foi inserida com successo! [ ' + this.objectosApreendidos.nome + ' ]'
+            message: 'A informação foi inserida com successo! [ ' + this.objectoApreendido.nome + ' ]'
           })
           this.close()
         }).catch(error => {
@@ -246,16 +261,16 @@ export default {
     },
     close() {
       let offset = 0
-      this.getAllObjectosApreendidos(offset)
+      this.getAllObjectoApreendido(offset)
       this.listErrors = {}
       this.show_dialog = false
-      this.objectosApreendidos = {}
-      this.props = this.objectosApreendidos
+      this.objectoApreendido = {}
+      this.props = this.objectoApreendido
       setTimeout(() => {
         this.editedIndex = -1
       }, 300)
     },
-    removeObjectosApreendidos(objectosApreendidos) {
+    removeObjectoApreendido(objectoApreendido) {
       this.$q.dialog({
         title: 'Confirmação',
         message: 'Tem certeza que pretende remover?',
@@ -271,22 +286,22 @@ export default {
           position: 'bottom',
           classes: 'glossy',
           progress: true,
-          message: 'A informação foi Removida com successo! [ ' + objectosApreendidos.nome + ' ]'
+          message: 'A informação foi Removida com successo! [ ' + objectoApreendido.nome + ' ]'
         })
-        ObjectosApreendidos.api().delete("/objectosApreendidos/" + this.objectosApreendidos.id)
+        ObjectoApreendido.api().delete("/objectoApreendido/" + this.objectoApreendido.id)
       })
     },
-    editaObjectosApreendidos(objectosApreendidos) {
+    editaObjectoApreendido(objectoApreendido) {
       this.editedIndex = 0
-      this.objectosApreendidos = Object.assign({}, objectosApreendidos)
+      this.objectoApreendido = Object.assign({}, objectoApreendido)
       this.show_dialog = true
     },
-     getAllObjectosApreendidos(offset) {
+     getAllObjectoApreendido(offset) {
        if(offset >= 0){
-          ObjectosApreendidos.api().get("/objectosApreendidos?offset="+offset+"&max=100").then(resp => {
+          ObjectoApreendido.api().get("/objectoApreendido?offset="+offset+"&max=100").then(resp => {
           offset = offset + 100
           if(resp.response.data.length > 0) 
-              setTimeout(this.getAllObjectosApreendidos(offset), 2)
+              setTimeout(this.getAllObjectoApreendido(offset), 2)
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
@@ -296,7 +311,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.allObjectosApreendidossFromPecaProcesso.map(row =>
+          this.allObjectoApreendidosFromPecaProcesso.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(
@@ -310,7 +325,7 @@ export default {
           )
         )
         .join('\r\n')
-      const status = exportFile('objectosApreendidos_list.csv', content, 'text/csv')
+      const status = exportFile('objectoApreendido_list.csv', content, 'text/csv')
       if (status !== true) {
         this.$q.notify({
           message: 'O navegador recusou o download...',

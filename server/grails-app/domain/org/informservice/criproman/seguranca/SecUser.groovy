@@ -11,7 +11,7 @@ import org.informservice.criproman.orgao.Orgao
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
 @Secured('ROLE_ADMIN')
-@Resource(uri='/api/SecUser')
+@Resource(uri='/api/secUser')
 class SecUser implements Serializable {
 
     private static final long serialVersionUID = 1

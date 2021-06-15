@@ -1,7 +1,6 @@
 package org.informservice.criproman.pecaProcesso
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.bemSubtraido.BemSubtraido
 import org.informservice.criproman.inspector.Inspector
@@ -11,7 +10,7 @@ import org.informservice.criproman.objectosDetido.ObjectoDetido
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/pecaProcesso')
-class PecaProcesso implements Auditable {
+class PecaProcesso { //implements Auditable {
 
     String numero
     Date dataAbertura

@@ -73,9 +73,30 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraDeclarante(props.row)"/>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDeclarante(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDeclarante(props.row)"/>
+              <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm @click="mostraDeclarante(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaDeclarante(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeDeclarante(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -98,7 +119,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createDeclarante">
              <div class="q-pa-md">
                 <q-stepper
@@ -320,7 +341,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -407,7 +428,7 @@ export default {
                        declarante.sexo === this.declarante.sexo &&
                        declarante.numDocumentoIndentificacao === this.declarante.numDocumentoIndentificacao 
                        }).first()
-              if(results === undefined){
+              if(results === undefined  || results === null){
                     setTimeout(this.findIndividuo, 2)
               }else{
                 this.declarante = results
@@ -652,7 +673,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.declarante.declarantes.map(row =>
+          this.allDeclarantesFromPecaProcesso.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

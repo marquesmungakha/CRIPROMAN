@@ -19,7 +19,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Data Abertura') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ corpoDelito.dataAbertura }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -30,7 +30,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('descricao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Descrição') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ corpoDelito.descricao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -38,7 +38,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Inspector') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ corpoDelito.inspector.numero }} - {{ corpoDelito.inspector.nome }}
                     {{ corpoDelito.inspector.apelido }}
                   </q-item-label>
@@ -272,7 +272,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/corpoDelito/" + corpoDelito.id, formData, {
+        CorpoDelito.api().patch("/corpoDelito/" + corpoDelito.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;

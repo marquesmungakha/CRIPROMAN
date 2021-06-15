@@ -9,7 +9,7 @@ import org.informservice.criproman.vitima.Vitima
 @Resource(uri='/api/processoInstrucaoPreparatoriaVitima')
 class ProcessoInstrucaoPreparatoriaVitima {
 
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Vitima vitima
     String declaracao
 

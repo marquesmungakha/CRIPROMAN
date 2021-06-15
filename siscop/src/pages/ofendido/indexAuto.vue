@@ -122,7 +122,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createOfendido">
              <div class="q-pa-md">
                 <q-stepper
@@ -339,7 +339,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -416,7 +416,6 @@ export default {
           message: 'Todos os campos marcados com (*) são obrigatórios!'
         })
       }else{
-
           Ofendido.api().get("/ofendido?offset="+this.offset+"&max=100").then(resp => {
           console.log(resp)
           this.offset = this.offset + 100
@@ -427,7 +426,7 @@ export default {
                        ofendido.sexo === this.ofendido.sexo &&
                        ofendido.numDocumentoIndentificacao === this.ofendido.numDocumentoIndentificacao 
                        }).first()
-              if(results === undefined){
+              if(results === undefined || results === null){
                     setTimeout(this.findIndividuo, 2)
               }else{
                 this.ofendido = results
@@ -668,7 +667,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.ofendido.ofendidos.map(row =>
+          this.allOfendidosFromAutoEntrada.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

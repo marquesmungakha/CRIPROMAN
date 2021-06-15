@@ -119,7 +119,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -281,7 +281,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.tipoParecerAuto.tipoParecerAutos.map(row =>
+          this.allTipoParecerAutos.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

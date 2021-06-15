@@ -1,16 +1,14 @@
 package org.informservice.criproman.classeJudicial
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
+import org.informservice.criproman.crimes.Crime
 
 // import grails.plugins.orm.auditable.Auditable
 
-import org.informservice.criproman.crimes.Crime
-
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/classeJudicial')
-class ClasseJudicial implements Auditable {
+class ClasseJudicial { //implements Auditable {
 
     String designacao
     String uuid = UUID.randomUUID().toString()

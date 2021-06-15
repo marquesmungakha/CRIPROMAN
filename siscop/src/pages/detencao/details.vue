@@ -19,7 +19,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Data Abertura') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ detencao.dataAbertura }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -30,7 +30,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('descricao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Descrição') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ detencao.descricao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -38,7 +38,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('localDetencao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Local Detenção') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ detencao.localDetencao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -49,7 +49,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('motivoDetencao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Motivo Detenção') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ detencao.motivoDetencao.designacao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -57,7 +57,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Inspector') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ detencao.inspector.numero }} - {{ detencao.inspector.nome }}
                     {{ detencao.inspector.apelido }}
                   </q-item-label>
@@ -306,7 +306,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/detencao/" + detencao.id, formData, {
+        Detencao.api().patch("/detencao/" + detencao.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;

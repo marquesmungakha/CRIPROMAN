@@ -20,7 +20,7 @@
                  <div class="col">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('historial') }}</q-item-label>
+                    <q-item-label lines="1" caption >{{ $t('Historial') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ processoInstrucaoPreparatoria.historial }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -31,7 +31,7 @@
                 <div class="col">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('classeJudicial') }}</q-item-label>
+                    <q-item-label lines="1" caption >{{ $t('Classe Judicial') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ processoInstrucaoPreparatoria.classeJudicial.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -39,7 +39,7 @@
                  <div class="col">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('accoesCrimes') }}</q-item-label>
+                    <q-item-label lines="1" caption >{{ $t('Accções-Crimes') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ processoInstrucaoPreparatoria.accoesCrimes.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -58,7 +58,7 @@
                   <div class="col">
                     <q-item class="full-width">
                       <q-item-section>
-                        <q-item-label lines="1" caption >{{ $t('dataEntrada') }}</q-item-label>
+                        <q-item-label lines="1" caption >{{ $t('Data de Entrada') }}</q-item-label>
                         <q-item-label class="text-grey-9">{{ processoInstrucaoPreparatoria.dataEntrada }}</q-item-label>
                       </q-item-section>
                     </q-item>
@@ -69,7 +69,7 @@
                     <div class="col">
                 <q-item class="full-width">
                   <q-item-section>
-                    <q-item-label lines="1" caption >{{ $t('formaProcesso') }}</q-item-label>
+                    <q-item-label lines="1" caption >{{ $t('Forma Processo') }}</q-item-label>
                     <q-item-label class="text-grey-9">{{ processoInstrucaoPreparatoria.formaProcesso.designacao }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -84,7 +84,15 @@
                 </div>
                    </div>
                 <q-separator/>
-                <div class="row">
+                 <div class="row">
+                 <div class="col">
+                    <q-item class="full-width">
+                      <q-item-section>
+                        <q-item-label lines="1" caption >{{ $t('Processo com Autor') }}</q-item-label>
+                        <q-item-label class="text-grey-9">{{ processoInstrucaoPreparatoria.autor }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                 </div>
                 <div class="col">
                   <q-item class="full-width">
                   <q-item-section>
@@ -194,6 +202,7 @@
                     :dataEntrada.sync="processoInstrucaoPreparatoria.dataEntrada"
                     :magistrado.sync="magistrado"
                     :anexo.sync="processoInstrucaoPreparatoria.anexo"
+                    :autor.sync="processoInstrucaoPreparatoria.autor"
                     :formaProcessos.sync="allFormaProcessos"
                     :magistrados.sync="allMagistrados"
                     :submitting="submitting"
@@ -233,6 +242,7 @@ export default {
         proveniencia: '',
         dataEntrada: '',
         anexo: [],
+        autor: '',
         historial: '',
         formaProcesso: {},
         magistrado: {},
@@ -296,6 +306,7 @@ export default {
         .with('pareceresProcesso')
         .with('orgao.tipoOrgao')
         .with('orgao.provincia.pais')
+        .with('orgao.distrito.provincia.pais')
         .find(this.$route.params.id)
       },
       set (processoInstrucaoPreparatoria) {

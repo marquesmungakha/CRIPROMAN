@@ -103,9 +103,23 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaVitima(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaVitima(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
               <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
-                     @click="removeVitima(props.row)"/>
+                     @click="removeVitima(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -128,7 +142,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createVitima">
              <div class="q-pa-md">
                 <q-stepper
@@ -389,7 +403,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -476,7 +490,7 @@ export default {
                        vitima.sexo === this.vitima.sexo &&
                        vitima.numDocumentoIndentificacao === this.vitima.numDocumentoIndentificacao 
                        }).first()
-              if(results === undefined){
+              if(results === undefined  || results === null){
                     setTimeout(this.findIndividuo, 2)
               }else{
                 this.vitima = results
@@ -709,7 +723,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.vitima.vitimas.map(row =>
+          this.allVitimasFromProcessoInstrucaoPreparatoria.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

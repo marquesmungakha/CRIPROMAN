@@ -19,24 +19,25 @@
         <q-card-section style="max-height: 50vh" class="scroll">
                 <q-form @submit.prevent="createProcesso" class="q-gutter-md">
                     <q-list>
-                        <q-item>
-                            <q-item-section>
-                                <q-input :value="numeroProcesso"
+                        <div class="row">                
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Número do Processo *</div>
+                                <q-input outlined tack-label class="w-field" :dense="true" :value="numeroProcesso"
                                 @input="$emit('update:numeroProcesso', $event)"
                                 ref="numeroProcesso"
-                                label="Número do Processo *"
+                                
                                 lazy-rules
                                 :rules="[ val => val && val.length > 0 || 'Introduza o Número do Auto']" />
-                            </q-item-section>
-                        </q-item>
-                         
-                         <q-item>
-                            <q-item-section>
-                                <q-input :value="dataEntrada"  label="Data de Entrada " @input="$emit('update:dataEntrada', $event)" :rules="['####-##-##']">
+        </div>  
+        </div>
+        <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Data de Entrada *</div>
+                                <q-input outlined tack-label class="w-field" :dense="true" :value="dataEntrada"   @input="$emit('update:dataEntrada', $event)" :rules="['####-##-##']">
                                 <template v-slot:append>
                                   <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                                      <q-date :value="dataEntrada" minimal mask="YYYY-MM-DD" @input="$emit('update:dataEntrada', $event)">
+                                      <q-date outlined tack-label class="w-field" :dense="true" :value="dataEntrada" minimal mask="YYYY-MM-DD" @input="$emit('update:dataEntrada', $event)">
                                         <div class="row items-center justify-end">
                                           <q-btn v-close-popup label="Close" color="primary" flat />
                                         </div>
@@ -45,27 +46,27 @@
                                   </q-icon>
                                 </template>
                               </q-input>
-                            </q-item-section>
-                            </q-item>
-                            <q-item>
-                            <q-item-section>
-                                <q-input :value="proveniencia"
+        </div>              
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Proveniência *</div>
+                                <q-input outlined tack-label class="w-field" :dense="true" :value="proveniencia"
                                 @input="$emit('update:proveniencia', $event)"
                                 ref="proveniencia"
-                                label="Proveniência *"
+                                
                                 lazy-rules
                                 :rules="[ val => val && val.length > 0 || 'Introduza a Proveniência']" />
-                            </q-item-section>
-                        </q-item>
+        </div>
+        </div>
 
-                        <q-item>
-                            <q-item-section>
+                      <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Família Delitiva *</div>
                             <q-select
-                              :value="classeJudicial"
+                              outlined tack-label class="w-field" :dense="true" :value="classeJudicial"
                               use-input
                               fill-input
                               hide-selected
-                              label="Família Delitiva  *"
+                              
                               input-debounce="0"
                               :options="optionsClasseJudicials"
                               option-label="designacao"
@@ -82,16 +83,15 @@
                                 </q-item>
                               </template>
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
+        </div>    
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Tipo Legal de Crime *</div>
                             <q-select
-                              :value="crime"
+                              outlined tack-label class="w-field" :dense="true" :value="crime"
                               use-input
                               fill-input
                               hide-selected
-                              label="Tipo Legal de Crime * "
+                              
                               input-debounce="0"
                               :options="optionsCrime"
                               option-label="designacao"
@@ -108,17 +108,18 @@
                                 </q-item>
                               </template>
                             </q-select>
-                            </q-item-section>
-                        </q-item>
+        </div>
+                      </div>
 
-                         <q-item>
-                            <q-item-section>
+                       <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Forma de Processo *</div>
                             <q-select
-                              :value="formaProcesso"
+                              outlined tack-label class="w-field" :dense="true" :value="formaProcesso"
                               use-input
                               fill-input
                               hide-selected
-                              label="Forma de Processo  *"
+                              
                               input-debounce="0"
                               :options="optionsFormaProcesso"
                               option-label="designacao"
@@ -135,21 +136,21 @@
                                 </q-item>
                               </template>
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
-                                 <q-input :value="historial"  type="textarea"  label="Historial " @input="$emit('update:historial', $event)"/>
-                            </q-item-section>
-                        </q-item>
-                         <q-item>
-                            <q-item-section>
+        </div>  
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Historial *</div>
+                                 <q-input outlined tack-label class="w-field" :dense="true" :value="historial"  type="textarea"   @input="$emit('update:historial', $event)"/>
+        </div>
+                       </div>
+                   <div class="row">        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Magistrado *</div>
                             <q-select
-                              :value="magistrado"
+                              outlined tack-label class="w-field" :dense="true" :value="magistrado"
                               use-input
                               fill-input
                               hide-selected
-                              label="Magistrado "
+                              
                               input-debounce="0"
                               :options="optionsMagistrado"
                               option-label="numero"
@@ -166,16 +167,15 @@
                                 </q-item>
                               </template>
                             </q-select>
-                            </q-item-section>
-                        </q-item>
-                        <q-item>
-                            <q-item-section>
+        </div> 
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Orgão *</div>
                             <q-select
-                              :value="orgao"
+                              outlined tack-label class="w-field" :dense="true" :value="orgao"
                               use-input
                               fill-input
                               hide-selected
-                              label="Orgão *"
+                              
                               input-debounce="0"
                               :options="optionsMagistrado"
                               option-label="designacao"
@@ -192,8 +192,16 @@
                                 </q-item>
                               </template>
                             </q-select>
-                            </q-item-section>
-                        </q-item>
+                      </div>
+                   </div>
+                   <div class="row">                         
+                      <div class="row q-gutter-xs">
+                        <div class="text-left">Processo com Autor? *</div>
+                          <q-radio :value="autor" val="Conhecido" label="Conhecido" @input="$emit('update:autor', $event)"/>
+                          <q-radio :value="autor" val="Desconhecido" label="Desconhecido" @input="$emit('update:autor', $event)"/>
+                          <q-radio :value="autor" val="Esclarecido" label="Esclarecido" @input="$emit('update:autor', $event)"/>
+                      </div>
+                    </div>
                     </q-list>
                 </q-form>
         </q-card-section>
@@ -356,8 +364,14 @@ export default {
       'submitting',
       'createProcesso',
       'orgao',
+      'autor',
       'orgaos',
     ]
 
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>

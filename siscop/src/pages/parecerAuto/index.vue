@@ -11,7 +11,7 @@
 
         <div class="q-pa-md q-gutter-sm">
           <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
-          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" label="Adicionar Novo" :disabled="allParecerAutos.length === 0 ? false : true" no-caps outline rounded @click="show_dialog = true"/>
         </div>
       </template>
       <template v-slot:body="props">
@@ -34,6 +34,12 @@
               <q-input v-model="props.row.tipoParecer.designacao" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
+              <q-td key="seccao" :props="props">
+            <div class="text-pre-wrap">{{ props.row.seccao }} - {{ props.row.brigada }}</div>
+            <q-popup-edit v-model="props.row.seccao">
+              <q-input v-model="props.row.seccao" autofocus dense></q-input>
+            </q-popup-edit>
+          </q-td>
           <q-td key="inspector" :props="props">
            <div class="text-pre-wrap">{{ props.row.inspector.numero }} - {{ props.row.inspector.nome }}
               {{ props.row.inspector.apelido }}
@@ -44,7 +50,7 @@
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
-              <router-link :to="`/parecerAuto/${props.row.id}`">
+              <!--router-link :to="`/parecerAuto/${props.row.id}`">
                 <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
                 <q-tooltip content-class="bg-white text-primary shadow-4" 
                           :offset="[10, 10]"
@@ -53,7 +59,7 @@
                   Ver Detalhes
                 </q-tooltip>
                 </q-btn>
-              </router-link>
+              </router-link-->
               <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaParecerAuto(props.row)">
                 <q-tooltip content-class="bg-white text-primary shadow-4" 
                           :offset="[10, 10]"
@@ -80,6 +86,8 @@
                       :createParecerAuto="createParecerAuto"
                       :dataRegisto.sync="parecerAuto.dataRegisto"
                       :parecer.sync="parecerAuto.parecer"
+                      :seccao.sync="parecerAuto.seccao"
+                      :brigada.sync="parecerAuto.brigada"
                       :inspector.sync="inspector"
                       :inspectors.sync="allInspectors"
                       :listErrors="listErrors"
@@ -121,6 +129,8 @@ export default {
       parecerAuto: {
         parecer: '',
         dataRegisto: '',
+        seccao: '',
+        brigada: '',
         tipoParecer: {},
         inspector: {},
         auto: {}
@@ -160,6 +170,14 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
+           {
+          name: 'seccao',
+          align: 'left',
+          label: 'Secção-Brigada',
+          field: row => row.seccao,
+          format: val => `${val}`,
+          sortable: true
+        },
         {
           name: 'inspector',
           align: 'left',
@@ -168,7 +186,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -222,6 +240,7 @@ export default {
       this.parecerAuto.inspector = this.inspector
       this.parecerAuto.auto_id = this.autoEntrada.id
       this.parecerAuto.auto = this.autoEntrada
+      console.log(this.autoEntrada)
       if (this.editedIndex > -1) {
          ParecerAuto.api().patch("/parecerAuto/" + this.parecerAuto.id, this.parecerAuto).then(resp => {
           this.$q.notify({
@@ -312,7 +331,7 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + parecerAuto.parecer + ' ]'
         })
-         ParecerAuto.api().delete("/parecerAuto/" + this.parecerAuto.id)
+         ParecerAuto.api().delete("/parecerAuto/" + parecerAuto.id)
       })
     },
     editaParecerAuto(parecerAuto) {
@@ -362,7 +381,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.parecerAuto.parecerAutos.map(row =>
+          this.allParecerAutos.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

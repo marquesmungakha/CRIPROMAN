@@ -75,10 +75,31 @@
             <q-td key="actions" :props="props">
              <div class="q-gutter-sm">
               <router-link :to="`/processoInstrucaoPreparatoria/${props.row.id}`" >
-              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps />
+              <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
                </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click="editaProcesso(props.row)" size=sm no-caps />
-              <q-btn round glossy icon="delete_forever" color="red" @click="removeProcesso(props.row)" size=sm no-caps/>
+              <q-btn round glossy icon="edit" color="blue" @click="editaProcesso(props.row)" size=sm no-caps>
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn round glossy icon="delete_forever" color="red" @click="removeProcesso(props.row)" size=sm no-caps>
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
              </div>
             </q-td>
           </q-tr>
@@ -97,6 +118,7 @@
                     :dataEntrada.sync="processoInstrucaoPreparatoria.dataEntrada"
                     :magistrado.sync="magistrado"
                     :anexo.sync="processoInstrucaoPreparatoria.anexo"
+                    :autor.sync="processoInstrucaoPreparatoria.autor"
                     :formaProcessos.sync="allFormaProcessos"
                     :magistrados.sync="allMagistrados"
                     :orgao.sync="orgao"
@@ -144,6 +166,7 @@ export default {
         proveniencia: '',
         dataEntrada: '',
         anexo: [],
+        autor:'Conhecido',
         historial: '',
         formaProcesso: {},
         magistrado: {},
@@ -340,6 +363,7 @@ export default {
       this.listErrors = {}
       this.show_dialog = false
       this.processoInstrucaoPreparatoria = {}
+      this.processoInstrucaoPreparatoria.autor='Conhecido'
       this.props = this.processoInstrucaoPreparatoria
       setTimeout(() => {
         this.editedIndex = -1

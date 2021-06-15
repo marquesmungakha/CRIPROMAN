@@ -28,9 +28,10 @@ export default class ProcessoInvestigacao extends Model {
       formaProcesso_id: this.attr(''),
       inspector_id: this.attr(''),
       magistrado_id: this.attr(''),
+      autor: this.attr(''),
 
       // Relationshiops
-      autoEntrada: this.belongsTo(AutoEntrada, 'numeroAuto_id'),
+      numeroAuto: this.belongsTo(AutoEntrada, 'numeroAuto_id'),
       formaProcesso: this.belongsTo(FormaProcesso, 'formaProcesso_id'),
       inspector: this.belongsTo(Inspector, 'inspector_id'),
       magistrado: this.belongsTo(Magistrado, 'magistrado_id'),
@@ -42,7 +43,7 @@ export default class ProcessoInvestigacao extends Model {
       denuncias: this.hasMany(Denuncia, 'processo_id'),
       despachos: this.hasMany(Despacho, 'processo_id'),
       detencoes: this.hasMany(Detencao, 'processo_id'),
-      perguntas: this.hasMany(Pergunta, 'processo_id'),
+      perguntas: this.hasMany(Pergunta, 'processo_id')
     }
   }
 

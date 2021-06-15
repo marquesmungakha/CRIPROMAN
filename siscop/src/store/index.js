@@ -88,7 +88,24 @@ import TipoMeio from "./models/tipoMeio/tipoMeio"
 import TipoOrgao from "./models/tipoOrgao/tipoOrgao"
 import TipoParecer from "./models/tipoParecer/tipoParecer"
 import Vitima from "./models/vitima/vitima"
+import TipoParecerAuto from './models/tipoParecerAuto/tipoParecerAuto'
+import ParecerAuto from './models/parecerAuto/parecerAuto'
 
+import Localbase from 'localbase'
+import UsersService from "../../src/services/UsersService";
+import AutoEntradaAcusado from './models/autoEntrada/autoEntradaAcusado'
+import AutoEntradaArguido from './models/autoEntrada/autoEntradaArguido'
+import AutoEntradaCustodiado from './models/autoEntrada/autoEntradaCustodiado'
+import AutoEntradaDeclarante from './models/autoEntrada/autoEntradaDeclarante'
+import AutoEntradaDenunciante from './models/autoEntrada/autoEntradaDenunciante'
+import AutoEntradaDetido from './models/autoEntrada/autoEntradaDetido'
+import AutoEntradaOfendido from './models/autoEntrada/autoEntradaOfendido'
+import AutoEntradaPossuidor from './models/autoEntrada/autoEntradaPossuidor'
+import AutoEntradaSuspeito from './models/autoEntrada/autoEntradaSuspeito'
+import AutoEntradaTestemunha from './models/autoEntrada/autoEntradaTestemunha'
+import AutoEntradaVitima from './models/autoEntrada/autoEntradaVitima'
+
+new Localbase('gestao_processual_crime')
 
 Vue.use(Vuex)
 
@@ -97,9 +114,8 @@ VuexORM.use(VuexORMAxios, {
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },
-  baseURL: 'http://localhost:8080/api'
+  baseURL: 'http://192.168.30.4:8080/api'
 })
-
 
 // // Request interceptor for API calls
 axios.interceptors.request.use(
@@ -111,15 +127,16 @@ axios.interceptors.request.use(
       // 'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded'
     }
-    if (Login.all().length != 0) {
+
+    if (localStorage.getItem('id_token') != null) {
       // console.log(">>VFF "+JSON.parse(localStorage.getItem('vuex')).user.token+"------------"+ JSON.stringify(localStorage));
       config.headers['X-Auth-Token'] = [
-        '',Login.query().first().access_token
+        '',localStorage.getItem('id_token')
       ].join(' ')
 
     } else {
-      //console.log(">>VFF2 "+JSON.parse(localStorage.getItem('vuex'))+"------------"+ JSON.stringify(localStorage));
-      delete config.headers['Authorization']
+       console.log(">>VFF2 "+JSON.parse(localStorage.getItem('id_token'))+"------------"+ JSON.stringify(localStorage));
+        delete config.headers['Authorization']
     }
     return config;
   },
@@ -132,20 +149,21 @@ axios.interceptors.response.use((response) => {
   return response
 }, async function (error) {
 //  console.log(localStorage.getItem('refresh_token'))
- // console.log(Login.query().all())
 
   const originalRequest = error.config;
+  const rToken = localStorage.getItem('id_token')
+
+if(rToken.length > 10){
   if ((error.response.status === 403 || error.response.status === 401) && !originalRequest._retry) {
-    originalRequest._retry = true;
+        originalRequest._retry = true;
 
- //   const authUser = Login.query().first();
-    const rToken = Login.query().first().refresh_token;
+    // const authUser = JSON.parse(window.localStorage)
+   
 
-  //  console.log("LOGIN first "+Login.query().first())
-    console.log('attempt to refresh token here -' + 'http://localhost:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken);
+    console.log('attempt to refresh token here -' + 'http://192.168.30.4:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
     // console.log('r token '+authUser.auth.isAuthenticated.refresh_token+'_____________-'+JSON.stringify(authUser.auth.isAuthenticated))
     //, {grant_type:'refresh_token',refresh_token:tok}
-    return axios.post('http://localhost:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
+    return axios.post('http://192.168.30.4:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
       .then(({data}) => {
         console.log('==got the following token back: ' + data.access_token + '___________________________________________')
         //console.log("------------"+JSON.stringify(data)+' ')
@@ -168,6 +186,7 @@ axios.interceptors.response.use((response) => {
     return axios(originalRequest);
       });
   }
+}
   return Promise.reject(error);
 });
 
@@ -183,6 +202,17 @@ database.register(Alocacao)
 database.register(Apreensao)
 database.register(Arguido)
 database.register(AutoEntrada)
+database.register(AutoEntradaAcusado)
+database.register(AutoEntradaArguido)
+database.register(AutoEntradaCustodiado)
+database.register(AutoEntradaDeclarante)
+database.register(AutoEntradaDenunciante)
+database.register(AutoEntradaDetido)
+database.register(AutoEntradaOfendido)
+database.register(AutoEntradaPossuidor)
+database.register(AutoEntradaSuspeito)
+database.register(AutoEntradaTestemunha)
+database.register(AutoEntradaVitima)
 database.register(BemSubtraido)
 database.register(Cargo)
 database.register(ClasseJudicial)
@@ -217,6 +247,7 @@ database.register(ObjectoDetido)
 database.register(Ofendido)
 database.register(Orgao)
 database.register(DependenciaOrgao)
+database.register(ParecerAuto)
 database.register(ParecerProcesso)
 database.register(PecaProcesso)
 database.register(PecaProcessoAcusado)
@@ -257,6 +288,7 @@ database.register(TipoDocumentoIdentificacao)
 database.register(TipoMeio)
 database.register(TipoOrgao)
 database.register(TipoParecer)
+database.register(TipoParecerAuto)
 database.register(Vitima)
 
 export default new Vuex.Store({

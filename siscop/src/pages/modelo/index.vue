@@ -38,10 +38,31 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/modelo/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaModelo(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeModelo(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaModelo(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeModelo(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -120,7 +141,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -294,7 +315,7 @@ export default {
      getAllMarca(offset) {
        if(offset >=0){
       Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMarca(offset), 2)
 
@@ -306,7 +327,7 @@ export default {
     getAllTipoMeio(offset) {
        if(offset >=0){
       TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoMeio(offset), 2)
 
@@ -318,7 +339,7 @@ export default {
     getAllModelo(offset) {
       if(offset >=0){
       Modelo.api().get("/modelo?offset="+offset+"&max=100").then(resp => {
-          offset = offset + 1
+          offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllModelo(offset), 2)
 

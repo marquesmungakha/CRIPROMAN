@@ -1,10 +1,10 @@
 <template>
  
-    <q-dialog :value="vitima_details_dialog" persistent>
+    <q-dialog outlined tack-label class="w-field" :dense="true" :value="vitima_details_dialog" persistent>
             <q-card class="my-card"  style="width: 900px; max-width: 90vw;" flat bordered>
               <q-card-section>
                 <div class="text-h6">
-                  Detalhes do Vitima
+                  Detalhes do Vítima
                   <q-btn round flat dense icon="close" class="float-right" color="grey-8" @click="close"/>
                 </div>
               </q-card-section>
@@ -63,7 +63,7 @@
                   </div>
                   <div class="row">
                     <div class="col text-caption text-grey">
-                      Númenero de Documento:
+                      Número de Documento:
                     </div>
                     <div class="col text-caption text-grey">
                       {{ this.vitima.numDocumentoIndentificacao}}
@@ -157,7 +157,7 @@
               <q-separator/>
               <q-card-section>
                   <div class="text-overline">Descrição da Ocorrência</div>
-                {{ this.pecaProcessoVitima.declaracao }}
+                {{ this.getDeclaracao() }}
               </q-card-section>
             </q-card>
           </q-dialog>
@@ -165,12 +165,24 @@
 </template>
 <script>
 export default {
-  props: ['pecaProcessoVitima','vitima','tipoDocumento','pais','image','vitima_details_dialog','close'],
+  props: ['autoEntradaVitima','pecaProcessoVitima','vitima','tipoDocumento','pais','image','vitima_details_dialog','close'],
   methods: {
    
+    getDeclaracao(){
+      if(this.pecaProcessoVitima !== null && this.pecaProcessoVitima !== undefined)
+          return this.pecaProcessoVitima.declaracao
+      else
+          return this.autoEntradaVitima.declaracao
+    }
+
   }
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>
 <style scoped>
   img {
     max-height: 300px;

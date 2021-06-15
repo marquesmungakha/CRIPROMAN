@@ -11,7 +11,7 @@
 
         <div class="q-pa-md q-gutter-sm">
           <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
-          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" label="Adicionar Novo" :disabled="allParecerProcessos.length === 0 ? false : true" no-caps outline rounded @click="show_dialog = true"/>
         </div>
       </template>
       <template v-slot:body="props">
@@ -51,10 +51,31 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/parecerProcesso/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaParecerProcesso(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeParecerProcesso(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaParecerProcesso(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeParecerProcesso(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -132,7 +153,7 @@ export default {
         {
           name: 'parecer',
           align: 'left',
-          label: 'Parecer',
+          label: 'Descrição do Despacho',
           field: row => row.numero,
           format: val => `${val}`,
           sortable: true
@@ -169,7 +190,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -211,7 +232,7 @@ export default {
       return TipoParecer.query().all()
     },
      allDestinos() {
-      return Orgao.query().with('provincia.pais').with('tipoOrgao').all()
+      return Orgao.query().with('distrito.provincia.*').with('provincia.pais').with('tipoOrgao').all()
     },
     allParecerProcessos() {
       return ParecerProcesso.query().with('magistrado').with('tipoParecer').with('destino').where('processo_id',this.processoInstrucaoPreparatoria.id).get()
@@ -224,7 +245,7 @@ export default {
       setTimeout(() => {
         this.submitting = false
       }, 300)
-      this.destino = Orgao.query().with('provincia.pais').with('tipoOrgao').find(this.destino.id)
+      this.destino = Orgao.query().with('provincia.pais').with('distrito.provincia.*').with('tipoOrgao').find(this.destino.id)
       this.parecerProcesso.tipoParecer = this.tipoParecer
       this.parecerProcesso.tipoParecer_id = this.tipoParecer.id
       this.parecerProcesso.magistrado_id = this.magistrado.id
@@ -424,7 +445,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.parecerProcesso.parecerProcessos.map(row =>
+          this.allParecerProcessos.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

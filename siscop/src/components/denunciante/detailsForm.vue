@@ -1,6 +1,6 @@
 <template>
  
-    <q-dialog :value="denunciante_details_dialog" persistent>
+    <q-dialog outlined tack-label class="w-field" :dense="true" :value="denunciante_details_dialog" persistent>
             <q-card class="my-card"  style="width: 900px; max-width: 90vw;" flat bordered>
               <q-card-section>
                 <div class="text-h6">
@@ -63,7 +63,7 @@
                   </div>
                   <div class="row">
                     <div class="col text-caption text-grey">
-                      Númenero de Documento:
+                      Número de Documento:
                     </div>
                     <div class="col text-caption text-grey">
                       {{ this.denunciante.numDocumentoIndentificacao}}
@@ -124,7 +124,7 @@
                       Ocupação:
                     </div>
                     <div class="col text-caption text-grey">
-                      {{ this.pecaProcessoDenunciante.ocupacao}}
+                      {{ this.getOcupacao()}}
                     </div>
                   </div>
                    <div class="row">
@@ -132,7 +132,7 @@
                       Local de Trabalho:
                     </div>
                     <div class="col text-caption text-grey">
-                      {{ this.pecaProcessoDenunciante.localTrabalho}}
+                      {{ this.getLocalTrabalho()}}
                     </div>
                   </div>
                   <div class="row">
@@ -140,7 +140,7 @@
                       Denunciante na qualidade De:
                     </div>
                     <div class="col text-caption text-grey">
-                      {{ this.pecaProcessoDenunciante.qualidadeDe}}
+                      {{ this.getQualidadeDe()}}
                     </div>
                   </div>
                 </q-card-section>
@@ -157,7 +157,7 @@
               <q-separator/>
               <q-card-section>
                   <div class="text-overline">Descrição da Ocorrência</div>
-                {{ this.pecaProcessoDenunciante.descricaoOcorrencia }}
+                {{  this.getDescricao() }}
               </q-card-section>
             </q-card>
           </q-dialog>
@@ -165,12 +165,40 @@
 </template>
 <script>
 export default {
-  props: ['pecaProcessoDenunciante','denunciante','tipoDocumento','pais','image','denunciante_details_dialog','close'],
+  props: ['autoEntradaDenunciante','pecaProcessoDenunciante','denunciante','tipoDocumento','pais','image','denunciante_details_dialog','close'],
   methods: {
-   
+    getDescricao(){
+      if(this.pecaProcessoDenunciante !== null && this.pecaProcessoDenunciante !== undefined)
+          return this.pecaProcessoDenunciante.descricaoOcorrencia
+      else
+          return this.autoEntradaDenunciante.descricaoOcorrencia
+    },
+    getQualidadeDe(){
+      if(this.pecaProcessoDenunciante !== null && this.pecaProcessoDenunciante !== undefined)
+          return this.pecaProcessoDenunciante.qualidadeDe
+      else
+          return this.autoEntradaDenunciante.qualidadeDe
+    },
+     getLocalTrabalho(){
+      if(this.pecaProcessoDenunciante !== null && this.pecaProcessoDenunciante !== undefined)
+          return this.pecaProcessoDenunciante.localTrabalho
+      else
+          return this.autoEntradaDenunciante.localTrabalho
+    },
+     getOcupacao(){
+      if(this.pecaProcessoDenunciante !== null && this.pecaProcessoDenunciante !== undefined)
+          return this.pecaProcessoDenunciante.ocupacao
+      else
+          return this.autoEntradaDenunciante.ocupacao
+    }
   }
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>
 <style scoped>
   img {
     max-height: 300px;

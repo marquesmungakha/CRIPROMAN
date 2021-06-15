@@ -19,7 +19,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Data Abertura') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ pergunta.dataAbertura }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -30,7 +30,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('descricao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Descrição') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ pergunta.descricao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -38,7 +38,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('interrogatorio') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Interrogatório') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ pergunta.interrogatorio }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -49,7 +49,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Inspector') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ pergunta.inspector.numero }} - {{ pergunta.inspector.nome }}
                     {{ pergunta.inspector.apelido }}
                   </q-item-label>
@@ -107,6 +107,7 @@
           indicator-color="white"
           narrow-indicator>
           <q-tab label="Suspeito" name="suspeitos"/>
+          <q-tab name="arguido" label="Arguido" />
         </q-tabs>
 
         <q-separator/>
@@ -114,6 +115,9 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="suspeitos">
             <list-suspeitos :pecaProcesso.sync="pecaProcesso"/>
+          </q-tab-panel>
+          <q-tab-panel name="arguido">
+              <list-arguido :pecaProcesso.sync="pecaProcesso"/>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -212,7 +216,8 @@ export default {
   },
   components: {
     'create-edit-form': require('components/pergunta/createEditForm.vue').default,
-    'list-suspeitos': require('pages/suspeito/index.vue').default
+    'list-suspeitos': require('pages/suspeito/index.vue').default,
+    'list-arguido': require('pages/arguidoProcesso/indexAuto.vue').default
   },
   methods: {
     removePergunta(pergunta) {
@@ -282,7 +287,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/pergunta/" + pergunta.id, formData, {
+        Pergunta.api().patch("/pergunta/" + pergunta.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;

@@ -19,7 +19,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Data Abertura') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ denuncia.dataAbertura }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -30,7 +30,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('descricao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Decrição') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ denuncia.descricao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -38,7 +38,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('procedimentoCriminal') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Procedimento Criminal') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ denuncia.procedimentoCriminal }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -49,7 +49,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Inspector') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ denuncia.inspector.numero }} - {{ denuncia.inspector.nome }}
                     {{ denuncia.inspector.apelido }}
                   </q-item-label>
@@ -291,7 +291,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/denuncia/" + denuncia.id, formData, {
+        Denuncia.api().patch("/denuncia/" + denuncia.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;

@@ -22,7 +22,8 @@ module.exports = function (/* ctx */) {
       'i18n',
       'axios',
       'apex',
-      'vue-pivottable'
+      'vue-pivottable',
+      'localbase'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -95,7 +96,14 @@ module.exports = function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'Dialog','Loading','Meta']
+      plugins: [
+        'Notify', 
+        'Dialog',
+        'Loading',
+        'Meta',
+        'LocalStorage',
+        'SessionStorage'
+      ]
     },
 
     animations: 'all', // --- includes all animations
@@ -112,8 +120,8 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `Sistema de Gestao Processual da PGR`,
-        short_name: `Sistema de Gestao Processual da PGR`,
+        name: `Sistema de Gestao Processual`,
+        short_name: `Sistema de Gestao Processual`,
         description: `Sistema criado para auxilio na gestao de processos que dao entrada nas procuradorias a nivel nacional`,
         display: 'standalone',
         orientation: 'portrait',

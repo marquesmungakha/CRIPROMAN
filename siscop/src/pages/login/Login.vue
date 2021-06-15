@@ -4,14 +4,14 @@
     <q-page-container>
       <q-page class="flex flex-center">
        <div id="particles-js" :class="$q.dark.isActive ? 'dark_gradient' : 'normal_gradient'"></div>
-        <q-btn
+        <!--q-btn
           color="white"
           class="absolute-top-right"
           flat
           round
           @click="$q.dark.toggle()"
           :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-        />
+        /-->
         <transition
           appear
           enter-active-class="animated fadeIn"
@@ -85,9 +85,10 @@ export default {
     }, 600)
 
   },
-   mounted() {
-
-    particlesJS ("particles-js", {
+  mounted() {
+  window.addEventListener('DOMContentLoaded', (event) => {
+  /* ---- particles.js config ---- */
+    particlesJS("particles-js", {
         "particles": {
             "number": {
                 "value": 80,
@@ -197,6 +198,7 @@ export default {
         },
         "retina_detect": true
     });
+  })
 },
   computed: {
     isAuthenticated: function () {
@@ -213,13 +215,12 @@ export default {
       UsersService.login({
         'username': this.username,
         'password': this.password
-      })
-        .then((response) => {
-          if (response.response.data) {
-            console.log('Login >>>>>>>>', response.response.data)//.access_token);
+      }).then((response) => {
+          if (response) {
+            console.log('Login >>>>>>>>', response)//.access_token);
             localStorage.setItem('id_token', response.response.data.access_token)
+            localStorage.setItem('orgaoId',response.response.data.orgaoId)
             localStorage.setItem('refresh_token', response.response.data.refresh_token)
-            // Login.insert(response.response.data)
             // this.$store.dispatch('auth/login',  response.response.data);
             // this.$store.dispatch('user/setToken', response.data.access_token);
             // this.$store.dispatch('user/userLogged',new Boolean(true));
@@ -229,12 +230,10 @@ export default {
             if (response.response.data.roles[0] === 'ROLE_ADMIN') {
               this.$router.push({path: '/'})
               // this.$router.push({path: 'Admin'})
-            } else if (response.response.data.roles[0] === 'ROLE_DRIVER') {
-              this.$router.push({name: 'Garage'})
             } else {
-              this.$router.push({name: '/'})
+              this.$router.push({path: '/login'})
             }
-          }
+        }
         })
     },
     getProfile(userId) {

@@ -1,4 +1,4 @@
-# Sistema de Gestao Processual da PGR (siscop)
+# Sistema de Gestao Processual (siscop)
 
 Sistema criado para auxilio na gestao de processos que dao entrada nas procuradorias a nivel nacional
 

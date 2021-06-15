@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
     <q-table :columns="columns" :data="allProvincias" :filter="filter" binary-state-sort row-key="name"
-             title="Provincia">
+             title="Província">
 
       <template v-slot:top-right>
         <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
@@ -39,10 +39,31 @@
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/provincia/${props.row.id}`">
-                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm />
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm >
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaProvincia(props.row)"/>
-              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeProvincia(props.row)"/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click="editaProvincia(props.row)">
+              <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm @click="removeProvincia(props.row)">
+              <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -115,7 +136,7 @@ export default {
           sortable: true
         },
         {name: 'pais', align: 'left', label: 'Pais', field: row => row.pais, format: val => `${val}`, sortable: true},
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -333,7 +354,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.provincia.provincias.map(row =>
+          this.allProvincias.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

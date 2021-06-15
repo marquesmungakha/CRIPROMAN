@@ -1,12 +1,11 @@
 package org.informservice.criproman.situacaoPrisional
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/situacaoPrisional')
-class SituacaoPrisional implements Auditable {
+class SituacaoPrisional { //implements Auditable {
 
     String codigo
     String designacao

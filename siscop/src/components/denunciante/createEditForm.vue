@@ -1,39 +1,49 @@
 <template>
 
   <q-list>
-    <q-item>
-        <q-item-section>
-            <q-input :value="localTrabalho"
+ 
+     <div class="row">   
+      <q-item>             
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Local de trabalho</div>
+            <q-input outlined tack-label class="w-field" :dense="true" :value="localTrabalho"
             @input="$emit('update:localTrabalho', $event)"
             ref="localTrabalho"
-            label="Local de trabalho "
+            
             lazy-rules
               />
-          </q-item-section>
+        </div>   
       </q-item>
-      <q-item>
-        <q-item-section>
-            <q-input :value="ocupacao"
+      <q-item>        
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Ocupação</div>
+            <q-input outlined tack-label class="w-field" :dense="true" :value="ocupacao"
             @input="$emit('update:ocupacao', $event)"
             ref="ocupacao"
-            label="Ocupação "
+            
             lazy-rules
               />
-          </q-item-section>
-      </q-item>
-      <q-item>
-          <q-item-section>
-                <q-input :value="descricaoOcorrencia"  type="textarea"  label="Descrição da Ocorrência *  " @input="$emit('update:descricaoOcorrencia', $event)"/>
-          </q-item-section>
-      </q-item>
-      <q-item>
-          <q-item-section>
+        </div>
+  </q-item>
+     </div>
+  <q-item>
+      <div class="row">                
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Descrição da Ocorrência *</div>
+                <q-input outlined tack-label class="w-field" :dense="true" :value="descricaoOcorrencia"  type="textarea"   @input="$emit('update:descricaoOcorrencia', $event)"/>
+        </div>
+      </div>
+  </q-item>
+  <q-item>
+       <div class="row">                
+        <div class="row q-gutter-xs" style="width: 500px;">
+          <div class="col-4 text-left">Na qualidade De? *</div>
             <q-select
-              :value="qualidadeDe"
+              outlined tack-label class="w-field" :dense="true" :value="qualidadeDe"
               use-input
               fill-input
               hide-selected
-              label="Na qualidade De? *"
+              
               input-debounce="0"
               :options="options"
               option-label="designacao"
@@ -50,8 +60,9 @@
                 </q-item>
               </template>
             </q-select>
-          </q-item-section>
-      </q-item>
+        </div>
+       </div>
+  </q-item>
   </q-list>
 
 </template>
@@ -99,3 +110,8 @@ export default {
   ]
 }
 </script>
+<style scoped>
+.w-field{
+  width: 300px
+}
+</style>

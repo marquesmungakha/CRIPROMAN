@@ -22,7 +22,6 @@ class PecaProcessoDenunciante {
     }
 
     static constraints = {
-        qualidadeDe(inList: ['Familiar', 'Amigo', 'Outro'])
         ocupacao(nullable: false, blank: false)
         localTrabalho(nullable: false, maxSize: 500, blank: false)
         descricaoOcorrencia maxSize: 1500, nullable: false

@@ -19,7 +19,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Data Abertura') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ acarreacao.dataAbertura }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -41,7 +41,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Inspector') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ acarreacao.inspector.numero }} - {{ acarreacao.inspector.nome }}  {{ acarreacao.inspector.apelido }}
                   </q-item-label>
                 </q-item-section>
@@ -286,7 +286,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/acarreacao/" + acarreacao.id, formData, {
+        Acarreacao.api().patch("/acarreacao/" + acarreacao.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;
@@ -339,6 +339,7 @@ export default {
         title: 'Detalhes do Auto de Acarreação',
         basicInformation: 'Informacção do Auto de Acarreação',
         designacao: 'Designação',
+        descricao: 'Descrição',
         provincia: 'Província',
         distrito: 'Distrito',
         postoAdministrativo: 'Posto Administrativo',
@@ -355,6 +356,7 @@ export default {
         title: 'Detalhes do Auto de Acarreação',
         basicInformation: 'Informacção do Auto de Acarreação',
         designacao: 'Designação',
+        descricao: 'Descrição',
         provincia: 'Província',
         distrito: 'Distrito',
         postoAdministrativo: 'Posto Administrativo',

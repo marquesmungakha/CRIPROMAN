@@ -19,7 +19,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('dataAbertura') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Data Abertura') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ apreensao.dataAbertura }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -30,7 +30,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('localApreencao') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Local de Apreenção') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ apreensao.localApreencao }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -38,7 +38,7 @@
             <div class="col">
               <q-item class="full-width">
                 <q-item-section>
-                  <q-item-label caption lines="1">{{ $t('inspector') }}</q-item-label>
+                  <q-item-label caption lines="1">{{ $t('Inspector') }}</q-item-label>
                   <q-item-label class="text-grey-9">{{ apreensao.inspector.numero }} - {{ apreensao.inspector.nome }}
                     {{ apreensao.inspector.apelido }}
                   </q-item-label>
@@ -107,7 +107,9 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="testeminhas">
             <list-testemunhas :pecaProcesso.sync="pecaProcesso"/>
-            <list-testemunhas :pecaProcesso.sync="pecaProcesso"/>
+          </q-tab-panel>
+          <q-tab-panel name="objectosApreendidos">
+            <list-objectoApreendido :pecaProcesso.sync="pecaProcesso"/>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -206,7 +208,8 @@ export default {
   },
   components: {
     'create-edit-form': require('components/apreensao/createEditForm.vue').default,
-    'list-testemunhas': require('pages/testemunha/index.vue').default
+    'list-testemunhas': require('pages/testemunha/index.vue').default,
+    'list-objectoApreendido': require('pages/objectoApreendido/index.vue').default
   },
   methods: {
     removeApreensao(apreensao) {
@@ -276,7 +279,7 @@ export default {
         const formData = new FormData();
         formData.append("anexo", this.selectedFile);  // appending file
       // sending file to the backend
-        AutoEntrada.api().patch("/apreensao/" + apreensao.id, formData, {
+        Apreensao.api().patch("/apreensao/" + apreensao.id, formData, {
           onUploadProgress: ProgressEvent => { 
             let progress = Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)+"%";
             this.progress = progress;

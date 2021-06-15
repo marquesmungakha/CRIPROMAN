@@ -156,7 +156,7 @@
           </div>
         </q-card-section>
           <q-separator/>
-          <q-card-section class="scroll" style="max-height: 70vh">
+          <q-card-section class="scroll" style="max-height: 80vh">
             <q-form class="q-gutter-md" @submit.prevent="createDenunciante">
             <div class="q-pa-md">
                 <q-stepper
@@ -435,7 +435,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -522,7 +522,7 @@ export default {
                        denunciante.sexo === this.denunciante.sexo &&
                        denunciante.numDocumentoIndentificacao === this.denunciante.numDocumentoIndentificacao 
                        }).first()
-              if(results === undefined){
+              if(results === undefined  || results === null){
                     setTimeout(this.findIndividuo, 2)
               }else{
                 this.denunciante = results
@@ -766,7 +766,7 @@ export default {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.denunciante.denunciantes.map(row =>
+          this.allDenunciantesFromAutoEntrada.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(
