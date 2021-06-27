@@ -239,15 +239,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + agente.numero + ' ]'
         })
         Agente.api().delete("/agente/" + agente.id)
+        Agente.delete(agente.id)
         this.$router.go(-1)
       })
     },
     createAgente() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
 
       let formData = new FormData();
       formData.append("nome", this.localAgente.nome);
@@ -262,6 +263,7 @@ export default {
       formData.append("cargoOcupado", this.localAgente.cargoOcupado);
 
       Agente.api().patch("/agente/" + this.localAgente.id, formData).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

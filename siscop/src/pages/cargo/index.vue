@@ -150,11 +150,12 @@ export default {
     createCargo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         Cargo.api().patch("/cargo/" + this.cargo.id, this.cargo).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -184,6 +185,7 @@ export default {
         })
       } else {
         Cargo.api().post("/cargo/", this.cargo).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -242,6 +244,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + cargo.designacao + ' ]'
         })
         Cargo.api().delete("/cargo/" + cargo.id)
+        Cargo.id(cargo.id)
       })
     },
     editaCargo(cargo) {
@@ -252,6 +255,7 @@ export default {
     getAllCargo(offset) {
        if(offset >= 0){
           Cargo.api().get("/cargo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCargo(offset), 2)

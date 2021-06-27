@@ -204,20 +204,22 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + localidade.designacao + ' ]'
         })
         Localidade.api().delete("/localidade/" + localidade.id)
+        Localidade.delete(localidade.id)
         this.$router.go(-1)
       })
     },
     createLocalidade() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localLocalidade.distrito = this.distrito
       this.localLocalidade.postoAdministrativo = this.postoAdministrativo
       this.localLocalidade.postoAdministrativo_id = this.postoAdministrativo.id
       this.localLocalidade.distrito_id = this.distrito.id
       Localidade.api().patch("/localidade/" + this.localLocalidade.id, this.localLocalidade).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

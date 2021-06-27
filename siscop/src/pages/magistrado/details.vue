@@ -238,15 +238,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + magistrado.numero + ' ]'
         })
         Magistrado.api().delete("/magistrado/" + magistrado.id)
+        Magistrado.delete(magistrado.id)
         this.$router.go(-1)
       })
     },
     createMagistrado() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
 
       let formData = new FormData();
       formData.append("nome", this.localMagistrado.nome);
@@ -261,6 +262,7 @@ export default {
       formData.append("cargoOcupado", this.localMagistrado.cargoOcupado);
 
       Magistrado.api().patch("/magistrado/" + this.localMagistrado.id, formData).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

@@ -151,11 +151,12 @@ export default {
     createProfissao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         Profissao.api().patch("/profissao/" + this.profissao.id, this.profissao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -185,6 +186,7 @@ export default {
         })
       } else {
         Profissao.api().post("/profissao/", this.profissao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -243,6 +245,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + profissao.designacao + ' ]'
         })
         Profissao.api().delete("/profissao/" + profissao.id)
+        Profissao.delete(profissao.id)
       })
     },
     editaProfissao(profissao) {
@@ -253,6 +256,7 @@ export default {
     getAllProfissao(offset) {
        if(offset >= 0) {
          Profissao.api().get("/profissao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this. getAllProfissao(offset), 2)

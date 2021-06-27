@@ -169,11 +169,12 @@ export default {
     createTipoDocumentoIdentificacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoDocumentoIdentificacao.api().patch("/tipoDocumentoIdentificacao/" + this.tipoDocumentoIdentificacao.id, this.tipoDocumentoIdentificacao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -203,6 +204,7 @@ export default {
         })
       } else {
         TipoDocumentoIdentificacao.api().post("/tipoDocumentoIdentificacao/", this.tipoDocumentoIdentificacao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -261,6 +263,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoDocumentoIdentificacao.designacao + ' ]'
         })
         TipoDocumentoIdentificacao.api().delete("/tipoDocumentoIdentificacao/" + this.tipoDocumentoIdentificacao.id)
+        TipoDocumentoIdentificacao.delete(tipoDocumentoIdentificacao.id)
       })
     },
     editaTipoDocumentoIdentificacao(tipoDocumentoIdentificacao) {
@@ -271,6 +274,7 @@ export default {
     getAllTipoDocumentoIdentificacao(offset) {
       if(offset >= 0){
           TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)

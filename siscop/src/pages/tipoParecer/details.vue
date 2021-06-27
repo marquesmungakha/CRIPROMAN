@@ -110,17 +110,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoParecer.designacao + ' ]'
         })
         TipoParecer.api().delete("/tipoParecer/" + tipoParecer.id)
+        TipoParecer.delete(tipoParecer.id)
         this.$router.go(-1)
       })
     },
     createTipoParecer() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.tipoParecer = this.localTipoParecer
       TipoParecer.api().patch("/tipoParecer/" + this.localTipoParecer.id, this.localTipoParecer).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

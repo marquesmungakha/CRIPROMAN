@@ -104,17 +104,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + motivoDetencao.designacao + ' ]'
         })
         MotivoDetencao.api().delete("/motivoDetencao/" + motivoDetencao.id)
+        MotivoDetencao.delete(motivoDetencao.id)
         this.$router.go(-1)
       })
     },
     createMotivoDetencao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.motivoDetencao = this.localMotivoDetencao
       MotivoDetencao.api().patch("/motivoDetencao/" + this.localMotivoDetencao.id, this.localMotivoDetencao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

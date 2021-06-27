@@ -151,11 +151,12 @@ export default {
     createModoAtuacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         ModoAtuacao.api().patch("/modoAtuacao/" + this.modoAtuacao.id, this.modoAtuacao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -185,6 +186,7 @@ export default {
         })
       } else {
         ModoAtuacao.api().post("/modoAtuacao/", this.modoAtuacao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -243,6 +245,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + modoAtuacao.designacao + ' ]'
         })
         ModoAtuacao.api().delete("/modoAtuacao/" + modoAtuacao.id)
+        ModoAtuacao.delete(modoAtuacao.id)
       })
     },
     editaModoAtuacao(modoAtuacao) {
@@ -253,6 +256,7 @@ export default {
     getAllModoAtuacao(offset) {
        if(offset >=0){
           ModoAtuacao.api().get("/modoAtuacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllModoAtuacao(offset), 2)

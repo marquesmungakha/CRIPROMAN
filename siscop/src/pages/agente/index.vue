@@ -266,9 +266,9 @@ export default {
     createAgente() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
 
       let formData = new FormData();
       formData.append("nome", this.agente.nome);
@@ -284,6 +284,7 @@ export default {
 
       if (this.editedIndex > -1) {
         Agente.api().patch("/agente/" + this.agente.id, formData).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -312,6 +313,7 @@ export default {
         })
       } else {
         Agente.api().post("/agente/", formData).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -370,6 +372,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + agente.designacao + ' ]'
         })
         Agente.api().delete("/agente/" + agente.id)
+        Agente.delete(agente.id)
       })
     },
     editaAgente(agente) {
@@ -381,6 +384,7 @@ export default {
     getAllAgente(offset) {
        if(offset >= 0){
          Agente.api().get("/agente?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllAgente(offset), 2)

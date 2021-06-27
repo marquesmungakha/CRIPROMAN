@@ -224,18 +224,20 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + corpoDelito.designacao + ' ]'
         })
-        CorpoDelito.api().delete("/corpoDelito/" + this.corpoDelito.id)
+        CorpoDelito.api().delete("/corpoDelito/" + corpoDelito.id)
+        CorpoDelito.delete(corpoDelito.id)
         this.$router.go(-1)
       })
     },
     createCorpoDelito() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localCorpoDelito.inspector = this.inspector
        CorpoDelito.api().patch("/corpoDelito/" + this.localCorpoDelito.id, this.localCorpoDelito).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

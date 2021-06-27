@@ -359,16 +359,17 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + processoInstrucaoPreparatoria.numeroProcessos + ' ]'
         })
-         ProcessoInstrucaoPreparatoria.api().delete("/processoInstrucaoPreparatoria/" + this.processoInstrucaoPreparatoria.id)
+         ProcessoInstrucaoPreparatoria.api().delete("/processoInstrucaoPreparatoria/" + processoInstrucaoPreparatoria.id)
+         ProcessoInstrucaoPreparatoria.delete(processoInstrucaoPreparatoria.id)
         this.$router.go(-1)
       })
     },
     createProcesso () {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localProcesso.formaProcesso_id = this.formaProcesso.id
       this.localProcesso.magistrado_id = this.magistrado.id
       this.localProcesso.classeJudicial = this.classeJudicial
@@ -381,6 +382,7 @@ export default {
       this.localProcesso.orgao_id = Orgao.query().first().id
       this.processoInstrucaoPreparatoria.anexo = null
       ProcessoInstrucaoPreparatoria.api().patch("/processoInstrucaoPreparatoria/" + this.localProcesso.id, this.localProcesso).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

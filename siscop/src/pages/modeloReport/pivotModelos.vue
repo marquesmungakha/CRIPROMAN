@@ -564,6 +564,7 @@ export default {
     getAllProcesso(offset) {
          if(offset >= 0){
           ProcessoInvestigacao.api().get("/processoInvestigacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProcesso(offset), 2)
@@ -575,6 +576,7 @@ export default {
     getAllFormaProcesso(offset) {
       if(offset >= 0){
           FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllFormaProcesso(offset), 2)
@@ -586,6 +588,7 @@ export default {
     getAllJurisdicao(offset) {
       if(offset >= 0){
           ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao(offset), 2)
@@ -597,6 +600,7 @@ export default {
     getAllCrime(offset) {
       if(offset >= 0){
           Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCrime(offset), 2)
@@ -608,6 +612,7 @@ export default {
     getAllMagistrado(offset) {
       if(offset >= 0){
           Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllMagistrado(offset), 2)
@@ -619,6 +624,7 @@ export default {
     getAllOrgao(offset) {
       if(offset >= 0){
           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllOrgao(offset), 2)
@@ -630,6 +636,7 @@ export default {
      getAllProvincia(offset) {
        if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -641,6 +648,7 @@ export default {
     getAllTipoOrgao(offset) {
       if(offset >= 0){
           TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)
@@ -652,6 +660,7 @@ export default {
      getAllPais(offset) {
        if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -663,6 +672,7 @@ export default {
     getAllTipoParecer(offset) {
       if(offset >= 0){
           TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)
@@ -674,6 +684,7 @@ export default {
     getAllDespachos(offset) {
       if(offset >= 0){
           Despacho.api().get("/despacho?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDespachos(offset), 2)
@@ -685,6 +696,7 @@ export default {
     getAllPergunta(offset) {
        if(offset >= 0){
           Pergunta.api().get("/pergunta?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPergunta(offset), 2)
@@ -696,6 +708,7 @@ export default {
      getAllArguidoProcesso(offset) {
               if(offset >= 0){
           PecaProcessoArguido.api().get("/pecaProcessoArguido?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllArguidoProcesso(offset), 2)
@@ -707,6 +720,7 @@ export default {
     getAllSituacaoPrisional(offset) {
           if(offset >= 0){
           SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllSituacaoPrisional(offset), 2)

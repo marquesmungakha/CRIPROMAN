@@ -109,17 +109,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + funcao.designacao + ' ]'
         })
         Funcao.api().delete("/funcao/" + funcao.id)
+        Funcao.delete(funcao.id)
         this.$router.go(-1)
       })
     },
     createFuncao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.funcao = this.localFuncao
       Funcao.api().patch("/funcao/" + this.localFuncao.id, this.localFuncao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

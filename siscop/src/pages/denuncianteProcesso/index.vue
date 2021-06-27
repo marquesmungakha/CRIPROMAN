@@ -505,6 +505,7 @@ export default {
       }else{
 
           Denunciante.api().get("/denunciante?offset="+this.offset+"&max=100").then(resp => {
+        this.submitting = false
           console.log(resp)
           this.offset = this.offset + 100
           if(resp.response.data.length > 0){
@@ -559,9 +560,9 @@ export default {
     createDenunciante() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia.pais = this.pais
       this.denunciante.nacionalidade_id = this.pais.id
       this.denunciante.provincia_id = this.provincia.id
@@ -579,6 +580,7 @@ export default {
 
       if (this.editedIndex > -1) {
          ProcessoInstrucaoPreparatoriaDenunciante.api().patch("/processoInstrucaoPreparatoriaDenunciante/" + this.processoInstrucaoPreparatoriaDenunciante.id, this.processoInstrucaoPreparatoriaDenunciante).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -607,6 +609,7 @@ export default {
         })
       } else {
         ProcessoInstrucaoPreparatoriaDenunciante.api().post("/processoInstrucaoPreparatoriaDenunciante/", this.processoInstrucaoPreparatoriaDenunciante).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -671,7 +674,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + denunciante.nome + ' ]'
         })
-         Denunciante.api().delete("/processoInstrucaoPreparatoriaDenunciante/" + this.denunciante.id)
+         ProcessoInstrucaoPreparatoriaDenunciante.api().delete("/processoInstrucaoPreparatoriaDenunciante/" + this.processoInstrucaoPreparatoriaDenunciante.id)
+         ProcessoInstrucaoPreparatoriaDenunciante.delete(this.processoInstrucaoPreparatoriaDenunciante.id)
       })
     },
     editaDenunciante(denunciante) {
@@ -688,6 +692,7 @@ export default {
      getAllDenunciante(offset) {
         if(offset >= 0){
           Denunciante.api().get("/denunciante?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDenunciante(offset), 2)
@@ -699,6 +704,7 @@ export default {
      getAllDenuncianteProcesso(offset) {
        if(offset >= 0){
           ProcessoInstrucaoPreparatoriaDenunciante.api().get("/processoInstrucaoPreparatoriaDenunciante?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDenuncianteProcesso(offset), 2)
@@ -710,6 +716,7 @@ export default {
    getAllTipoDocumentoIdentificacao(offset) {
       if(offset >= 0){
           TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
@@ -721,6 +728,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -732,6 +740,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)

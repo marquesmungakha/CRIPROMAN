@@ -106,17 +106,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoAuto.designacao + ' ]'
         })
         TipoAuto.api().delete("/tipoAuto/" + tipoAuto.id)
+        TipoAuto.delete(tipoAuto.id)
         this.$router.go(-1)
       })
     },
     createTipoAuto() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.tipoAuto = this.localTipoAuto
       TipoAuto.api().patch("/tipoAuto/" + this.localTipoAuto.id, this.localTipoAuto).then(resp => {
+        this.submitting = false
         console.log(resp)
         console.log('response ' + resp)
         this.$q.notify({

@@ -197,14 +197,15 @@ export default {
     createProvincia() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia.pais = this.pais
       this.provincia.pais_id = this.pais.id
       console.log(this.provincia)
       if (this.editedIndex > -1) {
         Provincia.api().patch("/provincia/" + this.provincia.id, this.provincia).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -233,6 +234,7 @@ export default {
         })
       } else {
         Provincia.api().post("/provincia/", this.provincia).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -293,6 +295,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + provincia.designacao + ' ]'
         })
         Provincia.api().delete("/provincia/" + provincia.id)
+        Provincia.delete(provincia.id)
       })
     },
     editaProvincia(provincia) {
@@ -304,6 +307,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -315,6 +319,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)

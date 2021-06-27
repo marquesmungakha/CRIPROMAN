@@ -193,9 +193,9 @@ export default {
     createPergunta() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.pergunta.inspector_id = this.inspector
       this.pergunta.inspector = this.inspector
       this.pergunta.processo_id = this.processoInvestigacao.id
@@ -204,6 +204,7 @@ export default {
       this.pergunta.anexo = null
       if (this.editedIndex > -1) {
         Pergunta.api().patch("/pergunta/" + this.pergunta.id, this.pergunta).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -232,6 +233,7 @@ export default {
         })
       } else {
        Pergunta.api().post("/pergunta/", this.pergunta).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -291,7 +293,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + pergunta.designacao + ' ]'
         })
-        Pergunta.api().delete("/pergunta/" + this.pergunta.id)
+        Pergunta.api().delete("/pergunta/" + pergunta.id)
+        Pergunta.delete(pergunta.id)
       })
     },
     editaPergunta(pergunta) {
@@ -303,6 +306,7 @@ export default {
     getAllPergunta(offset) {
        if(offset >= 0){
           Pergunta.api().get("/pergunta?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPergunta(offset), 2)
@@ -314,6 +318,7 @@ export default {
   getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

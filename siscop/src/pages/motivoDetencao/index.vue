@@ -152,11 +152,12 @@ export default {
     createMotivoDetencao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         MotivoDetencao.api().patch("/motivoDetencao/" + this.motivoDetencao.id, this.motivoDetencao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -186,6 +187,7 @@ export default {
         })
       } else {
         MotivoDetencao.api().post("/motivoDetencao/", this.motivoDetencao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -244,6 +246,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + motivoDetencao.designacao + ' ]'
         })
         MotivoDetencao.api().delete("/motivoDetencao/" + motivoDetencao.id)
+        MotivoDetencao.delete(motivoDetencao.id)
       })
     },
     editaMotivoDetencao(motivoDetencao) {
@@ -254,6 +257,7 @@ export default {
     getAllMotivoDetencao(offset) {
       if(offset >=0){
           MotivoDetencao.api().get("/motivoDetencao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMotivoDetencao(offset), 2)

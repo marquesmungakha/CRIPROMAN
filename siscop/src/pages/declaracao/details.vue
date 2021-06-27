@@ -229,19 +229,21 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + declaracao.numero + ' ]'
         })
-         Declaracao.api().delete("/declaracao/" + this.declaracao.id)
+         Declaracao.api().delete("/declaracao/" + declaracao.id)
+         Declaracao.delete(declaracao.id)
         this.$router.go(-1)
       })
     },
     createDeclaracao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localDeclaracao.inspector = this.inspector
       this.localDeclaracao.inspector_id = this.inspector
       Declaracao.api().patch("/declaracao/" + this.localDeclaracao.id, this.localDeclaracao).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

@@ -147,19 +147,21 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + modelo.designacao + ' ]'
         })
         Modelo.api().delete("/modelo/" + modelo.id)
+        Modelo.delete(modelo.id)
         this.$router.go(-1)
       })
     },
     createModelo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localModelo.marca = this.marca
       this.localModelo.marca.tipoMeio = TipoMeio.query().find(this.marca.tipoMeio_id)
       this.localModelo.marca_id = this.marca.id
       Modelo.api().patch("/modelo/" + this.localModelo.id, this.localModelo).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

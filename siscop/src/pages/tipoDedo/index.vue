@@ -151,11 +151,12 @@ export default {
     createTipoDedo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoDedo.api().patch("/tipoDedo/" + this.tipoDedo.id, this.tipoDedo).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -185,6 +186,7 @@ export default {
         })
       } else {
         TipoDedo.api().post("/tipoDedo/", this.tipoDedo).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -243,6 +245,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoDedo.designacao + ' ]'
         })
         TipoDedo.api().delete("/tipoDedo/" + tipoDedo.id)
+        TipoDedo.delete(tipoDedo.id)
       })
     },
     editaTipoDedo(tipoDedo) {
@@ -253,6 +256,7 @@ export default {
     getAllTipoDedo(offset) {
        if(offset >= 0){
           TipoDedo.api().get("/tipoDedo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDedo(offset), 2)

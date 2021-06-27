@@ -284,9 +284,9 @@ export default {
     createBairro() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.bairro.distrito = this.distrito
       this.bairro.postoAdministrativo = this.postoAdministrativo
       this.bairro.localidade = this.localidade
@@ -295,6 +295,7 @@ export default {
       this.bairro.localidade_id = this.localidade.id
       if (this.editedIndex > -1) {
         Bairro.api().patch("/bairro/" + this.bairro.id, this.bairro).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -323,6 +324,7 @@ export default {
         })
       } else {
         Bairro.api().post("/bairro/", this.bairro).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -390,6 +392,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + bairro.designacao + ' ]'
         })
         Bairro.api().delete("/bairro/" + bairro.id)
+        Bairro.delete(bairro.id)
       })
     },
     editaBairro(bairro) {
@@ -404,6 +407,7 @@ export default {
     getAllBairro(offset) {
           if(offset >= 0){
           Bairro.api().get("/bairro?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllBairro(offset), 2)
@@ -415,6 +419,7 @@ export default {
     getAllLocalidade(offset) {
           if(offset >= 0){
           Localidade.api().get("/localidade?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllLocalidade(offset), 2)
@@ -426,6 +431,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -437,6 +443,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -448,6 +455,7 @@ export default {
     getAllDistrito(offset) {
       if(offset >= 0){
           Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)
@@ -459,6 +467,7 @@ export default {
     getAllPostoAdministrativo(offset) {
       if(offset >= 0){
           PostoAdministrativo.api().get("/postoAdministrativo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPostoAdministrativo(offset), 2)

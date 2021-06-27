@@ -167,11 +167,12 @@ export default {
     createFuncao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         Funcao.api().patch("/funcao/" + this.funcao.id, this.funcao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -201,6 +202,7 @@ export default {
         })
       } else {
         Funcao.api().post("/funcao/", this.funcao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -259,6 +261,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + funcao.designacao + ' ]'
         })
         Funcao.api().delete("/funcao/" + funcao.id)
+        Funcao.delete(funcao.id)
       })
     },
     editaFuncao(funcao) {
@@ -269,6 +272,7 @@ export default {
     getAllFuncao(offset) {
        if(offset >= 0){
           Funcao.api().get("/funcao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllFuncao(offset), 2)

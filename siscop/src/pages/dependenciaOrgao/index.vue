@@ -276,9 +276,9 @@ export default {
     createOrgao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia.pais = Pais.query().find(this.provincia.pais_id)
       this.dependenciaOrgao.provincia_id = this.provincia.id
       this.dependenciaOrgao.provincia = this.provincia
@@ -292,6 +292,7 @@ export default {
 
       if (this.editedIndex > -1) {
         DependenciaOrgao.api().patch("/dependenciaOrgao/" + this.dependenciaOrgao.id, this.dependenciaOrgao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -320,6 +321,7 @@ export default {
         })
       } else {
         DependenciaOrgao.api().post("/dependenciaOrgao/", this.dependenciaOrgao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -385,6 +387,8 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + orgao.designacao + ' ]'
         })
         Orgao.api().delete("/dependenciaOrgao/" + orgao.id)
+        Orgao.delete(orgao.id)
+
       })
     },
     editaOrgao(dependenciaOrgao) {
@@ -420,6 +424,7 @@ export default {
     getAllOrgao(offset) {
         if(offset >= 0){
            DependenciaOrgao.api().get("/dependenciaOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this. getAllOrgao(offset), 2)
@@ -432,6 +437,7 @@ export default {
     getAllTipoOrgao(offset) {
         if(offset >= 0){
           TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)
@@ -444,6 +450,7 @@ export default {
   getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -455,6 +462,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -466,6 +474,7 @@ export default {
     getAllDistrito(offset) {
       if(offset >= 0){
           Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)

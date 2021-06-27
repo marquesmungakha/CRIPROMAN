@@ -237,15 +237,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + inspector.numero + ' ]'
         })
         Inspector.api().delete("/inspector/" + inspector.id)
+        Inspector.delete(inspector.id)
         this.$router.go(-1)
       })
     },
     createInspector() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
      
       let formData = new FormData();
       formData.append("nome", this.localInspector.nome);
@@ -260,6 +261,7 @@ export default {
       formData.append("cargoOcupado", this.localInspector.cargoOcupado);
      
       Inspector.api().patch("/inspector/" + this.localInspector.id, formData).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

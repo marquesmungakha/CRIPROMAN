@@ -151,11 +151,12 @@ let offset = 0
     createTipoMeio() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoMeio.api().patch("/tipoMeio/" + this.tipoMeio.id, this.tipoMeio).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -185,6 +186,7 @@ let offset = 0
         })
       } else {
         TipoMeio.api().post("/tipoMeio/", this.tipoMeio).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -243,6 +245,7 @@ let offset = 0
           message: 'A informação foi Removida com successo! [ ' + tipoMeio.designacao + ' ]'
         })
         TipoMeio.api().delete("/tipoMeio/" + tipoMeio.id)
+        TipoMeio.delete(tipoMeio.id)
       })
     },
     editaTipoMeio(tipoMeio) {
@@ -253,6 +256,7 @@ let offset = 0
     getAllTipoMeio(offset) {
       if(offset >= 0){
           TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoMeio(offset), 2)

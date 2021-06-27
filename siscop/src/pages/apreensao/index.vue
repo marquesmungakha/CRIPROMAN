@@ -208,9 +208,9 @@ export default {
     createApreensao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.apreensao.inspector_id = this.inspector
       this.apreensao.processo_id = this.processoInvestigacao.id
       this.apreensao.inspector = this.inspector
@@ -219,6 +219,7 @@ export default {
       this.apreensao.anexo = null
       if (this.editedIndex > -1) {
         Apreensao.api().patch("/apreensao/" + this.apreensao.id, this.apreensao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -247,6 +248,7 @@ export default {
         })
       } else {
        Apreensao.api().post("/apreensao/", this.apreensao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -306,7 +308,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + apreensao.designacao + ' ]'
         })
-        Apreensao.api().delete("/apreensao/" + this.apreensao.id)
+        Apreensao.api().delete("/apreensao/" + apreensao.id)
+        Apreensao.delete(apreensao.id)
       })
     },
     editaApreensao(apreensao) {
@@ -318,6 +321,7 @@ export default {
    async getAllApreensao(offset) {
       if(offset >= 0){
          await Object.freeze(Apreensao.api().get("/apreensao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllApreensao(offset), 2)
@@ -330,6 +334,7 @@ export default {
    async getAllInspector(offset) {
         if(offset >= 0){
          await Object.freeze(Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

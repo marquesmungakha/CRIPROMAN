@@ -102,17 +102,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + profissao.designacao + ' ]'
         })
         Profissao.api().delete("/profissao/" + profissao.id)
+        Profissao.delete(profissao.id)
         this.$router.go(-1)
       })
     },
     createProfissao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.profissao = this.localProfissao
       Profissao.api().patch("/profissao/" + this.profissao.id, this.profissao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

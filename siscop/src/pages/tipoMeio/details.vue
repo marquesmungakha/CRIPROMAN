@@ -126,17 +126,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoMeio.designacao + ' ]'
         })
         TipoMeio.api().delete("/tipoMeio/" + tipoMeio.id)
+        TipoMeio.delete(tipoMeio.id)
         this.$router.go(-1)
       })
     },
     createTipoMeio() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.tipoMeio = this.localTipoMeio
       TipoMeio.api().patch("/tipoMeio/" + this.localTipoMeio.id, this.localTipoMeio).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

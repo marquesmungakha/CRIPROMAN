@@ -190,9 +190,9 @@ export default {
     createObjectoApreendido() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
        if(this.pecaProcesso !== undefined && this.pecaProcesso !== null){
             this.objectoApreendido.pecaProcesso_id = this.pecaProcesso.id
             this.objectoApreendido.pecaProcesso = this.pecaProcesso
@@ -202,6 +202,7 @@ export default {
        }
       if (this.editedIndex > -1) {
          ObjectoApreendido.api().patch("/objectoApreendido/" + this.objectoApreendido.id, this.objectoApreendido).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -230,6 +231,7 @@ export default {
         })
       } else {
        ObjectoApreendido.api().post("/objectoApreendido/", this.objectoApreendido).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -288,7 +290,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + objectoApreendido.nome + ' ]'
         })
-        ObjectoApreendido.api().delete("/objectoApreendido/" + this.objectoApreendido.id)
+        ObjectoApreendido.api().delete("/objectoApreendido/" + objectoApreendido.id)
+        ObjectoApreendido.delete(objectoApreendido.id)
       })
     },
     editaObjectoApreendido(objectoApreendido) {
@@ -299,6 +302,7 @@ export default {
      getAllObjectoApreendido(offset) {
        if(offset >= 0){
           ObjectoApreendido.api().get("/objectoApreendido?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllObjectoApreendido(offset), 2)

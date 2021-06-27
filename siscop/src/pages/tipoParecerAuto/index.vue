@@ -168,11 +168,12 @@ export default {
     createTipoParecerAuto() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoParecerAuto.api().patch("/tipoParecerAuto/" + this.tipoParecerAuto.id, this.tipoParecerAuto).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -202,6 +203,7 @@ export default {
         })
       } else {
         TipoParecerAuto.api().post("/tipoParecerAuto/", this.tipoParecerAuto).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -260,6 +262,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoParecerAuto.designacao + ' ]'
         })
         TipoParecerAuto.api().delete("/tipoParecerAuto/" + tipoParecerAuto.id)
+        TipoParecerAuto.delete(tipoParecerAuto.id)
       })
     },
     editaTipoParecerAuto(tipoParecerAuto) {
@@ -270,6 +273,7 @@ export default {
     getAllTipoParecerAuto(offset) {
        if(offset >= 0){
           TipoParecerAuto.api().get("/tipoParecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecerAuto(offset), 2)

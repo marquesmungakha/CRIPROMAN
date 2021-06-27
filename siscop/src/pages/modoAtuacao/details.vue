@@ -103,17 +103,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + modoAtuacao.designacao + ' ]'
         })
         ModoAtuacao.api().delete("/modoAtuacao/" + modoAtuacao.id)
+        ModoAtuacao.delete(modoAtuacao.id)
         this.$router.go(-1)
       })
     },
     createModoAtuacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.modoAtuacao = this.localModoAtuacao
       ModoAtuacao.api().patch("/modoAtuacao/" + this.modoAtuacao.id, this.modoAtuacao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

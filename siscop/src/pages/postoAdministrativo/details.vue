@@ -185,20 +185,22 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + postoAdministrativo.designacao + ' ]'
         })
         PostoAdministrativo.api().delete("/postoAdministrativo/" + postoAdministrativo.id)
+        PostoAdministrativo.delete(postoAdministrativo.id)
         this.$router.go(-1)
       })
     },
     createPostoAdministrativo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localPostoAdministrativo.provincia = this.provincia
       this.localPostoAdministrativo.distrito = this.distrito
       this.localPostoAdministrativo.provincia_id = this.provincia.id
       this.localPostoAdministrativo.distrito_id = this.distrito.id
       PostoAdministrativo.api().patch("/postoAdministrativo/" + this.localPostoAdministrativo.id, this.localPostoAdministrativo).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

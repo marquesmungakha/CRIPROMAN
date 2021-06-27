@@ -376,15 +376,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + processoInvestigacao.designacao + ' ]'
         })
          ProcessoInvestigacao.api().delete("/processoInvestigacao/" + processoInvestigacao.id)
+         ProcessoInvestigacao.delete(processoInvestigacao.id)
         this.$router.go(-1)
       })
     },
     createProcesso () {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
 
       this.localProcesso.formaProcesso = this.formaProcesso
       this.localProcesso.formaProcesso_id = this.formaProcesso.id
@@ -399,6 +400,7 @@ export default {
       this.localProcesso.numeroAuto_id = this.numeroAuto.id
 
       ProcessoInvestigacao.api().patch("/processoInvestigacao/" + this.localProcesso.id, this.localProcesso).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

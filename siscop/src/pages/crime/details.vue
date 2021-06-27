@@ -127,18 +127,20 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + crime.designacao + ' ]'
         })
         Crime.api().delete("/crime/" + crime.id)
+        Crime.delete(crime.id)
         this.$router.go(-1)
       })
     },
     createCrime() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localCrime.classeJudicial_id = this.classeJudicial.id
       this.localCrime.classeJudicial = this.classeJudicial
       Crime.api().patch("/crime/" + this.localCrime.id, this.localCrime).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

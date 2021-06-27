@@ -426,15 +426,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + autoEntrada.designacao + ' ]'
         })
         AutoEntrada.api().delete("/autoEntrada/" + autoEntrada.id)
+        AutoEntrada.delete(autoEntrada.id)
         this.$router.go(-1)
       })
     },
     createAutoEntrada() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
 
 
       this.orgao = Orgao.query().with('provincia.*')
@@ -457,6 +458,7 @@ export default {
 
 
       AutoEntrada.api().patch("/autoEntrada/" + this.localAutoEntrada.id, this.localAutoEntrada).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

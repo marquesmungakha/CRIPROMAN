@@ -151,17 +151,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + pais.designacao + ' ]'
         })
         Pais.api().delete("/pais/" + pais.id)
+        Pais.delete(pais.id)
         this.$router.go(-1)
       })
     },
     createPais() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.pais = this.localPais
       Pais.api().patch("/pais/" + this.pais.id, this.localPais).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

@@ -188,11 +188,12 @@ export default {
     createFormaProcesso() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         FormaProcesso.api().patch("/formaProcesso/" + this.formaProcesso.id, this.formaProcesso).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -222,6 +223,7 @@ export default {
         })
       } else {
         FormaProcesso.api().post("/formaProcesso/", this.formaProcesso).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -280,6 +282,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + formaProcesso.designacao + ' ]'
         })
         FormaProcesso.api().delete("/formaProcesso/" + formaProcesso.id)
+        FormaProcesso.delete(formaProcesso.id)
       })
     },
     editaFormaProcesso(formaProcesso) {
@@ -290,6 +293,7 @@ export default {
     getAllFormaProcesso(offset) {
       if(offset >= 0){
           FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllFormaProcesso(offset), 2)

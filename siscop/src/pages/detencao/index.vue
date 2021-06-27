@@ -229,9 +229,9 @@ export default {
     createDetencao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       // this.detencao.motivoDetencao = this.motivoDetencao
       // this.detencao.motivoDetencao_id = this.motivoDetencao.id
 
@@ -245,6 +245,7 @@ export default {
   
       if (this.editedIndex > -1) {
          Detencao.api().patch("/detencao/" + this.detencao.id, this.detencao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -273,6 +274,7 @@ export default {
         })
       } else {
        Detencao.api().post("/detencao/", this.detencao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -333,7 +335,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + detencao.numero + ' ]'
         })
-         Detencao.api().delete("/detencao/" + this.detencao.id)
+         Detencao.api().delete("/detencao/" + detencao.id)
+         Detencao.delete(detencao.id)
       })
     },
     editaDetencao(detencao) {
@@ -346,6 +349,7 @@ export default {
     getAllDetencao(offset) {
        if(offset >= 0){
           Detencao.api().get("/detencao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDetencao(offset), 2)
@@ -357,6 +361,7 @@ export default {
     getAllMotivoDetencao(offset) {
       if(offset >= 0){
           MotivoDetencao.api().get("/motivoDetencao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllMotivoDetencao(offset), 2)
@@ -368,6 +373,7 @@ export default {
     getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

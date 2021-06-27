@@ -102,17 +102,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + cargo.designacao + ' ]'
         })
         Cargo.api().delete("/cargo/" + cargo.id)
+        Cargo.delete(cargo.id)
         this.$router.go(-1)
       })
     },
     createCargo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.cargo = this.localCargo
       Cargo.api().patch("/cargo/" + this.cargo.id, this.cargo).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

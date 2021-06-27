@@ -125,17 +125,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + jurisdicao.designacao + ' ]'
         })
         ClasseJudicial.api().delete("/classeJudicial/" + jurisdicao.id)
+        ClasseJudicial.delete(jurisdicao.id)
         this.$router.go(-1)
       })
     },
     createJurisdicao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.jurisdicao = this.localJurisdicao
       ClasseJudicial.api().patch("/classeJudicial/" + this.localJurisdicao.id, this.localJurisdicao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

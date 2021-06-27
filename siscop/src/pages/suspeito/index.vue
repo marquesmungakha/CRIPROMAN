@@ -463,6 +463,7 @@ export default {
       }else{
 
           Suspeito.api().get("/suspeito?offset="+this.offset+"&max=100").then(resp => {
+        this.submitting = false
           console.log(resp)
           this.offset = this.offset + 100
           if(resp.response.data.length > 0){
@@ -518,9 +519,9 @@ export default {
     createSuspeito() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
      this.provincia.pais = this.pais
       this.suspeito.nacionalidade_id = this.pais.id
       this.suspeito.provincia_id = this.provincia.id
@@ -540,6 +541,7 @@ export default {
 
       if (this.editedIndex > -1) {
          PecaProcessoSuspeito.api().patch("/pecaProcessoSuspeito/" + this.pecaProcessoSuspeito.id, this.pecaProcessoSuspeito).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -568,6 +570,7 @@ export default {
         })
       } else {
         PecaProcessoSuspeito.api().post("/pecaProcessoSuspeito/", this.pecaProcessoSuspeito).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -635,7 +638,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + suspeito.nome + ' ]'
         })
-        PecaProcessoSuspeito.api().delete("/pecaProcessoSuspeito/" + this.pecaProcessoSuspeito.suspeito.nome)
+        PecaProcessoSuspeito.api().delete("/pecaProcessoSuspeito/" + this.pecaProcessoSuspeito.id)
+        PecaProcessoSuspeito.delete(this.pecaProcessoSuspeito.id)
       })
     },
     editaSuspeito(suspeito) {
@@ -667,6 +671,7 @@ export default {
    getAllProfissaoPecaProcesso(offset) {
       if(offset >= 0){
           PecaProcessoSuspeito.api().get("/pecaProcessoSuspeito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProfissaoPecaProcesso(offset), 2)
@@ -678,6 +683,7 @@ export default {
     getAllSuspeito(offset) {
       if(offset >= 0){
           Suspeito.api().get("/suspeito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllSuspeito(offset), 2)
@@ -689,6 +695,7 @@ export default {
   getAllTipoDocumentoIdentificacao(offset) {
       if(offset >= 0){
           TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
@@ -700,6 +707,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -711,6 +719,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -722,6 +731,7 @@ export default {
     getAllProfissao(offset) {
        if(offset >= 0){
           Profissao.api().get("/profissao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProfissao(offset), 2)
@@ -733,6 +743,7 @@ export default {
  getAllSituacaoPrisional(offset) {
         if(offset >= 0){
           SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllSituacaoPrisional(offset), 2)

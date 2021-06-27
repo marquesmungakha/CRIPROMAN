@@ -222,9 +222,9 @@ export default {
     createCidade() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.cidade.provincia = this.provincia
       this.distrito.provincia = this.provincia
       this.cidade.distrito = this.distrito
@@ -233,6 +233,7 @@ export default {
       console.log(this.cidade)
       if (this.editedIndex > -1) {
         Cidade.api().patch("/cidade/" + this.cidade.id, this.cidade).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -261,6 +262,7 @@ export default {
         })
       } else {
         Cidade.api().post("/cidade/", this.cidade).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -325,6 +327,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + cidade.designacao + ' ]'
         })
         Cidade.api().delete("/cidade/" + cidade.id)
+        Cidade.delete(cidade.id)
       })
     },
     editaCidade(cidade) {
@@ -337,6 +340,7 @@ export default {
     getAllCidade(offset) {
        if(offset >= 0){
           Cidade.api().get("/cidade?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCidade(offset), 2)
@@ -348,6 +352,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -359,6 +364,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -370,6 +376,7 @@ export default {
     getAllDistrito(offset) {
       if(offset >= 0){
           Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)

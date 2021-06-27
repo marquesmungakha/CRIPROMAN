@@ -242,9 +242,9 @@ export default {
     createDespacho() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.destino = Orgao.query().with('provincia.pais').with('distrito.provincia.pais').with('tipoOrgao').find(this.destino.id)
       this.despacho.tipoParecer = this.tipoParecer
       this.despacho.tipoParecer_id = this.tipoParecer.id
@@ -258,6 +258,7 @@ export default {
       this.despacho.anexo = null
       if (this.editedIndex > -1) {
          Despacho.api().patch("/despacho/" + this.despacho.id, this.despacho).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -286,6 +287,7 @@ export default {
         })
       } else {
        Despacho.api().post("/despacho/", this.despacho).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -350,7 +352,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + despacho.numero + ' ]'
         })
-         Despacho.api().delete("/despacho/" + this.despacho.id)
+         Despacho.api().delete("/despacho/" + despacho.id)
+         Despacho.delete(despacho.id)
       })
     },
     editaDespacho(despacho) {
@@ -364,6 +367,7 @@ export default {
     getAllDespacho(offset) {
       if(offset >= 0){
           Despacho.api().get("/despacho?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDespacho(offset), 2)
@@ -375,6 +379,7 @@ export default {
     getAllTipoParecer(offset) {
        if(offset >= 0){
           TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)
@@ -386,6 +391,7 @@ export default {
     getAllDestino(offset) {
       if(offset >= 0){
           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDestino(offset), 2)
@@ -397,6 +403,7 @@ export default {
     getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)
@@ -408,6 +415,7 @@ export default {
   getAllTipoOrgao(offset) {
         if(offset >= 0){
           TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)
@@ -420,6 +428,7 @@ export default {
   getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -431,6 +440,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)

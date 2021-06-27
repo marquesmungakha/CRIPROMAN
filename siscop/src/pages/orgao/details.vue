@@ -237,15 +237,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + orgao.designacao + ' ]'
         })
         Orgao.api().delete("/orgao/" + orgao.id)
+        Orgao.delete(orgao.id)
         this.$router.go(-1)
       })
     },
     createOrgao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localOrgao.provincia_id = this.provincia.id
       this.localOrgao.provincia = this.provincia
       this.localOrgao.provincia.pais = Pais.query().find(this.provincia.pais_id)
@@ -256,6 +257,7 @@ export default {
       this.localOrgao.distrito = this.distrito
 
       Orgao.api().patch("/orgao/" + this.localOrgao.id, this.localOrgao).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

@@ -193,11 +193,12 @@ export default {
     createSituacaoPrisional() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         SituacaoPrisional.api().patch("/situacaoPrisional/" + this.situacaoPrisional.id, this.situacaoPrisional).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -227,6 +228,7 @@ export default {
         })
       } else {
         SituacaoPrisional.api().post("/situacaoPrisional/", this.situacaoPrisional).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -285,11 +287,13 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + situacaoPrisional.designacao + ' ]'
         })
         SituacaoPrisional.api().delete("/situacaoPrisional/" + situacaoPrisional.id)
+        SituacaoPrisional.delete(situacaoPrisional.id)
       })
     },
     getAllSituacaoPrisional(offset) {
         if(offset >= 0){
           SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllSituacaoPrisional(offset), 2)

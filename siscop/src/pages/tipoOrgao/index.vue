@@ -168,11 +168,12 @@ export default {
     createTipoOrgao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoOrgao.api().patch("/tipoOrgao/" + this.tipoOrgao.id, this.tipoOrgao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -202,6 +203,7 @@ export default {
         })
       } else {
         TipoOrgao.api().post("/tipoOrgao/", this.tipoOrgao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -260,6 +262,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoOrgao.designacao + ' ]'
         })
         TipoOrgao.api().delete("/tipoOrgao/" + tipoOrgao.id)
+        TipoOrgao.delete(tipoOrgao.id)
       })
     },
     editaTipoOrgao(tipoOrgao) {
@@ -270,6 +273,7 @@ export default {
     getAllTipoOrgao(offset) {
        if(offset >= 0){
           TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)

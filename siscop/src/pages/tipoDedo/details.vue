@@ -103,17 +103,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoDedo.designacao + ' ]'
         })
         TipoDedo.api().delete("/tipoDedo/" + tipoDedo.id)
+        TipoDedo.delete(tipoDedo.id)
         this.$router.go(-1)
       })
     },
     createTipoDedo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.tipoDedo = this.localTipoDedo
       TipoDedo.api().patch("/tipoDedo/" + this.localTipoDedo.id, this.localTipoDedo).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

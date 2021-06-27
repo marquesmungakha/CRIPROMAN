@@ -151,11 +151,12 @@ export default {
     createJurisdicao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         ClasseJudicial.api().patch("/classeJudicial/" + this.jurisdicao.id, this.jurisdicao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -185,6 +186,7 @@ export default {
         })
       } else {
         ClasseJudicial.api().post("/classeJudicial/", this.jurisdicao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -243,6 +245,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + jurisdicao.designacao + ' ]'
         })
         ClasseJudicial.api().delete("/classeJudicial/" + jurisdicao.id)
+        ClasseJudicial.delete(jurisdicao.id)
       })
     },
     editaJurisdicao(jurisdicao) {
@@ -253,6 +256,7 @@ export default {
     getAllJurisdicao(offset) {
       if(offset >= 0){
           ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao(offset), 2)

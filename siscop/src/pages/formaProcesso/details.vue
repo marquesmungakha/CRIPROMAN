@@ -120,17 +120,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + formaProcesso.designacao + ' ]'
         })
         FormaProcesso.api().delete("/formaProcesso/" + formaProcesso.id)
+        FormaProcesso.delete(formaProcesso.id)
         this.$router.go(-1)
       })
     },
     createFormaProcesso() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.formaProcesso = this.localFormaProcesso
       FormaProcesso.api().patch("/formaProcesso/" + this.localFormaProcesso.id, this.localFormaProcesso).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

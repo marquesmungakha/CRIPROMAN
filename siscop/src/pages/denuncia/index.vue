@@ -207,9 +207,9 @@ export default {
     createDenuncia() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.denuncia.inspector_id = this.inspector
       this.denuncia.processo_id = this.processoInvestigacao.id
       this.denuncia.inspector = this.inspector
@@ -218,6 +218,7 @@ export default {
       this.denuncia.anexo = null
       if (this.editedIndex > -1) {
         Denuncia.api().patch("/denuncia/" + this.denuncia.id, this.denuncia).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -246,6 +247,7 @@ export default {
         })
       } else {
          Denuncia.api().post("/denuncia/", this.denuncia).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -305,7 +307,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + denuncia.designacao + ' ]'
         })
-        Denuncia.api().delete("/denuncia/" + this.denuncia.id)
+        Denuncia.api().delete("/denuncia/" + denuncia.id)
+        Denuncia.delete(denuncia.id)
       })
     },
     editaDenuncia(denuncia) {
@@ -317,6 +320,7 @@ export default {
     getAllDenuncia(offset) {
        if(offset >= 0){
           Denuncia.api().get("/denuncia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDenuncia(offset), 2)
@@ -328,6 +332,7 @@ export default {
     getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

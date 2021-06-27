@@ -363,6 +363,7 @@ export default {
 
       if (this.editedIndex > -1) {
          ProcessoInvestigacao.api().patch("/processoInvestigacao/" + this.processoInvestigacao.id, this.processoInvestigacao).then(resp => {
+        this.submitting = false
           this.submitting = false
           this.$q.notify({
             type: 'positive',
@@ -393,6 +394,7 @@ export default {
         })
       } else {
         ProcessoInvestigacao.api().post("/processoInvestigacao/", this.processoInvestigacao).then(resp => {
+        this.submitting = false
           this.submitting = false
           this.$q.notify({
             type: 'positive',
@@ -456,7 +458,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + processoInvestigacao.designacao + ' ]'
         })
-        ProcessoInvestigacao.api().delete("/processoInvestigacao/" + this.processoInvestigacao.id)
+        ProcessoInvestigacao.api().delete("/processoInvestigacao/" + processoInvestigacao.id)
+        ProcessoInvestigacao.delete(processoInvestigacao.id)
       })
     },
     editaProcesso (processoInvestigacao) {
@@ -476,6 +479,7 @@ export default {
     async getAllAutoEntrada(offset) {
        if(offset >= 0) {
         await AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllAutoEntrada(offset), 2)
@@ -487,6 +491,7 @@ export default {
    async getAllProcesso(offset) {
       if(offset >= 0) {
         await ProcessoInvestigacao.api().get("/processoInvestigacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllProcesso(offset), 2)
@@ -498,6 +503,7 @@ export default {
   async  getAllFormaProcesso(offset) {
        if(offset >= 0) {
         await FormaProcesso.api().get("/formaProcesso?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllFormaProcesso(offset), 2)
@@ -509,6 +515,7 @@ export default {
   async  getAllTipoAuto(offset) {
        if(offset >= 0) {
         await TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoAuto(offset), 2)
@@ -520,6 +527,7 @@ export default {
   async getAllInspector(offset) {
        if(offset >= 0){
          await Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)
@@ -531,6 +539,7 @@ export default {
   async  getAllOrgao(offset) {
         if(offset >= 0){
           await Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllOrgao(offset), 2)
@@ -542,6 +551,7 @@ export default {
    async  getAllJurisdicao(offset) {
        if(offset >= 0) {
         await ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllJurisdicao(offset), 2)
@@ -553,6 +563,7 @@ export default {
    async getAllCrime(offset) {
        if(offset >= 0) {
          await Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllCrime(offset), 2)
@@ -564,6 +575,7 @@ export default {
   async  getAllMagistrado(offset) {
       if(offset >= 0){
         await Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMagistrado(offset), 2)
@@ -575,6 +587,7 @@ export default {
     async getAllDespacho(offset) {
       if(offset >= 0){
           await Despacho.api().get("/despacho?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDespacho(offset), 2)
@@ -586,6 +599,7 @@ export default {
     async getAllTipoParecer(offset) {
        if(offset >= 0){
           await TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)
@@ -597,6 +611,7 @@ export default {
     async getAllParecerAuto(offset) {
       if(offset >= 0){
         await ParecerAuto.api().get("/parecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllParecerAuto(offset), 2)
@@ -608,6 +623,7 @@ export default {
     async getAllTipoParecerAuto(offset) {
       if(offset >= 0){
         await TipoParecerAuto.api().get("/tipoParecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)

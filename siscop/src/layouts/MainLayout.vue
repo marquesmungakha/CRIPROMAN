@@ -409,6 +409,7 @@ export default {
      getAllOrgao(offset) {
         if(offset >= 0){
            Orgao.api().get("/orgao/"+localStorage.getItem('orgaoId')).then(resp => {
+        this.submitting = false
               this.orgaoDescricao = resp.response.data
           }).catch(error => {
           console.log('Erro no code ' + error)

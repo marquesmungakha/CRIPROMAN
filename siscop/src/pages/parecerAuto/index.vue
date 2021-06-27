@@ -231,9 +231,9 @@ export default {
     createParecerAuto() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.parecerAuto.tipoParecer = this.tipoParecer
       this.parecerAuto.tipoParecer_id = this.tipoParecer.id
       this.parecerAuto.inspector_id = this.inspector.id
@@ -243,6 +243,7 @@ export default {
       console.log(this.autoEntrada)
       if (this.editedIndex > -1) {
          ParecerAuto.api().patch("/parecerAuto/" + this.parecerAuto.id, this.parecerAuto).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -271,6 +272,7 @@ export default {
         })
       } else {
        ParecerAuto.api().post("/parecerAuto/", this.parecerAuto).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -332,6 +334,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + parecerAuto.parecer + ' ]'
         })
          ParecerAuto.api().delete("/parecerAuto/" + parecerAuto.id)
+         ParecerAuto.delete(parecerAuto.id)
       })
     },
     editaParecerAuto(parecerAuto) {
@@ -344,6 +347,7 @@ export default {
     getAllParecerAuto(offset) {
       if(offset >= 0){
           ParecerAuto.api().get("/parecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllParecerAuto(offset), 2)
@@ -355,6 +359,7 @@ export default {
     getAllTipoParecer(offset) {
       if(offset >= 0){
           TipoParecerAuto.api().get("/tipoParecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)
@@ -366,6 +371,7 @@ export default {
     getAllInspector(offset) {
       if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

@@ -198,15 +198,16 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + bairro.designacao + ' ]'
         })
         Bairro.api().delete("/bairro/" + bairro.id)
+        Bairro.delete(bairro.id)
         this.$router.go(-1)
       })
     },
     createBairro() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localBairro.distrito = this.distrito
       this.localBairro.postoAdministrativo = this.postoAdministrativo
       this.localBairro.localidade = this.localidade
@@ -214,6 +215,7 @@ export default {
       this.localBairro.postoAdministrativo_id = this.postoAdministrativo.id
       this.localBairro.localidade_id = this.localidade.id
       Bairro.api().patch("/bairro/" + this.localBairro.id, this.localBairro).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

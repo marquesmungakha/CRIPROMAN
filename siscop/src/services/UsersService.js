@@ -100,6 +100,7 @@ export default {
   },
   getUser(params) {
     return SecUser.api().get('secUser/' + params.id).then(resp => {
+        this.submitting = false
       console.log(resp.response);
       })
       .catch((error) => {

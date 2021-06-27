@@ -202,14 +202,15 @@ export default {
     createModelo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.modelo.marca = this.marca
       this.modelo.marca.tipoMeio = TipoMeio.query().find(this.marca.tipoMeio_id)
       this.modelo.marca_id = this.marca.id
       if (this.editedIndex > -1) {
         Modelo.api().patch("/modelo/" + this.modelo.id, this.modelo).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -238,6 +239,7 @@ export default {
         })
       } else {
         Modelo.api().post("/modelo/", this.modelo).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -298,6 +300,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + modelo.designacao + ' ]'
         })
         Modelo.api().delete("/modelo/" + modelo.id)
+        Modelo.delete(modelo.id)
       })
     },
     editaModelo(modelo) {
@@ -315,6 +318,7 @@ export default {
      getAllMarca(offset) {
        if(offset >=0){
       Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMarca(offset), 2)
@@ -327,6 +331,7 @@ export default {
     getAllTipoMeio(offset) {
        if(offset >=0){
       TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoMeio(offset), 2)
@@ -339,6 +344,7 @@ export default {
     getAllModelo(offset) {
       if(offset >=0){
       Modelo.api().get("/modelo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllModelo(offset), 2)

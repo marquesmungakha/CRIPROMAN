@@ -109,17 +109,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoOrgao.designacao + ' ]'
         })
         TipoOrgao.api().delete("/tipoOrgao/" + tipoOrgao.id)
+        TipoOrgao.delete(tipoOrgao.id)
         this.$router.go(-1)
       })
     },
     createTipoOrgao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.tipoOrgao = this.localTipoOrgao
       TipoOrgao.api().patch("/tipoOrgao/" + this.tipoOrgao.id, this.tipoOrgao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

@@ -168,11 +168,12 @@ export default {
     createTipoParecer() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoParecer.api().patch("/tipoParecer/" + this.tipoParecer.id, this.tipoParecer).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -202,6 +203,7 @@ export default {
         })
       } else {
         TipoParecer.api().post("/tipoParecer/", this.tipoParecer).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -260,6 +262,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoParecer.designacao + ' ]'
         })
         TipoParecer.api().delete("/tipoParecer/" + tipoParecer.id)
+        TipoParecer.delete(tipoParecer.id)
       })
     },
     editaTipoParecer(tipoParecer) {
@@ -270,6 +273,7 @@ export default {
     getAllTipoParecer(offset) {
        if(offset >= 0){
           TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)

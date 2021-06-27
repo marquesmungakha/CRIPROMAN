@@ -266,15 +266,16 @@ export default {
     createLocalidade() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localidade.distrito = this.distrito
       this.localidade.postoAdministrativo = this.postoAdministrativo
       this.localidade.postoAdministrativo_id = this.postoAdministrativo.id
       this.localidade.distrito_id = this.distrito.id
       if (this.editedIndex > -1) {
         Localidade.api().patch("/localidade/" + this.localidade.id, this.localidade).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -303,6 +304,7 @@ export default {
         })
       } else {
         Localidade.api().post("/localidade/", this.localidade).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -367,6 +369,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + localidade.designacao + ' ]'
         })
         Localidade.api().delete("/localidade/" + localidade.id)
+        Localidade.delete(localidade.id)
       })
     },
     editaLocalidade(localidade) {
@@ -380,6 +383,7 @@ export default {
   getAllLocalidade(offset) {
           if(offset >= 0){
           Localidade.api().get("/localidade?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllLocalidade(offset), 2)
@@ -391,6 +395,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -402,6 +407,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -413,6 +419,7 @@ export default {
     getAllDistrito(offset) {
       if(offset >= 0){
           Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)
@@ -424,6 +431,7 @@ export default {
     getAllPostoAdministrativo(offset) {
       if(offset >= 0){
           PostoAdministrativo.api().get("/postoAdministrativo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPostoAdministrativo(offset), 2)

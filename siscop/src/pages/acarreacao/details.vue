@@ -238,18 +238,20 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + acarreacao.numero + ' ]'
         })
         Acarreacao.api().delete("/acarreacao/" + acarreacao.id)
+        Acarreacao.delete(acarreacao.id)
         this.$router.go(-1)
       })
     },
     createAcarreacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localAcarreacao.inspector_id = this.inspector.id
       this.localAcarreacao.inspector = this.inspector
       Acarreacao.api().patch("/acarreacao/" + this.localAcarreacao.id, this.localAcarreacao).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

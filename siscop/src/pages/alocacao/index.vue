@@ -240,9 +240,9 @@ export default {
     createAlocacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.orgao = Orgao.query().with('provincia.pais').with('distrito.provincia.pais').with('tipoOrgao').find(this.orgao.id)
       this.alocacao.funcao_id = this.funcao.id
       this.alocacao.quadro_id = this.quadro.id
@@ -252,6 +252,7 @@ export default {
       this.alocacao.orgao = this.orgao
       if (this.editedIndex > -1) {
         Alocacao.api().patch("/alocacao/" + this.alocacao.id, this.alocacao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -280,6 +281,7 @@ export default {
         })
       } else {
         Alocacao.api().post("/alocacao/", this.alocacao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -340,7 +342,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + alocacao.designacao + ' ]'
         })
-        Alocacao.api().delete("/alocacao/" + this.alocacao.id)
+        Alocacao.api().delete("/alocacao/" + alocacao.id)
+        Alocacao.delete(alocacao.id)
       })
     },
     editaAlocacao(alocacao) {
@@ -353,6 +356,7 @@ export default {
     getAllAlocacao(offset) {
       if(offset >= 0){
           Alocacao.api().get("/alocacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllAlocacao(offset), 2)
@@ -364,6 +368,7 @@ export default {
     getAllFuncao(offset) {
       if(offset >= 0){
           Funcao.api().get("/funcao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllFuncao(offset), 2)
@@ -375,6 +380,7 @@ export default {
      getAllQuadro(offset) {
        if(offset >= 0){
           Quadro.api().get("/quadro?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllQuadro(offset), 2)

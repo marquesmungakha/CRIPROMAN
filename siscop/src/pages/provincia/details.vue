@@ -171,18 +171,20 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + provincia.designacao + ' ]'
         })
         Provincia.api().delete("/provincia/" + provincia.id)
+        Provincia.delete(provincia.id)
         this.$router.go(-1)
       })
     },
     createProvincia() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia = this.localProvincia
       this.localProvincia.pais.id = this.pais.id
       Provincia.api().patch("/provincia/" + this.provincia.id, this.localProvincia).then(resp => {
+        this.submitting = false
         console.log('update ' + resp)
         this.$q.notify({
           type: 'positive',

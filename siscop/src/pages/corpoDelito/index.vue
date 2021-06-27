@@ -192,9 +192,9 @@ export default {
     createCorpoDelito() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.corpoDelito.inspector_id = this.inspector
       this.corpoDelito.processo_id = this.processoInvestigacao.id
       this.corpoDelito.inspector = this.inspector
@@ -203,6 +203,7 @@ export default {
       this.corpoDelito.anexo = null
       if (this.editedIndex > -1) {
          CorpoDelito.api().patch("/corpoDelito/" + this.corpoDelito.id, this.corpoDelito).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -231,6 +232,7 @@ export default {
         })
       } else {
        CorpoDelito.api().post("/corpoDelito/", this.corpoDelito).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -290,7 +292,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + corpoDelito.numero + ' ]'
         })
-         CorpoDelito.api().delete("/corpoDelito/" + this.corpoDelito.id)
+         CorpoDelito.api().delete("/corpoDelito/" + corpoDelito.id)
+         CorpoDelito.delete(corpoDelito.id)
       })
     },
     editaCorpoDelito(corpoDelito) {
@@ -302,6 +305,7 @@ export default {
     getAllCorpoDelito(offset) {
        if(offset >= 0){
           CorpoDelito.api().get("/corpoDelito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCorpoDelito(offset), 2)
@@ -313,6 +317,7 @@ export default {
     getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

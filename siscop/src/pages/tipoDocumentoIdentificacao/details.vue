@@ -111,18 +111,21 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + tipoDocumentoIdentificacao.designacao + ' ]'
         })
-        TipoDocumentoIdentificacao.api().delete("/tipoDocumentoIdentificacao/" + this.tipoDocumentoIdentificacao.id)
+        TipoDocumentoIdentificacao.api().delete("/tipoDocumentoIdentificacao/" + tipoDocumentoIdentificacao.id)
+        TipoDocumentoIdentificacao.delete(tipoDocumentoIdentificacao.id)
+       
         this.$router.go(-1)
       })
     },
     createTipoDocumentoIdentificacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.tipoDocumentoIdentificacao = this.localTipoDocumentoIdentificacao
       TipoDocumentoIdentificacao.api().patch("/tipoDocumentoIdentificacao/" + this.localTipoDocumentoIdentificacao.id, this.localTipoDocumentoIdentificacao).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

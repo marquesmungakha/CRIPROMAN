@@ -475,6 +475,7 @@ export default {
       }else{
 
           Arguido.api().get("/arguido?offset="+this.offset+"&max=100").then(resp => {
+        this.submitting = false
           console.log(resp)
           this.offset = this.offset + 100
           if(resp.response.data.length > 0){
@@ -529,9 +530,9 @@ export default {
     createArguido() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia.pais = this.pais
       this.arguido.nacionalidade_id = this.pais.id
       this.arguido.provincia_id = this.provincia.id
@@ -550,6 +551,7 @@ export default {
 
       if (this.editedIndex > -1) {
          ProcessoInstrucaoPreparatoriaArguido.api().patch("/processoInstrucaoPreparatoriaArguido/" + this.processoInstrucaoPreparatoriaArguido.id, this.processoInstrucaoPreparatoriaArguido).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -578,6 +580,7 @@ export default {
         })
       } else {
         ProcessoInstrucaoPreparatoriaArguido.api().post("/processoInstrucaoPreparatoriaArguido/", this.processoInstrucaoPreparatoriaArguido).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -644,7 +647,9 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + arguido.nome + ' ]'
         })
-         Arguido.api().delete("/processoInstrucaoPreparatoriaArguido/" + this.arguido.id)
+         ProcessoInstrucaoPreparatoriaArguido.api().delete("/processoInstrucaoPreparatoriaArguido/" + this.processoInstrucaoPreparatoriaArguido.id)
+         ProcessoInstrucaoPreparatoriaArguido.delete(this.processoInstrucaoPreparatoriaArguido.id)
+
       })
     },
     editaArguido(arguido) {
@@ -674,6 +679,7 @@ export default {
     getAllArguido() {
              if(offset >= 0){
           Arguido.api().get("/arguido?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllArguido(offset), 2)
@@ -685,6 +691,7 @@ export default {
      getAllArguidoProcesso() {
               if(offset >= 0){
           ProcessoInstrucaoPreparatoriaArguido.api().get("/processoInstrucaoPreparatoriaArguido?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllArguidoProcesso(offset), 2)
@@ -696,6 +703,7 @@ export default {
     getAllTipoDocumentoIdentificacao() {
              if(offset >= 0){
           TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
@@ -707,6 +715,7 @@ export default {
     getAllProvincia() {
              if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -718,6 +727,7 @@ export default {
     getAllPais() {
              if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -729,6 +739,7 @@ export default {
     getAllSituacaoPrisional() {
           if(offset >= 0){
           SituacaoPrisional.api().get("/situacaoPrisional?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllSituacaoPrisional(offset), 2)

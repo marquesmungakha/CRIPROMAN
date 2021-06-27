@@ -175,9 +175,9 @@ export default {
     createBemSubtraido() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
        if(this.pecaProcesso !== undefined && this.pecaProcesso !== null){
             this.bemSubtraido.pecaProcesso_id = this.pecaProcesso.id
             this.bemSubtraido.pecaProcesso = this.pecaProcesso
@@ -187,6 +187,7 @@ export default {
        }
       if (this.editedIndex > -1) {
          BemSubtraido.api().patch("/bemSubtraido/" + this.bemSubtraido.id, this.bemSubtraido).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -215,6 +216,7 @@ export default {
         })
       } else {
        BemSubtraido.api().post("/bemSubtraido/", this.bemSubtraido).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -273,7 +275,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + bemSubtraido.nome + ' ]'
         })
-        BemSubtraido.api().delete("/bemSubtraido/" + this.bemSubtraido.id)
+        BemSubtraido.api().delete("/bemSubtraido/" + bemSubtraido.id)
+        BemSubtraido.delete(bemSubtraido.id)
       })
     },
     editaBemSubtraido(bemSubtraido) {
@@ -284,6 +287,7 @@ export default {
      getAllBemSubtraido(offset) {
        if(offset >= 0){
           BemSubtraido.api().get("/bemSubtraido?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllBemSubtraido(offset), 2)

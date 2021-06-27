@@ -161,21 +161,23 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + cidade.designacao + ' ]'
         })
         Cidade.api().delete("/cidade/" + cidade.id)
+        Cidade.delete(cidade.id)
         this.$router.go(-1)
       })
     },
     createCidade() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localCidade.provincia = this.provincia
       this.localCidade.provincia = this.provincia
       this.localCidade.distrito = this.distrito
       this.localCidade.provincia_id = this.provincia.id
       this.localCidade.distrito_id = this.distrito.id
       Cidade.api().patch("/cidade/" + this.localCidade.id, this.localCidade).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

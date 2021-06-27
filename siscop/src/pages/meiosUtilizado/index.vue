@@ -287,9 +287,9 @@ export default {
     createMeioUtilizado() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.meioUtilizado.tipoMeio = this.tipoMeio
       this.marca.tipoMeio = this.tipoMeio
       this.modelo.marca = this.marca
@@ -306,6 +306,7 @@ export default {
  }
       if (this.editedIndex > -1) {
          MeiosUtilizado.api().patch("/meioUtilizado/" + this.meioUtilizado.id, this.meioUtilizado).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -334,6 +335,7 @@ export default {
         })
       } else {
         MeiosUtilizado.api().post("/meioUtilizado/", this.meioUtilizado).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -394,7 +396,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + meioUtilizado.nome + ' ]'
         })
-         MeiosUtilizado.api().delete("/meioUtilizado/" + this.meioUtilizado.id)
+         MeiosUtilizado.api().delete("/meioUtilizado/" + meioUtilizado.id)
+         MeiosUtilizado.delete(meioUtilizado.id)
       })
     },
     editaMeioUtilizado(meioUtilizado) {
@@ -408,6 +411,7 @@ export default {
     getAllMeioUtilizado(offset) {
       if(offset >=0){
         MeiosUtilizado.api().get("/meioUtilizado?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMeioUtilizado(offset), 2)
@@ -420,6 +424,7 @@ export default {
    getAllMarca(offset) {
        if(offset >=0){
       Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMarca(offset), 2)
@@ -432,6 +437,7 @@ export default {
     getAllTipoMeio(offset) {
        if(offset >=0){
       TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoMeio(offset), 2)
@@ -444,6 +450,7 @@ export default {
     getAllModelo(offset) {
       if(offset >=0){
       Modelo.api().get("/modelo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllModelo(offset), 2)

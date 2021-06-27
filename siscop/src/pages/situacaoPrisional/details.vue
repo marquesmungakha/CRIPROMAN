@@ -122,17 +122,19 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + situacaoPrisional.designacao + ' ]'
         })
         SituacaoPrisional.api().delete("/situacaoPrisional/" + situacaoPrisional.id)
+        SituacaoPrisional.delete(situacaoPrisional.id)
         this.$router.go(-1)
       })
     },
     createSituacaoPrisional() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.situacaoPrisional = this.localSituacaoPrisional
       SituacaoPrisional.api().patch("/situacaoPrisional/" + this.localSituacaoPrisional.id, this.localSituacaoPrisional).then(resp => {
+        this.submitting = false
         console.log('response ' + resp)
         this.$q.notify({
           type: 'positive',

@@ -238,19 +238,21 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + pergunta.numero + ' ]'
         })
-        Pergunta.api().delete("/pergunta/" + this.pergunta.id)
+        Pergunta.api().delete("/pergunta/" + pergunta.id)
+        Pergunta.delete(pergunta.id)
         this.$router.go(-1)
       })
     },
     createPergunta() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localPergunta.inspector_id = this.inspector
       this.localPergunta.inspector = this.inspector
        Pergunta.api().patch("/pergunta/" + this.localPergunta.id, this.localPergunta).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

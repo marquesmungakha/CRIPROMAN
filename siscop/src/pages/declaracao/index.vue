@@ -192,9 +192,9 @@ export default {
     createDeclaracao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.declaracao.processo_id = this.processoInvestigacao.id
       this.declaracao.inspector_id = this.inspector
       this.declaracao.inspector = this.inspector
@@ -203,6 +203,7 @@ export default {
       this.declaracao.anexo = null
       if (this.editedIndex > -1) {
         Declaracao.api().patch("/declaracao/" + this.declaracao.id, this.declaracao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -231,6 +232,7 @@ export default {
         })
       } else {
         Declaracao.api().post("/declaracao/", this.declaracao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -290,7 +292,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + declaracao.numero + ' ]'
         })
-        Declaracao.api().delete("/declaracao/" + this.declaracao.id)
+        Declaracao.api().delete("/declaracao/" + declaracao.id)
+        Declaracao.delete(declaracao.id)
       })
     },
     editaDeclaracao(declaracao) {
@@ -302,6 +305,7 @@ export default {
      getAllDeclaracao(offset) {
        if(offset >= 0){
           Declaracao.api().get("/declaracao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDeclaracao(offset), 2)
@@ -313,6 +317,7 @@ export default {
     getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

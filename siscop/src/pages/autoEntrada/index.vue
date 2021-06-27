@@ -358,9 +358,9 @@ export default {
     createAutoEntrada() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
 
       this.orgao = Orgao.query().with('provincia.*')
                                 .with('tipoOrgao')
@@ -386,6 +386,7 @@ export default {
 
       if (this.editedIndex > -1) {
         AutoEntrada.api().patch("/autoEntrada/" + this.autoEntrada.id,  this.autoEntrada).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -414,6 +415,7 @@ export default {
         })
       } else {
         AutoEntrada.api().post("/autoEntrada/",  this.autoEntrada).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -475,7 +477,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + autoEntrada.numero + ' ]'
         })
-        AutoEntrada.api().delete("/autoEntrada/" + this.autoEntrada.id)
+        AutoEntrada.api().delete("/autoEntrada/" + autoEntrada.id)
+        AutoEntrada.delete(autoEntrada.id)
       })
     },
     editaAutoEntrada(autoEntrada) {
@@ -492,6 +495,7 @@ export default {
  async getAllAutoEntrada(offset) {
        if(offset >= 0){
         await AutoEntrada.api().get("/autoEntrada?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           console.log(resp)
           if(resp.response.data.length > 0) 
@@ -505,6 +509,7 @@ export default {
   async getAllTipoAuto(offset) {
        if(offset >= 0){
         await TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoAuto(offset), 2)
@@ -517,6 +522,7 @@ export default {
   async getAllJurisdicao(offset) {
        if(offset >= 0){
         await ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao(offset), 2)
@@ -529,6 +535,7 @@ export default {
   async getAllCrime(offset) {
        if(offset >= 0){
          await Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCrime(offset), 2)
@@ -541,6 +548,7 @@ export default {
   async getAllInspector(offset) {
        if(offset >= 0){
         await Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)
@@ -553,6 +561,7 @@ export default {
     async getAllOrgao(offset) {
             if(offset >= 0){
               await Orgao.api().get("/orgao/"+localStorage.getItem('orgaoId')).then(resp => {
+        this.submitting = false
               this.orgao = resp.response.data
                 }).catch(error => {
                 console.log('Erro no code ' + error)
@@ -562,6 +571,7 @@ export default {
   async getAllProvincia(offset) {
      if(offset >= 0){
       await Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -574,6 +584,7 @@ export default {
   async getAllDistrito(offset) {
       if(offset >= 0){
         await  Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)
@@ -585,6 +596,7 @@ export default {
   async getAllTipoOrgao(offset) {
        if(offset >= 0){
         await TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)
@@ -597,6 +609,7 @@ export default {
   async getAllPais(offset) {
         if(offset >= 0){
         await Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -609,6 +622,7 @@ export default {
    async getAllParecerAuto(offset) {
       if(offset >= 0){
         await ParecerAuto.api().get("/parecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllParecerAuto(offset), 2)
@@ -620,6 +634,7 @@ export default {
     async getAllTipoParecer(offset) {
       if(offset >= 0){
         await TipoParecerAuto.api().get("/tipoParecerAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)

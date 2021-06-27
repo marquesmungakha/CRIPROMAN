@@ -255,21 +255,23 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + detencao.numero + ' ]'
         })
-       Detencao.api().delete("/detencao/" + this.detencao.id)
+       Detencao.api().delete("/detencao/" + detencao.id)
+       Detencao.delete(detencao.id)
         this.$router.go(-1)
       })
     },
     createDetencao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localDetencao.motivoDetencao = this.motivoDetencao
       this.localDetencao.motivoDetencao_ID = this.motivoDetencao.id
       this.localDetencao.inspector_id = this.inspector
       this.localDetencao.inspector = this.inspector
       Detencao.api().patch("/detencao/" + this.localDetencao.id, this.localDetencao).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

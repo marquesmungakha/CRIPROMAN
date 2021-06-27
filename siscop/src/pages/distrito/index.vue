@@ -200,13 +200,14 @@ export default {
     createDistrito() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.distrito.provincia = this.provincia
       this.distrito.provincia_id = this.provincia.id
       if (this.editedIndex > -1) {
         Distrito.api().patch("/distrito/" + this.distrito.id, this.distrito).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -235,6 +236,7 @@ export default {
         })
       } else {
         Distrito.api().post("/distrito/", this.distrito).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -295,6 +297,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + distrito.designacao + ' ]'
         })
         Distrito.api().delete("/distrito/" + distrito.id)
+        Distrito.delete(distrito.id)
       })
     },
     editaDistrito(distrito) {
@@ -308,6 +311,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -319,6 +323,7 @@ export default {
     getAllDistrito(offset) {
       if(offset >= 0){
           Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)

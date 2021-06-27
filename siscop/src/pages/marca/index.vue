@@ -198,13 +198,14 @@ export default {
     createMarca() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.marca.tipoMeio = this.tipoMeio
       this.marca.tipoMeio_id = this.tipoMeio.id
       if (this.editedIndex > -1) {
         Marca.api().patch("/marca/" + this.marca.id, this.marca).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -233,6 +234,7 @@ export default {
         })
       } else {
         Marca.api().post("/marca/", this.marca).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -292,6 +294,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + marca.designacao + ' ]'
         })
         Marca.api().delete("/marca/" + marca.id)
+        Marca.delete(marca.id)
       })
     },
     editaMarca(marca) {
@@ -309,6 +312,7 @@ export default {
     getAllMarca(offset) {
        if(offset >=0){
       Marca.api().get("/marca?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMarca(offset), 2)
@@ -321,6 +325,7 @@ export default {
     getAllTipoMeio(offset) {
        if(offset >=0){
       TipoMeio.api().get("/tipoMeio?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoMeio(offset), 2)

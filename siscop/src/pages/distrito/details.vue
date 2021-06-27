@@ -167,18 +167,20 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + distrito.designacao + ' ]'
         })
         Distrito.api().delete("/distrito/" + distrito.id)
+        Distrito.delete(distrito.id)
         this.$router.go(-1)
       })
     },
     createDistrito() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localDistrito.provincia.id = this.provincia.id
       this.distrito = this.localDistrito
       Distrito.api().patch("/distrito/" + this.localDistrito.id, this.localDistrito).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

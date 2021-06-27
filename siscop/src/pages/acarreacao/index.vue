@@ -201,9 +201,9 @@ export default {
     createAcarreacao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.acarreacao.inspector_id = this.inspector
       this.acarreacao.processo_id = this.processoInvestigacao.id
       this.acarreacao.inspector = this.inspector
@@ -213,6 +213,7 @@ export default {
       this.acarreacao.anexo = null
       if (this.editedIndex > -1) {
         Acarreacao.api().patch("/acarreacao/" + this.acarreacao.id, this.acarreacao).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -241,6 +242,7 @@ export default {
         })
       } else {
         Acarreacao.api().post("/acarreacao/", this.acarreacao).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -299,6 +301,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + acarreacao.numero + ' ]'
         })
         Acarreacao.api().delete("/acarreacao/" + acarreacao.id)
+        Acarreacao.delete(acarreacao.id)
       })
     },
     editaAcarreacao(acarreacao) {
@@ -310,6 +313,7 @@ export default {
     getAllAcarreacaos(offset) {
       if(offset >=0){
       Acarreacao.api().get("/acarreacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllAcarreacaos(offset), 2)
@@ -321,6 +325,7 @@ export default {
     getAllInspector(offset) {
       if(offset >=0){
       Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllInspector(offset), 2)

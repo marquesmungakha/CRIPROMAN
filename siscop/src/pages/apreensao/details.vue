@@ -230,19 +230,21 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + apreensao.numero + ' ]'
         })
-        Apreensao.api().delete("/apreensao/" + this.apreensao.id)
+        Apreensao.api().delete("/apreensao/" + apreensao.id)
+        Apreensao.delete(apreensao.id)
         this.$router.go(-1)
       })
     },
     createApreensao() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localApreensao.inspector_id = this.inspector
       this.localApreensao.inspector = this.inspector
       Apreensao.api().patch("/apreensao/" + this.apreensao.id, this.apreensao).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

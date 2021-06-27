@@ -242,9 +242,9 @@ export default {
     createParecerProcesso() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.destino = Orgao.query().with('provincia.pais').with('distrito.provincia.*').with('tipoOrgao').find(this.destino.id)
       this.parecerProcesso.tipoParecer = this.tipoParecer
       this.parecerProcesso.tipoParecer_id = this.tipoParecer.id
@@ -258,6 +258,7 @@ export default {
       this.parecerProcesso.anexo = null
       if (this.editedIndex > -1) {
          ParecerProcesso.api().patch("/parecerProcesso/" + this.parecerProcesso.id, this.parecerProcesso).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -286,6 +287,7 @@ export default {
         })
       } else {
        ParecerProcesso.api().post("/parecerProcesso/", this.parecerProcesso).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -350,7 +352,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + parecerProcesso.numero + ' ]'
         })
-         ParecerProcesso.api().delete("/parecerProcesso/" + this.parecerProcesso.id)
+         ParecerProcesso.api().delete("/parecerProcesso/" + parecerProcesso.id)
+         ParecerProcesso.delete(parecerProcesso.id)
       })
     },
     editaParecerProcesso(parecerProcesso) {
@@ -364,6 +367,7 @@ export default {
     getAllParecerProcesso(offset) {
       if(offset >= 0){
           ParecerProcesso.api().get("/parecerProcesso?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllParecerProcesso(offset), 2)
@@ -375,6 +379,7 @@ export default {
     getAllTipoParecer(offset) {
       if(offset >= 0){
           TipoParecer.api().get("/tipoParecer?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoParecer(offset), 2)
@@ -386,6 +391,7 @@ export default {
     getAllDestino() {
       if(offset >= 0){
           Orgao.api().get("/orgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDestino(offset), 2)
@@ -397,6 +403,7 @@ export default {
     getAllMagistrado(offset) {
       if(offset >= 0){
           Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllMagistrado(offset), 2)
@@ -408,6 +415,7 @@ export default {
   getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -419,6 +427,7 @@ export default {
    getAllTipoOrgao(offset) {
         if(offset >= 0){
           TipoOrgao.api().get("/tipoOrgao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllTipoOrgao(offset), 2)
@@ -430,6 +439,7 @@ export default {
    getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)

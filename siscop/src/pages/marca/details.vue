@@ -168,18 +168,20 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + marca.designacao + ' ]'
         })
         Marca.api().delete("/marca/" + marca.id)
+        Marca.delete(marca.id)
         this.$router.go(-1)
       })
     },
     createMarca() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localMarca.tipoMeio_id = this.tipoMeio.id
       this.localMarca.tipoMeio = this.tipoMeio
       Marca.api().patch("/marca/" + this.localMarca.id, this.localMarca).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

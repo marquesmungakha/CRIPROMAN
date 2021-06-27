@@ -419,6 +419,7 @@ export default {
       }else{
 
           Declarante.api().get("/declarante?offset="+this.offset+"&max=100").then(resp => {
+        this.submitting = false
           console.log(resp)
           this.offset = this.offset + 100
           if(resp.response.data.length > 0){
@@ -473,9 +474,9 @@ export default {
     createDeclarante() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia.pais = this.pais
       this.declarante.nacionalidade_id = this.pais.id
       this.declarante.provincia_id = this.provincia.id
@@ -493,6 +494,7 @@ export default {
 
       if (this.editedIndex > -1) {
          PecaProcessoDeclarante.api().patch("/pecaProcessoDeclarante/" + this.pecaProcessoDeclarante.id, this.pecaProcessoDeclarante).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -521,6 +523,7 @@ export default {
         })
       } else {
         PecaProcessoDeclarante.api().post("/pecaProcessoDeclarante/", this.pecaProcessoDeclarante).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -586,7 +589,8 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + declarante.nome + ' ]'
         })
-         Declarante.api().delete("/pecaProcessoDeclarante/" + this.declarante.id)
+         PecaProcessoDeclarante.api().delete("/pecaProcessoDeclarante/" + this.pecaProcessoDeclarante.id)
+         PecaProcessoDeclarante.delete(this.pecaProcessoDeclarante.id)
       })
     },
     editaDeclarante(declarante) {
@@ -613,6 +617,7 @@ export default {
     getAllDeclarante(offset) {
        if(offset >= 0){
           Declarante.api().get("/declarante?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDeclarante(offset), 2)
@@ -624,6 +629,7 @@ export default {
      getAllDeclaranteProcesso(offset) {
        if(offset >= 0){
           PecaProcessoDeclarante.api().get("/pecaProcessoDeclarante?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDeclaranteProcesso(offset), 2)
@@ -635,6 +641,7 @@ export default {
     getAllTipoDocumentoIdentificacao(offset) {
       if(offset >= 0){
           TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
@@ -646,6 +653,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -657,6 +665,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)

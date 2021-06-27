@@ -237,15 +237,16 @@ export default {
     createPostoAdministrativo() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.postoAdministrativo.provincia = this.provincia
       this.postoAdministrativo.distrito = this.distrito
       this.postoAdministrativo.provincia_id = this.provincia.id
       this.postoAdministrativo.distrito_id = this.distrito.id
       if (this.editedIndex > -1) {
         PostoAdministrativo.api().patch("/postoAdministrativo/" + this.postoAdministrativo.id, this.postoAdministrativo).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -274,6 +275,7 @@ export default {
         })
       } else {
         PostoAdministrativo.api().post("/postoAdministrativo/", this.postoAdministrativo).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -335,6 +337,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + postoAdministrativo.designacao + ' ]'
         })
         PostoAdministrativo.api().delete("/postoAdministrativo/" + postoAdministrativo.id)
+        PostoAdministrativo.delete(postoAdministrativo.id)
       })
     },
     editaPostoAdministrativo(postoAdministrativo) {
@@ -347,6 +350,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -358,6 +362,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -369,6 +374,7 @@ export default {
     getAllDistrito(offset) {
       if(offset >= 0){
           Distrito.api().get("/distrito?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllDistrito(offset), 2)
@@ -380,6 +386,7 @@ export default {
     getAllPostoAdministrativo(offset) {
       if(offset >= 0){
           PostoAdministrativo.api().get("/postoAdministrativo?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPostoAdministrativo(offset), 2)

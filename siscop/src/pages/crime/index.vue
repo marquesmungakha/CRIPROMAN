@@ -188,13 +188,14 @@ export default {
     createCrime() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.crime.classeJudicial_id = this.classeJudicial.id
       this.crime.classeJudicial = this.classeJudicial
       if (this.editedIndex > -1) {
         Crime.api().patch("/crime/" + this.crime.id, this.crime).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -223,6 +224,7 @@ export default {
         })
       } else {
         Crime.api().post("/crime/", this.crime).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -283,6 +285,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + crime.designacao + ' ]'
         })
         Crime.api().delete("/crime/" + crime.id)
+        Crime.delete(crime.id)
       })
     },
     editaCrime(crime) {
@@ -294,6 +297,7 @@ export default {
     getAllCrime(offset) {
   if(offset >= 0){
       Crime.api().get("/crime?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllCrime(offset), 2)
@@ -306,6 +310,7 @@ export default {
     getAllJurisdicao(offset) {
       if(offset >= 0){
         ClasseJudicial.api().get("/classeJudicial?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllJurisdicao, 2)

@@ -243,18 +243,20 @@ export default {
           progress: true,
           message: 'A informação foi Removida com successo! [ ' + denuncia.designacao + ' ]'
         })
-        Denuncia.api().delete("/denuncia/" + this.denuncia.id)
+        Denuncia.api().delete("/denuncia/" + denuncia.id)
+        Denuncia.delete(denuncia.id)
         this.$router.go(-1)
       })
     },
     createDenuncia() {
       this.listErrors = {}
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.localDenuncia.inspector = this.inspector
       Denuncia.api().patch("/denuncia/" + this.localDenuncia.id, this.localDenuncia).then(resp => {
+        this.submitting = false
         console.log('update' + resp)
         this.$q.notify({
           type: 'positive',

@@ -184,11 +184,12 @@ export default {
     createPais() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         Pais.api().patch("/pais/" + this.pais.id, this.pais).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -218,6 +219,7 @@ export default {
         })
       } else {
         Pais.api().post("/pais", this.pais).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -273,6 +275,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + pais.designacao + ' ]'
         })
         Pais.api().delete("/pais/" + pais.id)
+        Pais.delete(pais.id)
       })
     },
     editaPais(pais) {
@@ -283,6 +286,7 @@ export default {
     getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)

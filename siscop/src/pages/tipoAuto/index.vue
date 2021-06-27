@@ -168,11 +168,12 @@ export default {
     createTipoAuto() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       if (this.editedIndex > -1) {
         TipoAuto.api().patch("/tipoAuto/" + this.tipoAuto.id, this.tipoAuto).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -202,6 +203,7 @@ export default {
         })
       } else {
         TipoAuto.api().post("/tipoAuto/", this.tipoAuto).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -260,6 +262,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + tipoAuto.designacao + ' ]'
         })
         TipoAuto.api().delete("/tipoAuto/" + tipoAuto.id)
+        TipoAuto.delete(tipoAuto.id)
       })
     },
     editaTipoAuto(tipoAuto) {
@@ -270,6 +273,7 @@ export default {
     getAllTipoAuto(offset) {
       if(offset >= 0){
           TipoAuto.api().get("/tipoAuto?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoAuto(offset), 2)

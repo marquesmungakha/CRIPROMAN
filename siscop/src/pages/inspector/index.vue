@@ -262,9 +262,9 @@ export default {
     createInspector() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       let formData = new FormData()
       formData.append('fotografia', this.inspector.fotografia)
       formData.append('nome', this.inspector.nome)
@@ -279,6 +279,7 @@ export default {
      
       if (this.editedIndex > -1) {
         Inspector.api().patch("/inspector/" + this.inspector.id, formData).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -307,6 +308,7 @@ export default {
         })
       } else {
         Inspector.api().post("/inspector/", formData).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -366,6 +368,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + inspector.designacao + ' ]'
         })
         Inspector.api().delete("/inspector/" + inspector.id)
+        Inspector.delete(inspector.id)
       })
     },
     editaInspector(inspector) {
@@ -377,6 +380,7 @@ export default {
      getAllInspector(offset) {
        if(offset >= 0){
           Inspector.api().get("/inspector?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllInspector(offset), 2)

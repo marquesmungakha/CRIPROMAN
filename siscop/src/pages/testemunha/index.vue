@@ -444,6 +444,7 @@ export default {
       }else{
 
           Testemunnha.api().get("/testemunnha?offset="+this.offset+"&max=100").then(resp => {
+        this.submitting = false
           console.log(resp)
           this.offset = this.offset + 100
           if(resp.response.data.length > 0){
@@ -498,9 +499,9 @@ export default {
     createTestemunha() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       this.provincia.pais = this.pais
       this.testemunha.nacionalidade_id = this.pais.id
       this.testemunha.provincia_id = this.provincia.id
@@ -517,6 +518,7 @@ export default {
 
       if (this.editedIndex > -1) {
          PecaProcessoTestemunha.api().put("/pecaProcessoTestemunha/" + this.pecaProcessoTestemunha.id, this.pecaProcessoTestemunha).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -545,6 +547,7 @@ export default {
         })
       } else {
        PecaProcessoTestemunha.api().post("/pecaProcessoTestemunha/", this.pecaProcessoTestemunha).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -612,6 +615,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + pecaProcessoTestemunha.testemunha.nome + ' ]'
         })
         PecaProcessoTestemunha.api().delete("/pecaProcessoTestemunha/" + this.pecaProcessoTestemunha.id)
+        PecaProcessoTestemunha.delete(+ this.pecaProcessoTestemunha.id)
       })
     },
     editaTestemunha(testemunha) {
@@ -640,6 +644,7 @@ export default {
     getAllTestemunhaPecaProcesso(offset) {
       if(offset >= 0){
           PecaProcessoTestemunha.api().get("/pecaProcessoTestemunha?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTestemunhaPecaProcesso(offset), 2)
@@ -651,6 +656,7 @@ export default {
      getAllTestemunha(offset) {
        if(offset >= 0){
           Testemunha.api().get("/testemunha?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTestemunha(offset), 2)
@@ -662,6 +668,7 @@ export default {
   getAllTipoDocumentoIdentificacao(offset) {
       if(offset >= 0){
           TipoDocumentoIdentificacao.api().get("/tipoDocumentoIdentificacao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllTipoDocumentoIdentificacao(offset), 2)
@@ -673,6 +680,7 @@ export default {
    getAllPais(offset) {
       if(offset >= 0){
           Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllPais(offset), 2)
@@ -684,6 +692,7 @@ export default {
     getAllProvincia(offset) {
       if(offset >= 0){
           Provincia.api().get("/provincia?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProvincia(offset), 2)
@@ -695,6 +704,7 @@ export default {
   getAllProfissao(offset) {
        if(offset >= 0){
           Profissao.api().get("/profissao?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length > 0) 
               setTimeout(this.getAllProfissao(offset), 2)

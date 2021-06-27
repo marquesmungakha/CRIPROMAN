@@ -255,9 +255,9 @@ export default {
     createMagistrado() {
       this.listErrors = []
       this.submitting = true
-      setTimeout(() => {
-        this.submitting = false
-      }, 300)
+      //setTimeout(() => {
+ //       this.submitting = false
+ //     }, 300)
       let formData = new FormData();
       formData.append("nome", this.magistrado.nome);
       formData.append("apelido", this.magistrado.apelido);
@@ -273,6 +273,7 @@ export default {
 
       if (this.editedIndex > -1) {
         Magistrado.api().patch("/magistrado/" + this.magistrado.id, formData).then(resp => {
+        this.submitting = false
           this.$q.notify({
             type: 'positive',
             color: 'green-4',
@@ -301,6 +302,7 @@ export default {
         })
       } else {
         Magistrado.api().post("/magistrado/", formData).then(resp => {
+        this.submitting = false
           console.log(resp)
           this.$q.notify({
             type: 'positive',
@@ -359,6 +361,7 @@ export default {
           message: 'A informação foi Removida com successo! [ ' + magistrado.designacao + ' ]'
         })
         Magistrado.api().delete("/magistrado/" + magistrado.id)
+        Magistrado.delete(magistrado.id)
       })
     },
     editaMagistrado(magistrado) {
@@ -370,6 +373,7 @@ export default {
     getAllMagistrado(offset) {
       if(offset >=0){
       Magistrado.api().get("/magistrado?offset="+offset+"&max=100").then(resp => {
+        this.submitting = false
           offset = offset + 100
           if(resp.response.data.length() > 0) 
               setTimeout(this.getAllMagistrado(offset), 2)
