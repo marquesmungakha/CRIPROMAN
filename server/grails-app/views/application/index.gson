@@ -4,12 +4,12 @@ import grails.plugins.*
 import org.grails.core.artefact.*
 
 model {
-	GrailsApplication grailsApplication	
+	GrailsApplication grailsApplication
 	GrailsPluginManager pluginManager
 }
 
 json {
-	message "Welcome to Grails!"
+	message "REST API para Sistema de Gestão Processual - SERNIC!"
     environment Environment.current.name
     appversion grailsApplication.metadata.getApplicationVersion()
     grailsversion GrailsUtil.grailsVersion

@@ -1,27 +1,25 @@
 package org.informservice.criproman.processoInvestigacao
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.agente.Agente
 import org.informservice.criproman.autoEntrada.AutoEntrada
 import org.informservice.criproman.formaProcesso.FormaProcesso
 import org.informservice.criproman.inspector.Inspector
 import org.informservice.criproman.magistrado.Magistrado
-import org.informservice.criproman.unidadeorganica.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/processoInvestigacao')
-class ProcessoInvestigacao implements Auditable {
+class ProcessoInvestigacao { //implements Auditable {
 
     String numeroProcesso
-    Orgao orgao
     String proveniencia
     Date dataEntrada
     byte[] anexo
     FormaProcesso formaProcesso
     Inspector inspector
     Magistrado magistrado
+    String autor
     String uuid = UUID.randomUUID().toString()
 
     static mapping = {
@@ -40,6 +38,7 @@ class ProcessoInvestigacao implements Auditable {
         formaProcesso(nullable: false)
         inspector(nullable: false)
         proveniencia(nullable: false)
+        autor(nullable: true)
          dataEntrada(nullable: true, blank: true, validator: { dataEntrada, urc ->
              return ((dataEntrada <= new Date()))
          })

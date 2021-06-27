@@ -1,13 +1,12 @@
 package org.informservice.criproman.patrimonio
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.pecaProcesso.PecaProcesso
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/patrimonio')
-class Patrimonio implements Auditable {
+class Patrimonio { //implements Auditable {
 
     String designacao
     String descricao

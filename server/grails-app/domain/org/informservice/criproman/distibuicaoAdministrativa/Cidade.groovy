@@ -1,13 +1,11 @@
 package org.informservice.criproman.distibuicaoAdministrativa
 
 import grails.plugin.springsecurity.annotation.Secured
- import grails.plugins.orm.auditable.Auditable
-
 import grails.rest.Resource
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/cidade')
-class Cidade implements Auditable {
+class Cidade { //implements Auditable {
 
     String designacao
     String codigo
@@ -26,6 +24,6 @@ class Cidade implements Auditable {
     static belongsTo = [provincia: Provincia]
 
     String toString() {
-        return "${designacao}"
+        return designacao
     }
 }

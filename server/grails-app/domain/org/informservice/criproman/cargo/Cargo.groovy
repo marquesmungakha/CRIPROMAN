@@ -1,15 +1,11 @@
 package org.informservice.criproman.cargo
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
-
-// import grails.plugins.orm.auditable.Auditable
-
 import grails.rest.Resource
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/cargo')
-class Cargo implements Auditable {
+class Cargo { //implements Auditable {
 
     static auditable = true
     String designacao

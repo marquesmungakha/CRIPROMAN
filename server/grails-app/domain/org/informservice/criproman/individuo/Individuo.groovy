@@ -1,23 +1,24 @@
 package org.informservice.criproman.individuo
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.distibuicaoAdministrativa.Pais
+import org.informservice.criproman.distibuicaoAdministrativa.Provincia
+import org.informservice.criproman.profissao.Profissao
 
 // import grails.plugins.orm.auditable.Auditable
 
-import org.informservice.criproman.distibuicaoAdministrativa.Provincia
-import org.informservice.criproman.profissao.Profissao
 import org.informservice.criproman.tipoDocumentoIdentificacao.TipoDocumentoIdentificacao
 
 @Secured('ROLE_ADMIN')
-class Individuo implements Auditable {
+@Resource(uri='/api/individuo')
+class Individuo { //implements Auditable {
 
     String nome
     String apelido
     String sexo
     Date dataNascimento
+    Integer idade
     String naturalidade
     Pais nacionalidade
     Provincia provincia
@@ -31,6 +32,7 @@ class Individuo implements Auditable {
     Date documentoValidade
     Profissao profissao
     String ocupacao
+    byte[] fotografia
     String uuid = UUID.randomUUID().toString()
 
     static mapping = {
@@ -41,7 +43,6 @@ class Individuo implements Auditable {
         uuid nullable: true
         provincia(nullable: false, blank: false)
         numDocumentoIndentificacao(nullable: false, blank: false)
-        tipoDocumento(inList: ["Bilhete de Identidade", "Passaporte", "Carta de Condução", "Cartão de Eleitor", "Cédula Pessoal"])
         documentoValidade(nullable: true, blank: true, validator: { documentoValidade, urc ->
             return ((documentoValidade > new Date()))
         })
@@ -60,7 +61,9 @@ class Individuo implements Auditable {
         dataNascimento(nullable: false, blank: false, validator: { datanascimento, urc ->
             return ((datanascimento <= new Date()))
         })
+        idade nullable: true
         localNascimento(nullable: true)
+        fotografia(nullable: true)
     }
 
     String toString() {

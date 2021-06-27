@@ -1,25 +1,16 @@
 package org.informservice.criproman.pecaProcesso
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
-import org.informservice.criproman.acusado.Acusado
-import org.informservice.criproman.arguido.Arguido
 import org.informservice.criproman.bemSubtraido.BemSubtraido
-import org.informservice.criproman.custodiado.Custodiado
-import org.informservice.criproman.declarante.Declarante
-import org.informservice.criproman.denunciante.Denunciante
-import org.informservice.criproman.detido.Detido
 import org.informservice.criproman.inspector.Inspector
 import org.informservice.criproman.meioUtilizado.MeioUtilizado
-import org.informservice.criproman.objectosApreendidos.ObjectosApreendido
-import org.informservice.criproman.ofendido.Ofendido
-import org.informservice.criproman.possuidor.Possuidor
-import org.informservice.criproman.suspeito.Suspeito
-import org.informservice.criproman.testemunha.Testemunha
-import org.informservice.criproman.vitima.Vitima
+import org.informservice.criproman.objectosApreendidos.ObjectoApreendido
+import org.informservice.criproman.objectosDetido.ObjectoDetido
 
-class PecaProcesso implements Auditable {
+@Secured('ROLE_ADMIN')
+@Resource(uri='/api/pecaProcesso')
+class PecaProcesso { //implements Auditable {
 
     String numero
     Date dataAbertura
@@ -32,22 +23,21 @@ class PecaProcesso implements Auditable {
     }
 
     static belongsTo = [inspector: Inspector]
-    static hasMany = [declarantes        : Declarante,
-                      denunciantes       : Denunciante,
-                      ofendidos          : Ofendido,
-                      suspeitos          : Suspeito,
+    static hasMany = [declarantes        : PecaProcessoDeclarante,
+                      denunciantes       : PecaProcessoDenunciante,
+                      ofendidos          : PecaProcessoOfendido,
+                      suspeitos          : PecaProcessoSuspeito,
                       meiosUtilizados    : MeioUtilizado,
                       bensSubtraidos     : BemSubtraido,
-                      objectosApreendidos: ObjectosApreendido,
-                      testeminhas        : Testemunha,
-                      vitimas            : Vitima,
-                      possuidores        : Possuidor,
-                      objectosApreendidos: ObjectosApreendido,
-                      acusados           : Acusado,
-                      detidos            : Detido,
-                      custodiados        : Custodiado,
-                      possuidores        : Possuidor,
-                      arguidos           : Arguido
+                      objectosApreendidos: ObjectoApreendido,
+                      bens               : ObjectoDetido,
+                      testeminhas        : PecaProcessoTestemunha,
+                      vitimas            : PecaProcessoVitima,
+                      acusados           : PecaProcessoAcusado,
+                      detidos            : PecaProcessoDetido,
+                      custodiados        : PecaProcessoCustodiado,
+                      possuidores        : PecaProcessoPossuidor,
+                      arguidos           : PecaProcessoArguido
     ]
 
     static constraints = {

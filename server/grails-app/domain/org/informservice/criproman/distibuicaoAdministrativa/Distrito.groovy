@@ -1,29 +1,23 @@
 package org.informservice.criproman.distibuicaoAdministrativa
 
 import grails.plugin.springsecurity.annotation.Secured
- import grails.plugins.orm.auditable.Auditable
-
 import grails.rest.Resource
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/distrito')
-class Distrito implements Auditable {
+class Distrito { //implements Auditable {
 
     String designacao
     String codigo
 
     static mapping = {
         version false
-        cidades cascade: 'delete-orphan'
-        localidades cascade: 'delete-orphan'
-        postos cascade: 'delete-orphan'
-        bairros cascade: 'delete-orphan'
     }
 
 
     static constraints = {
-        codigo(maxSize: 20)
-        designacao(blank: false, maxSize: 200, unique: true)
+        codigo(maxSize: 20, unique: ["provincia"])
+        designacao(blank: false, maxSize: 200)
     }
 
     static belongsTo = [provincia: Provincia]

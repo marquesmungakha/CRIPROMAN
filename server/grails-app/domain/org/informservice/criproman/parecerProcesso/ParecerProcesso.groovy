@@ -1,16 +1,15 @@
 package org.informservice.criproman.parecerProcesso
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.magistrado.Magistrado
+import org.informservice.criproman.orgao.Orgao
 import org.informservice.criproman.processoInstrucaoPreparatoria.ProcessoInstrucaoPreparatoria
 import org.informservice.criproman.tipoParecer.TipoParecer
-import org.informservice.criproman.unidadeorganica.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/parecerProcesso')
-class ParecerProcesso implements Auditable {
+class ParecerProcesso { //implements Auditable {
 
     String parecer
     TipoParecer tipoParecer
@@ -31,8 +30,8 @@ class ParecerProcesso implements Auditable {
             return ((dataRegisto <= new Date()))
         })
     }
-
-    String toString() {
-        return processo + " [" + tipoParecer + "]"
-    }
+//
+//    String toString() {
+//        return processo + " [" + tipoParecer + "]"
+//    }
 }

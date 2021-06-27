@@ -1,15 +1,18 @@
 package org.informservice.criproman.quadro
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 
-
+@Secured('ROLE_ADMIN')
+@Resource(uri='/api/quadro')
 class Quadro implements Auditable{
     String numero
     String nome
     String apelido
     String sexo
     Integer idade
+    Date dataNascimento
     String telemovel1
     String telemovel2
     byte[] fotografia
@@ -28,5 +31,6 @@ class Quadro implements Auditable{
         idade(validator: { idade -> return idade >= 18 })
         fotografia(nullable: true)
         numero(unique: true)
+        dataNascimento nullable: true
     }
 }

@@ -1,16 +1,14 @@
 package org.informservice.criproman.responsavelOrgao
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.cargo.Cargo
-import org.informservice.criproman.inspector.Inspector
+import org.informservice.criproman.orgao.Orgao
 import org.informservice.criproman.quadro.Quadro
-import org.informservice.criproman.unidadeorganica.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/responsavelOrgao')
-class ResponsavelOrgao implements Auditable {
+class ResponsavelOrgao { //implements Auditable {
 
     Orgao orgao
     Quadro membro

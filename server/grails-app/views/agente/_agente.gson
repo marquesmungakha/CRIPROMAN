@@ -1,7 +1,0 @@
-import org.informservice.criproman.agente.Agente
-
-model {
-	Agente agente
-}
-
-json g.render(agente, [resolveTemplate: false])

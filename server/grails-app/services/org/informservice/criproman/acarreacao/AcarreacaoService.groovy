@@ -9,6 +9,7 @@ interface AcarreacaoService {
 
     List<Acarreacao> list(Map args)
 
+
     Long count()
 
     Acarreacao delete(Serializable id)

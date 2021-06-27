@@ -1,7 +1,0 @@
-import org.informservice.criproman.tipoPeca.TipoPeca
-
-model {
-	TipoPeca tipoPeca
-}
-
-json tmpl.tipoPeca(tipoPeca)

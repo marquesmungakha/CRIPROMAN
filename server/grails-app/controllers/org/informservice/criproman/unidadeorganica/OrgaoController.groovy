@@ -2,6 +2,9 @@ package org.informservice.criproman.unidadeorganica
 
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
+import org.informservice.criproman.orgao.Orgao
+import org.informservice.criproman.orgao.OrgaoService
+
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT

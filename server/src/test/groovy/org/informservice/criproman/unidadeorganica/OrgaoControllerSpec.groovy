@@ -1,5 +1,6 @@
 package org.informservice.criproman.unidadeorganica
 
+import org.informservice.criproman.orgao.Orgao
 import spock.lang.*
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.http.HttpStatus.NOT_FOUND

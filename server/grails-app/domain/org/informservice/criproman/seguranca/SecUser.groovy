@@ -5,12 +5,13 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.rest.Resource
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import org.informservice.criproman.orgao.Orgao
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
 @Secured('ROLE_ADMIN')
-@Resource(uri='/api/SecUser')
+@Resource(uri='/api/secUser')
 class SecUser implements Serializable {
 
     private static final long serialVersionUID = 1
@@ -22,6 +23,7 @@ class SecUser implements Serializable {
     boolean accountExpired
     boolean accountLocked
     boolean passwordExpired
+    Orgao orgao
 
     SecUser(String username,String password, String fullname){
         this()
@@ -38,6 +40,7 @@ class SecUser implements Serializable {
         password nullable: false, blank: false, password: true
         username nullable: false, blank: false, unique: true
         fullName nullable: false, blank: false
+        orgao nullable: true, blank: true
     }
 
     static mapping = {

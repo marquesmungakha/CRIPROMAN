@@ -3,6 +3,7 @@ package org.informservice.criproman.meioUtilizado
 import grails.plugin.springsecurity.annotation.Secured
 import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
+import org.informservice.criproman.autoEntrada.AutoEntrada
 import org.informservice.criproman.marca.Marca
 import org.informservice.criproman.modelo.Modelo
 import org.informservice.criproman.pecaProcesso.PecaProcesso
@@ -21,12 +22,12 @@ class MeioUtilizado implements Auditable{
     Modelo modelo
     String chassi
     String numeroMotor
+    AutoEntrada autoEntrada
+    PecaProcesso pecaProcesso
 
     static mapping = {
         version false
     }
-
-    static belongsTo = [pecaProcesso: PecaProcesso]
 
     static constraints = {
         matricula nullable: false, unique: true
@@ -37,6 +38,8 @@ class MeioUtilizado implements Auditable{
         numeroMotor nullable: true
         marca nullable: false
         modelo nullable: true
+        autoEntrada nullable: true
+        pecaProcesso nullable: true
     }
 
     @Override

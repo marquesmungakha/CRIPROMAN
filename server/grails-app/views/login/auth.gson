@@ -1,8 +1,23 @@
 package login
 
+import grails.core.*
+import grails.util.*
+import grails.plugins.*
+import org.grails.core.artefact.*
+
+model {
+}
+
 response.status 401
 
 json {
-    message "Forbiden test for login"
+//    message "Forbiden test for login"
     error 401
+    message "Welcome to Grails!"
+    environment Environment.current.name
+    grailsversion GrailsUtil.grailsVersion
+    groovyversion GroovySystem.getVersion()
+    jvmversion System.getProperty('java.version')
+    reloadingagentenabled Environment.reloadingAgentEnabled
+
 }

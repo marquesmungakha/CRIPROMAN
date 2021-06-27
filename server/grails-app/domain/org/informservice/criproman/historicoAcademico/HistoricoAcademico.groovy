@@ -1,13 +1,12 @@
 package org.informservice.criproman.historicoAcademico
 
 import grails.plugin.springsecurity.annotation.Secured
-import grails.plugins.orm.auditable.Auditable
 import grails.rest.Resource
 import org.informservice.criproman.individuo.Individuo
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/historicoAcademico')
-class HistoricoAcademico implements Auditable {
+class HistoricoAcademico { //implements Auditable {
 
     int anoIncio
     int anoFim

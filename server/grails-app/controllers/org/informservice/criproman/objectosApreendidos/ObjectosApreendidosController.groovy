@@ -29,7 +29,7 @@ class ObjectosApreendidosController {
     }
 
     @Transactional
-    def save(ObjectosApreendido objectosApreendidos) {
+    def save(ObjectoApreendido objectosApreendidos) {
         if (objectosApreendidos == null) {
             render status: NOT_FOUND
             return
@@ -51,7 +51,7 @@ class ObjectosApreendidosController {
     }
 
     @Transactional
-    def update(ObjectosApreendido objectosApreendidos) {
+    def update(ObjectoApreendido objectosApreendidos) {
         if (objectosApreendidos == null) {
             render status: NOT_FOUND
             return

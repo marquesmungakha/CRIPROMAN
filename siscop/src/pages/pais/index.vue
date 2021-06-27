@@ -1,18 +1,18 @@
 <template>
   <q-page class="q-pa-sm q-gutter-sm">
-    <q-table title="Pais" :data="allPaises" :columns="columns" row-key="name" binary-state-sort :filter="filter">
+    <q-table :columns="columns" :data="allPaises" :filter="filter" binary-state-sort row-key="name" title="Pais">
 
       <template v-slot:top-right>
-        <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Pesquisa">
+        <q-input v-if="show_filter" v-model="filter" borderless debounce="300" dense filled placeholder="Pesquisa">
           <template v-slot:append>
             <q-icon name="search"/>
           </template>
         </q-input>
 
         <div class="q-pa-md q-gutter-sm">
-          <q-btn class="q-ml-sm" icon="filter_list" @click="show_filter=!show_filter" flat/>
-          <q-btn outline rounded color="primary" label="Adicionar Novo" @click="show_dialog = true" no-caps/>
-          <q-btn rounded color="primary" icon-right="archive" label="Imprimir em Excel" no-caps @click="exportTable"/>
+          <q-btn class="q-ml-sm" flat icon="filter_list" @click="show_filter=!show_filter"/>
+          <q-btn color="primary" label="Adicionar Novo" no-caps outline rounded @click="show_dialog = true"/>
+          <q-btn color="primary" icon-right="archive" label="Imprimir em Excel" no-caps rounded @click="exportTable"/>
         </div>
       </template>
       <template v-slot:body="props">
@@ -20,43 +20,64 @@
           <q-td key="codigo" :props="props">
             {{ props.row.codigo }}
             <q-popup-edit v-model="props.row.codigo">
-              <q-input v-model="props.row.codigo" dense autofocus counter></q-input>
+              <q-input v-model="props.row.codigo" autofocus counter dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="designacao" :props="props">
             {{ props.row.designacao }}
             <q-popup-edit v-model="props.row.designacao" title="Update designacao">
-              <q-input v-model="props.row.designacao" dense autofocus></q-input>
+              <q-input v-model="props.row.designacao" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="nacionalidade" :props="props">
             <div class="text-pre-wrap">{{ props.row.nacionalidade }}</div>
             <q-popup-edit v-model="props.row.nacionalidade">
-              <q-input v-model="props.row.nacionalidade" dense autofocus></q-input>
+              <q-input v-model="props.row.nacionalidade" autofocus dense></q-input>
             </q-popup-edit>
           </q-td>
           <q-td key="actions" :props="props">
             <div class="q-gutter-sm">
               <router-link :to="`/pais/${props.row.id}`">
-                <q-btn round glossy icon="visibility" color="secondary" size=sm no-caps/>
+                <q-btn color="secondary" glossy icon="visibility" no-caps round size=sm>
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Ver Detalhes
+                </q-tooltip>
+                </q-btn>
               </router-link>
-              <q-btn round glossy icon="edit" color="blue" @click.stop="editaPais(props.row)" size=sm no-caps/>
-              <q-btn round glossy icon="delete_forever" color="red" @click.stop="removePais(props.row)" size=sm
-                     no-caps/>
+              <q-btn color="blue" glossy icon="edit" no-caps round size=sm @click.stop="editaPais(props.row)">
+                <q-tooltip content-class="bg-white text-primary shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Editar
+                </q-tooltip>
+                </q-btn>
+              <q-btn color="red" glossy icon="delete_forever" no-caps round size=sm
+                     @click.stop="removePais(props.row)">
+                <q-tooltip content-class="bg-red text-white shadow-4" 
+                          :offset="[10, 10]"
+                          transition-show="rotate"
+                          transition-hide="rotate">
+                  Remover
+                </q-tooltip>
+                </q-btn>
             </div>
           </q-td>
         </q-tr>
       </template>
     </q-table>
-    <create-edit-form :show_dialog="show_dialog"
-                      :listErrors="listErrors"
+    <create-edit-form :close="close"
                       :codigo.sync="pais.codigo"
-                      :designacao.sync="pais.designacao"
-                      :nacionalidade.sync="pais.nacionalidade"
-                      :submitting="submitting"
-                      :close="close"
                       :createPais="createPais"
-                      :removePais="removePais"/>
+                      :designacao.sync="pais.designacao"
+                      :listErrors="listErrors"
+                      :nacionalidade.sync="pais.nacionalidade"
+                      :removePais="removePais"
+                      :show_dialog="show_dialog"
+                      :submitting="submitting"/>
   </q-page>
 </template>
 
@@ -91,7 +112,7 @@ export default {
         {
           name: 'codigo',
           required: true,
-          label: 'Codigo',
+          label: 'Código',
           align: 'left',
           field: row => row.codigo,
           format: val => `${val}`,
@@ -100,7 +121,7 @@ export default {
         {
           name: 'designacao',
           align: 'left',
-          label: 'Designacao',
+          label: 'Designação',
           field: row => row.designacao,
           format: val => `${val}`,
           sortable: true
@@ -113,7 +134,7 @@ export default {
           format: val => `${val}`,
           sortable: true
         },
-        {name: 'actions', label: 'Movimento', field: 'actions'}
+        {name: 'actions', align: 'left',label: 'Ações', field: 'actions'}
       ],
       data: []
     }
@@ -132,10 +153,11 @@ export default {
     // Example:
     // return store.dispatch('pais/getAllPais', currentRoute.params.id)
 
-    return this.listAllPais()
+    return this.getAllPais()
   },
   mounted() {
-    this.listAllPais()
+    let offset = 0
+    this.getAllPais(offset)
   },
   components: {
     'create-edit-form': require('components/pais/createEditForm.vue').default
@@ -147,7 +169,6 @@ export default {
       spinner: QSpinnerBall
       // delay: 400 // ms
     })
-
     setTimeout(() => {
       this.$q.loading.hide()
     }, 600)
@@ -222,6 +243,8 @@ export default {
       }
     },
     close() {
+      let offset = 0
+      this.getAllPais(offset)
       this.show_dialog = false
       this.pais = {}
       this.props = this.pais
@@ -257,29 +280,22 @@ export default {
       this.pais = Object.assign({}, pais)
       this.show_dialog = true
     },
-    listAllPais() {
-      Pais.api().get('/pais').then(resp => {
-        console.log(resp)
-      }).catch(error => {
-        console.log(error)
-        if (error.request.response != null) {
-          const arrayErrors = JSON.parse(error.request.response)
-          if (arrayErrors.total == null) {
-            this.listErrors.push(arrayErrors.message)
-          } else {
-            arrayErrors._embedded.errors.forEach(element => {
-              this.listErrors.push(element.message)
-            })
-          }
-          console.log(this.listErrors)
-        }
-      })
+    getAllPais(offset) {
+      if(offset >= 0){
+          Pais.api().get("/pais?offset="+offset+"&max=100").then(resp => {
+          offset = offset + 100
+          if(resp.response.data.length > 0) 
+              setTimeout(this.getAllPais(offset), 2)
+          }).catch(error => {
+          console.log('Erro no code ' + error)
+        })
+       }
     },
     exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.$store.state.pais.paises.map(row =>
+          this.allPaises.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(

@@ -1,7 +1,7 @@
 package org.informservice.criproman.seguranca
 
-import grails.plugin.springsecurity.annotation.Secured
 import grails.compiler.GrailsCompileStatic
+import grails.plugin.springsecurity.annotation.Secured
 import grails.rest.Resource
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString

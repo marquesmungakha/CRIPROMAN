@@ -2,29 +2,53 @@ package org.informservice.criproman.autoEntrada
 
 import grails.plugin.springsecurity.annotation.Secured
 import grails.rest.Resource
+import org.informservice.criproman.bemSubtraido.BemSubtraido
 import org.informservice.criproman.classeJudicial.ClasseJudicial
 import org.informservice.criproman.crimes.Crime
-import org.informservice.criproman.pecaProcesso.PecaProcesso
-import org.informservice.criproman.processoInvestigacao.ProcessoInvestigacao
+import org.informservice.criproman.inspector.Inspector
+import org.informservice.criproman.meioUtilizado.MeioUtilizado
+import org.informservice.criproman.objectosApreendidos.ObjectoApreendido
+import org.informservice.criproman.objectosDetido.ObjectoDetido
+import org.informservice.criproman.orgao.Orgao
 import org.informservice.criproman.tipoauto.TipoAuto
-import org.informservice.criproman.unidadeorganica.Orgao
 
 @Secured('ROLE_ADMIN')
 @Resource(uri='/api/autoEntrada')
-class AutoEntrada extends PecaProcesso{
+class AutoEntrada {
 
     TipoAuto tipoAuto
     ClasseJudicial classeJudicial
     Crime crime
+    Inspector inspector
     String modusOperandi
     Date horaOcorrencia
     String infraccao
     String endereco
     String responsavelLocal
     String contacto
-
-    static hasOne = [processo: ProcessoInvestigacao]
+    String numero
+    Date dataAbertura
+    String descricao
+    byte[] anexo
+    String uuid = UUID.randomUUID().toString()
     static belongsTo = [orgao: Orgao]
+
+    static hasMany = [declarantes        : AutoEntradaDeclarante,
+                      denunciantes       : AutoEntradaDenunciante,
+                      ofendidos          : AutoEntradaOfendido,
+                      suspeitos          : AutoEntradaSuspeito,
+                      meiosUtilizados    : MeioUtilizado,
+                      bensSubtraidos     : BemSubtraido,
+                      objectosApreendidos: ObjectoApreendido,
+                      bens               : ObjectoDetido,
+                      testeminhas        : AutoEntradaTestemunha,
+                      vitimas            : AutoEntradaVitima,
+                      acusados           : AutoEntradaAcusado,
+                      detidos            : AutoEntradaDetido,
+                      custodiados        : AutoEntradaCustodiado,
+                      possuidores        : AutoEntradaPossuidor,
+                      arguidos           : AutoEntradaArguido
+    ]
 
     static constraints = {
         modusOperandi(nullable: false, maxSize: 15000, blank: false)
@@ -37,6 +61,12 @@ class AutoEntrada extends PecaProcesso{
         contacto(nullable: true, blank: true)
         horaOcorrencia(nullable: false, blank: false, validator: { horaOcorrencia, urc ->
             return ((horaOcorrencia <= new Date()))
+        })
+        numero(nullable: false, unique: true)
+        anexo(nullable: true)
+        descricao(maxSize: 15000)
+        dataAbertura(nullable: true, blank: true, validator: { dataEntrada, urc ->
+            return ((dataEntrada <= new Date()))
         })
     }
 

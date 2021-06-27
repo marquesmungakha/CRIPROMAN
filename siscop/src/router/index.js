@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import axios from 'axios'
 
 import routes from './routes'
-import Router from "vue-router";
-import Login from "src/store/models/login/login";
 
 Vue.use(VueRouter)
 
@@ -29,10 +28,16 @@ export default function (/* { store, ssrContext } */) {
   })
 
   Router.beforeEach((to, from, next) => {
-     // const authUser = Login.query().first().access_token
-    // if(!to.meta.requiresAuth && !to.meta.roles) {
-      return next()
-    // }
+
+    if(localStorage.getItem('id_token') === null || localStorage.getItem('id_token') === undefined){
+      localStorage.setItem('id_token', 'null')
+   }
+
+    const authUser = localStorage.getItem('id_token')
+
+    //  if(!to.meta.requiresAuth && !authUser) {
+    //   return next()
+    //  }
 
     // if(!authUser) {
     //   return next({path:'/Login'})
@@ -45,6 +50,17 @@ export default function (/* { store, ssrContext } */) {
     //   console.log('NO'+to.meta.roles.includes(authUser.auth.isAuthenticated.roles)+' '+to.meta.roles+' >> '+authUser.auth.isAuthenticated.roles)
     //   return next({name:'Home'})
     // }
+    console.log('beforeEach', to.path + ' - Auth: ' + authUser.length)
+    if ((to.path !== '/login' && to.path !== 'login') && (authUser.length < 10)) {
+      console.log("Entra 1")
+      next({ name: 'login' })
+    } else if ((to.path === '/login' || to.path === 'login') && authUser.length > 10) {
+      console.log("Entra 2")
+      next({ path: '/' })
+    } else {
+      console.log("Entra 3")
+      next()
+    }
   })
 
   return Router

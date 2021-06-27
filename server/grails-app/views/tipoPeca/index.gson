@@ -1,8 +1,0 @@
-import org.informservice.criproman.tipoPeca.TipoPeca
-
-model {
-	Iterable<TipoPeca> tipoPecaList
-}
-
-json tmpl.tipoPeca(tipoPecaList ?: [])
-
