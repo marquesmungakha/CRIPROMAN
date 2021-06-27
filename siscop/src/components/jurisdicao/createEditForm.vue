@@ -3,7 +3,7 @@
        <q-dialog v-model="show_dialog" persistent>
         <q-card style="width: 600px; max-width: 60vw;">
         <q-card-section>
-            <div class="text-h6">Adicionar  Família Delitiva!</div>
+            <div class="text-h6">Adicionar Família Delitiva!</div>
         </q-card-section>
                 <q-card-section>
           <div v-if="listErrors.length > 0" class="q-pa-sm q-gutter-sm" style="max-width: 550px; max-height: 150px;border-radius: 10px; border: 1px solid #cb4646; margin: 5px; background-color: #ead8da">
@@ -21,13 +21,13 @@
                     <q-list>
                         <div class="row">                
         <div class="row q-gutter-xs" style="width: 500px;">
-          <div class="col-4 text-left">Designacao *</div>
+          <div class="col-4 text-left">Designação *</div>
                                 <q-input outlined tack-label class="w-field" :dense="true" :value="designacao"
                                 @input="$emit('update:designacao', $event)"
                                 ref="designacao"
                                 
                                 lazy-rules
-                                :rules="[ val => val && val.length > 0 || 'Introduza a Designacao']" />
+                                :rules="[ val => val && val.length > 0 || 'Introduza a Designação']" />
         </div>
                         </div>
                     </q-list>

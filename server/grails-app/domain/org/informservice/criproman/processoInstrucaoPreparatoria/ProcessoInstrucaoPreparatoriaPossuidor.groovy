@@ -10,7 +10,7 @@ import org.informservice.criproman.processoInstrucaoPreparatoria.ProcessoInstruc
 class ProcessoInstrucaoPreparatoriaPossuidor {
 
     String declaracao
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Possuidor possuidor
 
     static belongsTo = ProcessoInstrucaoPreparatoria

@@ -11,7 +11,7 @@ import org.informservice.criproman.testemunha.Testemunha
 class ProcessoInstrucaoPreparatoriaTestemunha {
 
     String depoimento
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Testemunha testemunha
     Profissao profissao
     String ocupacao

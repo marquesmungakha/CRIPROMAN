@@ -13,7 +13,7 @@ class ProcessoInstrucaoPreparatoriaArguido {
     String ocupacao
     SituacaoPrisional situacaoPrisional
     Date dataSituacaoPrisional
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Arguido arguido
 
     static belongsTo = ProcessoInstrucaoPreparatoria

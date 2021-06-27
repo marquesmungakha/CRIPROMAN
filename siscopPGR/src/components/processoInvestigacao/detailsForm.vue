@@ -18,7 +18,7 @@
 	<q-item class="full-width">
 	  <q-item-section>
 		<q-item-label lines="1" caption >{{ $t('numeroAuto') }}</q-item-label>
-		<q-item-label class="text-grey-9">{{ processoInvestigacao.numeroAuto_id }}</q-item-label>
+		<q-item-label class="text-grey-9">{{ processoInvestigacao.numeroAuto.numero }}</q-item-label>
 	  </q-item-section>
 	</q-item>
 	</div>
@@ -128,8 +128,8 @@ export default {
      i18n: {
     messages: {
       pt: {
-        title: 'Detalhes do Processo de Investigação',
-        basicInformation: 'Informacção do Processo',
+        title: 'Informacção do Processo de Investigação - SERNIC',
+        basicInformation: 'Informacção do Processo de Investigação - SERNIC',
         numeroProcesso: 'Número do Processo',
         numeroAuto: 'Número do Auto',
         proveniencia: 'Proveniência',
@@ -141,8 +141,8 @@ export default {
         agentes: 'Agentes'
       },
       en: {
-        title: 'Detalhes do Processo de Investigação',
-        basicInformation: 'Informacção do Processo',
+        title: 'Informacção do Processo de Investigação - SERNIC',
+        basicInformation: 'Informacção do Processo de Investigação - SERNIC',
         numeroProcesso: 'Número do Processo',
         numeroAuto: 'Número do Auto',
         proveniencia: 'Proveniência',

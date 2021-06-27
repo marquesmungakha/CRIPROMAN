@@ -175,8 +175,8 @@ export default {
      i18n: {
     messages: {
       pt: {
-        title: 'Detalhes do Auto',
-        basicInformation: 'Informacção do Processo',
+        title: 'Detalhes do Auto - SERNIC',
+        basicInformation: 'Informacção do Auto - SERNIC',
         numeroProcesso: 'Número do Processo',
         numeroAuto: 'Número do Auto',
         proveniencia: 'Proveniência',
@@ -188,8 +188,8 @@ export default {
         agentes: 'Agentes'
       },
       en: {
-        title: 'Detalhes do Auto',
-        basicInformation: 'Informacção do Processo',
+        title: 'Detalhes do Auto - SERNIC',
+        basicInformation: 'Informacção do Auto - SERNIC',
         numeroProcesso: 'Número do Processo',
         numeroAuto: 'Número do Auto',
         proveniencia: 'Proveniência',

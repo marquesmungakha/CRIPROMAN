@@ -5,8 +5,6 @@ grails.plugin.springsecurity.userLookup.userDomainClassName = 'org.informservice
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'org.informservice.criproman.seguranca.SecUserSecRole'
 grails.plugin.springsecurity.authority.className = 'org.informservice.criproman.seguranca.SecRole'
 
-
-
 grails.plugin.springsecurity.useSecurityEventListener = true
 
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
@@ -54,7 +52,6 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 grails.plugin.springsecurity.successHandler.defaultTargetUrl = '/'
 
 grails.plugin.springsecurity.password.algorithm = 'bcrypt'
-
 
 // Added by the Audit-Logging plugin:
 grails.plugin.auditLog.auditDomainClassName = 'org.informservice.criproman.seguranca.Auditoria'

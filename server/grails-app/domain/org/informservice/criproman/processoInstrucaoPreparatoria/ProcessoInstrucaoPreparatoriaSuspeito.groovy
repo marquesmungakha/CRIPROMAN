@@ -12,7 +12,7 @@ class ProcessoInstrucaoPreparatoriaSuspeito {
 
     SituacaoPrisional situacaoPrisional
     Date dataSituacaoPrisional
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Suspeito suspeito
 
     static belongsTo = ProcessoInstrucaoPreparatoria

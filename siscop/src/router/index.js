@@ -28,8 +28,12 @@ export default function (/* { store, ssrContext } */) {
   })
 
   Router.beforeEach((to, from, next) => {
-    const authUser = window.localStorage.getItem('id_token')
 
+    if(localStorage.getItem('id_token') === null || localStorage.getItem('id_token') === undefined){
+      localStorage.setItem('id_token', 'null')
+   }
+
+    const authUser = localStorage.getItem('id_token')
 
     //  if(!to.meta.requiresAuth && !authUser) {
     //   return next()

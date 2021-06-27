@@ -1,0 +1,52 @@
+{
+  "name": "siscop",
+  "version": "0.0.1",
+  "description": "Sistema criado para auxilio na gestao de processos que dao entrada nas procuradorias a nivel nacional",
+  "productName": "Sistema de Gestao Processual",
+  "author": "colaconhongo <shycolaco@gmail.com>",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "cordova:dev": "quasar dev -m cordova -T android -- --buildConfig=\"../build.cordova.json\"",
+    "cordova:build": "quasar build -m cordova -T android -- --buildConfig=\"../build.cordova.json\""
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.9.17",
+    "@teamnovu/vue-responsive-image": "^0.0.1",
+    "@vuex-orm/core": "^0.36.4",
+    "@vuex-orm/plugin-axios": "^0.9.3",
+    "apex": "^0.1.2",
+    "apexcharts": "^3.26.2",
+    "axios": "^0.18.1",
+    "core-js": "^3.6.5",
+    "d3-scale": "^3.2.3",
+    "localbase": "^0.7.5",
+    "quasar": "^1.15.3",
+    "vue": "^2.6.12",
+    "vue-apexcharts": "^1.6.0",
+    "vue-i18n": "^8.0.0",
+    "vue-pivottable": "^0.3.82",
+    "vuex": "^3.6.2"
+  },
+  "devDependencies": {
+    "@quasar/app": "^2.0.0",
+    "vue-responsive-image": "^1.0.2"
+  },
+  "browserslist": [
+    "ie >= 11",
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 10.18.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}

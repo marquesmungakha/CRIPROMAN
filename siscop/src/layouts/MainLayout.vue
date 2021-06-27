@@ -11,7 +11,7 @@
             <q-space/>
             <div class="text-weight-thin"> SISTEMA DE GESTÃO PROCESSUAL </div>
             <q-space/>
-            <div class="text-weight-thin"> {{ this.orgaoDescricao }}</div>
+            <div class="text-weight-thin"> {{ this.orgaoDescricao.designacao }}</div>
           </q-toolbar-title>
           <div class="q-gutter-sm row items-center no-wrap">
             <q-btn round dense flat color="grey-8" icon="notifications">
@@ -114,7 +114,7 @@
           <q-item-label>Pagina Inicial</q-item-label>
         </q-item-section>
       </q-item>
-          <q-expansion-item icon="miscellaneous_services" label="Parametrização" >
+          <q-expansion-item icon="miscellaneous_services" label="Parametrização" v-if="this.orgaoDescricao.nivel === 0">
              <q-expansion-item icon="location_on" :header-inset-level="0.85" label="Localização" >
                 <q-item to="/pais" exact style="margin-left: 105px  !important;" active-class="q-item-no-link-highlighting">
                   <q-item-section>
@@ -409,12 +409,12 @@ export default {
      getAllOrgao(offset) {
         if(offset >= 0){
            Orgao.api().get("/orgao/"+localStorage.getItem('orgaoId')).then(resp => {
-        this.orgaoDescricao = resp.response.data.designacao
+              this.orgaoDescricao = resp.response.data
           }).catch(error => {
           console.log('Erro no code ' + error)
         })
         }
-    },
+    }
   },
   meta: {
     title: 'GEPROC-SERNIC'

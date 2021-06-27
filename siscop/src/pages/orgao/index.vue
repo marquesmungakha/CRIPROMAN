@@ -266,7 +266,7 @@ export default {
 
       const orgaoPrincipal = Orgao.query().find(localStorage.getItem('orgaoId'))
       if(orgaoPrincipal.nivel === 0)
-          return Orgao.query().with('tipoOrgao').with('provincia.*').with('distrito.provincia.*').where('nivel',0).get()
+          return Orgao.query().with('tipoOrgao').with('provincia.*').with('distrito.provincia.*').where('nivel',0).orWhere('nivel',1).get()
       else
           this.$router.push({path:'/orgao/'+orgaoPrincipal.id}) 
     }

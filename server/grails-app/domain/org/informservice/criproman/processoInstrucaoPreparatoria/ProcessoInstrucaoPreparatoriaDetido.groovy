@@ -9,7 +9,7 @@ import org.informservice.criproman.processoInstrucaoPreparatoria.ProcessoInstruc
 @Resource(uri='/api/processoInstrucaoPreparatoriaDetido')
 class ProcessoInstrucaoPreparatoriaDetido {
 
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Detido detido
 
     static belongsTo = ProcessoInstrucaoPreparatoria

@@ -10,7 +10,7 @@ import org.informservice.criproman.processoInstrucaoPreparatoria.ProcessoInstruc
 class ProcessoInstrucaoPreparatoriaDeclarante {
 
     String declaracao
-    ProcessoInstrucaoPreparatoria processo
+    ProcessoInstrucaoPreparatoria processoInstrucaoPreparatoria
     Declarante declarante
 
     static belongsTo = ProcessoInstrucaoPreparatoria

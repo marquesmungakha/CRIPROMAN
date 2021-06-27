@@ -114,7 +114,7 @@ VuexORM.use(VuexORMAxios, {
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },
-  baseURL: 'http://192.168.30.4:8080/api'
+  baseURL: 'http://192.168.1.4:8080/api'
 })
 
 // // Request interceptor for API calls
@@ -160,10 +160,10 @@ if(rToken.length > 10){
     // const authUser = JSON.parse(window.localStorage)
    
 
-    console.log('attempt to refresh token here -' + 'http://192.168.30.4:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
+    console.log('attempt to refresh token here -' + 'http://192.168.1.4:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
     // console.log('r token '+authUser.auth.isAuthenticated.refresh_token+'_____________-'+JSON.stringify(authUser.auth.isAuthenticated))
     //, {grant_type:'refresh_token',refresh_token:tok}
-    return axios.post('http://192.168.30.4:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
+    return axios.post('http://192.168.1.4:8080/oauth/access_token?grant_type=refresh_token&refresh_token=' + rToken)
       .then(({data}) => {
         console.log('==got the following token back: ' + data.access_token + '___________________________________________')
         //console.log("------------"+JSON.stringify(data)+' ')
