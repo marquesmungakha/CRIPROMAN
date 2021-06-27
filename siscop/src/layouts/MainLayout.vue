@@ -405,7 +405,7 @@ export default {
      let offset = 0
       this.getAllOrgao(offset)
   },
-  methods: {
+  methods: {\
      getAllOrgao(offset) {
         if(offset >= 0){
            Orgao.api().get("/orgao/"+localStorage.getItem('orgaoId')).then(resp => {
